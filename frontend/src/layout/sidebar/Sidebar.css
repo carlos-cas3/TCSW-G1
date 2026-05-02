@@ -1,8 +1,8 @@
 .sidebar {
-  width: 250px;
+  width: 16rem;
   height: 100vh;
-  background-color: #1f2937;
-  color: white;
+  background-color: #111827;
+  color: #f9fafb;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -10,40 +10,96 @@
   top: 0;
 }
 
-.sidebar-logo {
-  padding: 1.5rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  border-bottom: 1px solid #374151;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-}
-
-.sidebar-link {
+.sidebar-header {
+  height: 4rem;
+  padding: 0 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #1f2937;
+}
+
+.sidebar-logo {
+  width: 2rem;
+  height: 2rem;
+  background-color: #2563eb;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.sidebar-brand {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+.sidebar-footer {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid #1f2937;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
   color: #9ca3af;
   text-decoration: none;
-  transition: all 0.2s;
+  border-radius: 0.5rem;
+  transition: all 0.15s;
 }
 
-.sidebar-link:hover {
-  background-color: #374151;
-  color: white;
+.sidebar-item:hover {
+  background-color: #1f2937;
+  color: #f9fafb;
 }
 
-.sidebar-link.active {
-  background-color: #3b82f6;
-  color: white;
+.sidebar-item.active {
+  background-color: #2563eb;
+  color: #f9fafb;
 }
 
-.sidebar-icon {
+.sidebar-item-icon {
   width: 1.25rem;
   height: 1.25rem;
+  flex-shrink: 0;
+  color: white,
+}
+
+.sidebar-item-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  width: 100%;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.sidebar-logout:hover {
+  background-color: #1f2937;
+  color: #f9fafb;
 }

@@ -16,8 +16,16 @@ const routes = [
                 element: <Vendors />
             },
             {
-                path: "settings",
-                element: <h1>Settings</h1>
+                path: "branches",
+                element: <h1>Branches</h1>
+            },
+            {
+                path: "catalog",
+                element: <h1>Catalog</h1>
+            },
+            {
+                path: "analytics",
+                element: <h1>Analytics</h1>
             }
         ]
     },
