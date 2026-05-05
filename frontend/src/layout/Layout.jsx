@@ -5,7 +5,7 @@ import "./Layout.css";
 
 const pageTitles = {
   "/": "Dashboard",
-  "/vendors": "Vendors",
+  "/vendors": "Gestión de Vendedores",
   "/settings": "Settings",
 };
 

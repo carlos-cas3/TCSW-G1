@@ -1,0 +1,23 @@
+@reference "tailwindcss";
+
+@layer components {
+  .vendors-stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
+  }
+
+  .vendors-stats-card {
+    @apply bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .vendors-stats-card-body {
+    @apply flex items-center justify-between;
+  }
+
+  .vendors-stats-card-icon {
+    @apply p-3 rounded-lg;
+  }
+
+  .vendors-stats-card-icon svg {
+    @apply w-6 h-6;
+  }
+}

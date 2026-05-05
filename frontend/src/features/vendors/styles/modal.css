@@ -1,0 +1,47 @@
+@reference "tailwindcss";
+
+@layer components {
+  .vendors-modal {
+    @apply fixed inset-0 z-50 overflow-y-auto;
+  }
+
+  .vendors-modal-wrapper {
+    @apply flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0;
+  }
+
+  .vendors-modal-backdrop {
+    @apply fixed inset-0 bg-gray-500/75 transition-opacity;
+  }
+
+  .vendors-modal-panel {
+    @apply inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full;
+  }
+
+  .vendors-modal-content {
+    @apply bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4;
+  }
+
+  .vendors-modal-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .vendors-modal-title {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .vendors-modal-close {
+    @apply p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100;
+  }
+
+  .vendors-modal-form {
+    @apply space-y-6;
+  }
+
+  .vendors-modal-form-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+
+  .vendors-modal-form-actions {
+    @apply flex justify-end gap-3 pt-4 border-t border-gray-200;
+  }
+}

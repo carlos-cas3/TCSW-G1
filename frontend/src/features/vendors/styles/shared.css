@@ -1,0 +1,25 @@
+@reference "tailwindcss";
+
+@layer components {
+  .vendors-card {
+    @apply bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .vendors-card-simple {
+    @apply bg-white rounded-lg border border-gray-200 p-12 text-center;
+  }
+
+  .vendors-link-btn {
+    @apply mt-4 text-blue-600 hover:text-blue-700 font-medium;
+  }
+}
+
+@layer utilities {
+  .vendors-status-badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500;
+  }
+
+  .vendors-category-chip {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+}
