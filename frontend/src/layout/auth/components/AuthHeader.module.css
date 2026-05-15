@@ -1,0 +1,53 @@
+@reference "tailwindcss";
+
+.header {
+    @apply relative z-10
+    px-6
+    pt-6;
+}
+
+.headerInner {
+    @apply max-w-7xl
+    mx-auto
+    flex items-center justify-between;
+}
+
+.logo {
+    @apply flex items-center gap-3;
+}
+
+.logoIcon {
+    @apply w-11 h-11
+    rounded-xl
+    flex items-center justify-center
+    bg-gradient-to-br
+    from-blue-500
+    to-cyan-500
+    shadow-lg
+    shadow-blue-500/30;
+}
+
+.logoTitle {
+    @apply text-xl
+    font-bold
+    tracking-tight
+    text-white;
+}
+
+.logoSubtitle {
+    @apply text-xs
+    uppercase
+    tracking-[0.25em]
+    text-blue-400;
+}
+
+.badges {
+    @apply hidden md:flex
+    items-center gap-5;
+}
+
+.badge {
+    @apply flex items-center gap-2
+    text-sm
+    text-gray-400;
+}
