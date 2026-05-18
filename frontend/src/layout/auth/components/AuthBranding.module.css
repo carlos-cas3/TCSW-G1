@@ -1,0 +1,35 @@
+@reference "tailwindcss";
+
+.branding {
+    @apply hidden lg:flex
+    flex-col gap-10;
+}
+
+.headline {
+    @apply text-6xl
+    font-extrabold
+    leading-tight
+    bg-gradient-to-br
+    from-white
+    via-blue-100
+    to-blue-400
+    bg-clip-text
+    text-transparent;
+}
+
+.subline {
+    @apply mt-4
+    text-lg
+    leading-relaxed
+    text-gray-400;
+}
+
+.features {
+    @apply flex flex-col gap-4;
+}
+
+.stats {
+    @apply flex items-center gap-10
+    border-t border-white/10
+    pt-6;
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+    },
+    "tailwind-v4-shadcn": {
+      "source": "secondsky/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/tailwind-v4-shadcn/skills/tailwind-v4-shadcn/SKILL.md",
+      "computedHash": "cf83bc010cc7afe91ad4b61adad527b69b433804a2c2a3ec3869605d8596b216"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@reference "tailwindcss";
+
+@layer components {
+  .vendors-table-container {
+    @apply bg-white rounded-lg border border-gray-200 overflow-hidden;
+  }
+
+  .vendors-table-scroll {
+    @apply overflow-x-auto;
+  }
+
+  .vendors-table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+
+  .vendors-table-head {
+    @apply bg-gray-50;
+  }
+
+  .vendors-table-header {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .vendors-table-body {
+    @apply bg-white divide-y divide-gray-200;
+  }
+
+  .vendors-table-row {
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  .vendors-table-cell {
+    @apply px-6 py-4 whitespace-nowrap;
+  }
+
+  .vendors-table-cell-actions {
+    @apply flex items-center gap-2;
+  }
+
+  .vendors-table-action-btn {
+    @apply p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors;
+  }
+
+  .vendors-table-empty {
+    @apply px-6 py-12 text-center text-gray-500;
+  }
+}

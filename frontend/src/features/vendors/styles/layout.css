@@ -1,0 +1,27 @@
+@reference "tailwindcss";
+
+@layer components {
+  .vendors-page {
+    @apply min-h-screen bg-red-200;
+  }
+
+  .vendors-page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  .vendors-page-header {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8;
+  }
+
+  .vendors-page-header-start {
+    @apply mb-4 sm:mb-0;
+  }
+
+  .vendors-page-title {
+    @apply text-2xl font-bold text-gray-900;
+  }
+
+  .vendors-page-subtitle {
+    @apply mt-1 text-sm text-gray-500;
+  }
+}
