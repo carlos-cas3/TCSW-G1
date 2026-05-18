@@ -174,6 +174,7 @@ export const useRegisterForm = () => {
 
                 const response = await registerUser(payload);
 
+                
                 console.log( response);
             } catch (error) {
                 console.error(error.message);
