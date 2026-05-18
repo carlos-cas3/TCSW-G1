@@ -1,0 +1,19 @@
+@reference "tailwindcss";
+
+@layer components {
+  .seller-card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-200;
+  }
+
+  .seller-card-header {
+    @apply px-6 py-4 border-b border-gray-100;
+  }
+
+  .seller-card-title {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .seller-card-body {
+    @apply p-6;
+  }
+}

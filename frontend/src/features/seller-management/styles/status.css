@@ -1,0 +1,47 @@
+@reference "tailwindcss";
+
+@layer components {
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold;
+  }
+
+  .status-active {
+    @apply bg-emerald-100 text-emerald-700;
+  }
+
+  .status-pending {
+    @apply bg-amber-100 text-amber-700;
+  }
+
+  .status-inactive {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  .status-suspended {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .status-stats {
+    @apply grid grid-cols-1 gap-3;
+  }
+
+  .status-stat-item {
+    @apply flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100;
+  }
+
+  .status-stat-icon {
+    @apply w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600;
+  }
+
+  .status-stat-content {
+    @apply flex flex-col;
+  }
+
+  .status-stat-label {
+    @apply text-xs text-gray-500 font-medium;
+  }
+
+  .status-stat-value {
+    @apply text-lg font-bold text-gray-900;
+  }
+}
