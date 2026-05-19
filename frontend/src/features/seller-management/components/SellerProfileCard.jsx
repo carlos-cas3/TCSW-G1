@@ -92,7 +92,7 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
                                     name="companyEmail"
                                     className="profile-form-input"
                                     value={data.profile.companyEmail ?? ""}
-                                    onChange={handleChange}
+                                    disabled
                                 />
                             </div>
                             <div className="profile-form-group">
@@ -108,7 +108,7 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
                             </div>
                             <div className="profile-form-group">
                                 <label className="profile-form-label">
-                                    Teléfono
+                                    Teléfono Comercial
                                 </label>
                                 <input
                                     type="text"
@@ -117,6 +117,10 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
                                     value={data.profile.phone ?? ""}
                                     onChange={handleChange}
                                 />
+                                <p className="profile-form-help">
+                                    Este número será visible como contacto de la
+                                    empresa
+                                </p>
                             </div>
                             <div className="profile-form-group profile-form-input-full">
                                 <label className="profile-form-label">
@@ -130,6 +134,13 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
                                     onChange={handleChange}
                                 />
                             </div>
+                        </div>
+                        <div className="profile-form-footer">
+                            <p>
+                                Los campos deshabilitados contienen información
+                                sensible. Para solicitar cambios, contacte al
+                                administrador del supermercado
+                            </p>
                         </div>
                     </div>
                 </div>
