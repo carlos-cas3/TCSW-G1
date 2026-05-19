@@ -3,6 +3,7 @@ import VendorsIcon from "../../../assets/vendors-icon.svg?react";
 import BranchesIcon from "../../../assets/branches-icon.svg?react";
 import CatalogIcon from "../../../assets/catalog-icon.svg?react";
 import AnalyticsIcon from "../../../assets/analytics-icon.svg?react";
+import SellerIcon from "../../../assets/seller-icon.svg?react";
 
 const allMenuItems = [
     { path: "/admin", 
@@ -37,6 +38,12 @@ const allMenuItems = [
         path: "/dashboard/catalog",
         label: "Catalog",
         icon: CatalogIcon,
+        roles: [2],
+    },
+    {
+        path: "/dashboard/seller-management",
+        label: "Mi Tienda",
+        icon: SellerIcon,
         roles: [2],
     },
 ];

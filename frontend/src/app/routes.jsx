@@ -3,6 +3,7 @@ import Layout from "../layout/dashboard/Layout";
 import AuthLayout from "../layout/auth/AuthLayout";
 import LoginForm from "../features/auth/components/login/LoginForm";
 import Vendors from "../features/vendors/Vendors";
+import SellerManagement from "../features/seller-management/SellerManagement";
 import ProtectedRoute from "./ProtectedRoute";
 
 const ROLES = {
@@ -42,6 +43,7 @@ const routes = [
         children: [
             { path: "", element: <h1>Vendor Dashboard</h1> },
             { path: "catalog", element: <h1>Catalog</h1> },
+            { path: "seller-management", element: <SellerManagement /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
