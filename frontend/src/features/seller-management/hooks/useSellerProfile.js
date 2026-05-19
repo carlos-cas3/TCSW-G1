@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+
 import {
     getVendorById,
     updateVendor,
@@ -6,7 +7,10 @@ import {
     updateVendorPolicy,
     uploadVendorLogo,
 } from "../services/seller.service";
+
 import { getUser } from "../../../app/auth";
+
+import { extractEditableData } from "../helpers/sellerEditableData";
 
 const mapVendorToProfile = (vendor) => ({
     profile: {
@@ -17,6 +21,7 @@ const mapVendorToProfile = (vendor) => ({
         address: vendor.vendor_address,
         logo: vendor.vendor_logo_url,
     },
+
     account: {
         status: vendor.vendor_status,
         memberSince: vendor.created_at,
@@ -32,21 +37,31 @@ const mapProfileToVendor = (profile) => ({
 
 export const useSellerProfile = () => {
     const [sellerData, setSellerData] = useState(null);
+
+    const [initialEditableData, setInitialEditableData] =
+        useState(null);
+
     const [loading, setLoading] = useState(true);
+
     const [saving, setSaving] = useState(false);
+
     const [error, setError] = useState(null);
 
     const vendorId = getUser()?.vendorId;
 
     const loadProfile = useCallback(async () => {
-        console.log("loadProfile llamado");
         if (!vendorId) {
-            setError("No se encontró el vendor del usuario");
+            setError(
+                "No se encontró el vendor del usuario"
+            );
+
             setLoading(false);
+
             return;
         }
 
         setLoading(true);
+
         setError(null);
 
         try {
@@ -58,27 +73,30 @@ export const useSellerProfile = () => {
                 getVendorPolicy(vendorId),
             ]);
 
-            if (vendorError) throw new Error(vendorError);
+            if (vendorError) {
+                throw new Error(vendorError);
+            }
 
-            setSellerData((prev) => {
-                console.log(
-                    "loadProfile setSellerData - prev.profile.logo:",
-                    prev?.profile?.logo,
-                );
-                return {
-                    ...mapVendorToProfile(vendorData),
-                    returnPolicy: {
-                        description:
-                            policyData?.return_policy_description ?? "",
-                    },
-                    profile: {
-                        ...mapVendorToProfile(vendorData).profile,
-                        logo: prev?.profile?.logo ?? vendorData.vendor_logo_url,
-                    },
-                };
-            });
+            const mappedData = {
+                ...mapVendorToProfile(vendorData),
+
+                returnPolicy: {
+                    description:
+                        policyData?.return_policy_description ??
+                        "",
+                },
+            };
+
+            setSellerData(mappedData);
+
+            setInitialEditableData(
+                extractEditableData(mappedData)
+            );
         } catch (err) {
-            setError(err.message || "Error al cargar el perfil");
+            setError(
+                err.message ||
+                    "Error al cargar el perfil"
+            );
         } finally {
             setLoading(false);
         }
@@ -86,10 +104,15 @@ export const useSellerProfile = () => {
 
     useEffect(() => {
         let cancelled = false;
+
         const init = async () => {
-            if (!cancelled) await loadProfile();
+            if (!cancelled) {
+                await loadProfile();
+            }
         };
+
         init();
+
         return () => {
             cancelled = true;
         };
@@ -97,15 +120,23 @@ export const useSellerProfile = () => {
 
     const saveProfile = async (updatedProfile) => {
         setSaving(true);
+
         try {
             const { error } = await updateVendor(
                 vendorId,
-                mapProfileToVendor(updatedProfile),
+                mapProfileToVendor(updatedProfile)
             );
-            if (error) throw new Error(error);
+
+            if (error) {
+                throw new Error(error);
+            }
+
             return { success: true };
         } catch (err) {
-            return { success: false, error: err.message };
+            return {
+                success: false,
+                error: err.message,
+            };
         } finally {
             setSaving(false);
         }
@@ -113,12 +144,24 @@ export const useSellerProfile = () => {
 
     const savePolicy = async (description) => {
         setSaving(true);
+
         try {
-            const { error } = await updateVendorPolicy(vendorId, description);
-            if (error) throw new Error(error);
+            const { error } =
+                await updateVendorPolicy(
+                    vendorId,
+                    description
+                );
+
+            if (error) {
+                throw new Error(error);
+            }
+
             return { success: true };
         } catch (err) {
-            return { success: false, error: err.message };
+            return {
+                success: false,
+                error: err.message,
+            };
         } finally {
             setSaving(false);
         }
@@ -126,34 +169,53 @@ export const useSellerProfile = () => {
 
     const saveLogo = async (file) => {
         setSaving(true);
+
         try {
-            const { data, error } = await uploadVendorLogo(vendorId, file);
-            console.log("respuesta uploadVendorLogo:", { data, error }); // añadir
-            console.log("logo_url recibida:", data?.logo_url);
-            console.log("data completa:", JSON.stringify(data));
-            if (error) throw new Error(error);
+            const { data, error } =
+                await uploadVendorLogo(
+                    vendorId,
+                    file
+                );
+
+            if (error) {
+                throw new Error(error);
+            }
 
             setSellerData((prev) => ({
                 ...prev,
-                profile: { ...prev.profile, logo: data.logo_url },
+
+                profile: {
+                    ...prev.profile,
+                    logo: data.logo_url,
+                },
             }));
 
             return { success: true };
         } catch (err) {
-            return { success: false, error: err.message };
+            return {
+                success: false,
+                error: err.message,
+            };
         } finally {
             setSaving(false);
         }
     };
+
     return {
         sellerData,
         setSellerData,
+
+        initialEditableData,
+        setInitialEditableData,
+
         loading,
         saving,
         error,
+
         saveProfile,
         savePolicy,
         saveLogo,
+
         reload: loadProfile,
     };
 };

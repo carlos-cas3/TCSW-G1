@@ -1,30 +1,48 @@
 import { useSellerProfile } from "./hooks/useSellerProfile";
+
+import { extractEditableData } from "./helpers/sellerEditableData";
+
 import SellerProfileCard from "./components/SellerProfileCard";
 import AccountStatusCard from "./components/AccountStatusCard";
 import BusinessConfigCard from "./components/BusinessConfigCard";
 import ReturnPolicyCard from "./components/ReturnPolicyCard";
+
 import "./styles/shared.css";
 
 export default function SellerManagement() {
     const {
         sellerData,
         setSellerData,
+
+        initialEditableData,
+        setInitialEditableData,
+
         loading,
         error,
+
         saveProfile,
         savePolicy,
         saveLogo,
+
         saving,
     } = useSellerProfile();
+
     const handleChange = (updater) => {
         setSellerData((prev) =>
             typeof updater === "function" ? updater(prev) : updater,
         );
     };
 
+    const currentEditableData = extractEditableData(sellerData);
+
+    const hasUnsavedChanges =
+        JSON.stringify(currentEditableData) !==
+        JSON.stringify(initialEditableData);
+
     const handleSaveAll = async () => {
         const results = await Promise.allSettled([
             saveProfile(sellerData.profile),
+
             savePolicy(sellerData.returnPolicy?.description ?? ""),
         ]);
 
@@ -36,6 +54,8 @@ export default function SellerManagement() {
 
         if (!rejected && !failed) {
             alert("Configuración guardada correctamente");
+
+            setInitialEditableData(extractEditableData(sellerData));
         } else {
             const errorMessage =
                 rejected?.reason?.message ||
@@ -46,19 +66,21 @@ export default function SellerManagement() {
         }
     };
 
-    if (loading)
+    if (loading) {
         return (
             <div className="seller-page p-6 lg:p-8">
                 <p className="seller-subtitle">Cargando configuración...</p>
             </div>
         );
+    }
 
-    if (error)
+    if (error) {
         return (
             <div className="seller-page p-6 lg:p-8">
                 <p className="seller-subtitle">Error: {error}</p>
             </div>
         );
+    }
 
     if (!sellerData) return null;
 
@@ -66,11 +88,13 @@ export default function SellerManagement() {
         <div className="seller-page p-6 lg:p-8">
             <div className="seller-header">
                 <h1 className="seller-title">Configuración de Tienda</h1>
+
                 <p className="seller-subtitle">
                     Administra la información de tu empresa y configuración
                     comercial
                 </p>
             </div>
+
             <div className="seller-grid">
                 <div className="seller-col-main">
                     <SellerProfileCard
@@ -78,29 +102,35 @@ export default function SellerManagement() {
                         onChange={handleChange}
                         onLogoChange={saveLogo}
                     />
+
                     <ReturnPolicyCard
                         data={sellerData}
                         onChange={handleChange}
                     />
                 </div>
+
                 <div className="seller-col-side">
                     <AccountStatusCard data={sellerData} />
+
                     <BusinessConfigCard
                         data={sellerData}
                         onChange={handleChange}
                     />
                 </div>
             </div>
-            <div className="seller-footer">
-                <button
-                    type="button"
-                    className="seller-btn-primary"
-                    onClick={handleSaveAll}
-                    disabled={saving}
-                >
-                    {saving ? "Guardando..." : "Guardar Configuración"}
-                </button>
-            </div>
+
+            {hasUnsavedChanges && (
+                <div className="seller-footer">
+                    <button
+                        type="button"
+                        className="seller-btn-primary"
+                        onClick={handleSaveAll}
+                        disabled={saving}
+                    >
+                        {saving ? "Guardando..." : "Guardar Configuración"}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
