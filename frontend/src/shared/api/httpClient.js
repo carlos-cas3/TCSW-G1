@@ -6,9 +6,13 @@ export const getHeaders = () => {
 };
 
 export const fetchWithAuth = async (url, options = {}) => {
+    const isFormData = options.body instanceof FormData;
+
     const headers = {
-        "Content-Type": "application/json",
+        // No pongas Content-Type si es FormData — el browser lo hace solo
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...getHeaders(),
+        ...options.headers,
     };
 
     const response = await fetch(url, { ...options, headers });

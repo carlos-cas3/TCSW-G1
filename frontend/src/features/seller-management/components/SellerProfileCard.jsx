@@ -3,10 +3,10 @@ import { Upload } from "lucide-react";
 import "../styles/profile.css";
 import "../styles/cards.css";
 
-export default function SellerProfileCard({ data, onChange }) {
+export default function SellerProfileCard({ data, onChange, onLogoChange }) {
+    console.log("logo actual:", data.profile.logo?.substring(0, 50));
     const initializedRef = useRef(false);
 
-    // Solo sincroniza la primera vez que llegan datos reales del API
     useEffect(() => {
         if (!initializedRef.current && data.profile.companyName) {
             initializedRef.current = true;
@@ -21,26 +21,22 @@ export default function SellerProfileCard({ data, onChange }) {
         }));
     };
 
-    const handleLogoChange = (e) => {
+    const handleLogoChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                alert("El archivo no puede superar 2MB");
-                return;
-            }
-            if (!["image/png", "image/jpeg"].includes(file.type)) {
-                alert("Solo se aceptan archivos PNG o JPG");
-                return;
-            }
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                onChange((prevSeller) => ({
-                    ...prevSeller,
-                    profile: { ...prevSeller.profile, logo: reader.result },
-                }));
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert("El archivo no puede superar 2MB");
+            return;
         }
+        if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+            alert("Solo se aceptan archivos PNG, JPG o JPEG");
+            return;
+        }
+
+        // Sube directo — sin preview base64
+        const { success, error } = await onLogoChange(file);
+        if (!success) alert(`Error al subir logo: ${error}`);
     };
 
     return (

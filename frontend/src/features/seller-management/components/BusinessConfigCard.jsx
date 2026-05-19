@@ -17,10 +17,8 @@ const ICONS = {
 };
 
 const DEFAULT_PAYMENT_METHODS = [
-    { id: "1", name: "Credit / Debit Card", icon: "card", selected: false },
-    { id: "2", name: "Bank Transfer", icon: "bank", selected: false },
-    { id: "3", name: "Cash on Delivery", icon: "cash", selected: false },
-    { id: "4", name: "Yape / Plin", icon: "mobile", selected: false },
+    { id: "1", name: "Boleta", icon: "card", selected: false },
+    { id: "2", name: "Factura", icon: "bank", selected: false },
 ];
 
 const DEFAULT_BUSINESS = {

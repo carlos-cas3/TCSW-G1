@@ -1,8 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { getVendorById, updateVendor } from "../services/seller.service";
+import {
+    getVendorById,
+    updateVendor,
+    getVendorPolicy,
+    updateVendorPolicy,
+    uploadVendorLogo,
+} from "../services/seller.service";
 import { getUser } from "../../../app/auth";
 
-// Mapea los campos del vendor-service → estructura que usan los componentes
 const mapVendorToProfile = (vendor) => ({
     profile: {
         companyName: vendor.vendor_name,
@@ -18,7 +23,6 @@ const mapVendorToProfile = (vendor) => ({
     },
 });
 
-// Mapea los campos del formulario → payload del vendor-service
 const mapProfileToVendor = (profile) => ({
     vendor_name: profile.companyName,
     vendor_email: profile.companyEmail,
@@ -32,10 +36,10 @@ export const useSellerProfile = () => {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
-    const user = getUser();
-    const vendorId = user?.vendorId;
+    const vendorId = getUser()?.vendorId;
 
     const loadProfile = useCallback(async () => {
+        console.log("loadProfile llamado");
         if (!vendorId) {
             setError("No se encontró el vendor del usuario");
             setLoading(false);
@@ -46,10 +50,33 @@ export const useSellerProfile = () => {
         setError(null);
 
         try {
-            const { data: vendorData, error: fetchError } =
-                await getVendorById(vendorId);
-            if (fetchError) throw new Error(fetchError);
-            setSellerData(mapVendorToProfile(vendorData));
+            const [
+                { data: vendorData, error: vendorError },
+                { data: policyData },
+            ] = await Promise.all([
+                getVendorById(vendorId),
+                getVendorPolicy(vendorId),
+            ]);
+
+            if (vendorError) throw new Error(vendorError);
+
+            setSellerData((prev) => {
+                console.log(
+                    "loadProfile setSellerData - prev.profile.logo:",
+                    prev?.profile?.logo,
+                );
+                return {
+                    ...mapVendorToProfile(vendorData),
+                    returnPolicy: {
+                        description:
+                            policyData?.return_policy_description ?? "",
+                    },
+                    profile: {
+                        ...mapVendorToProfile(vendorData).profile,
+                        logo: prev?.profile?.logo ?? vendorData.vendor_logo_url,
+                    },
+                };
+            });
         } catch (err) {
             setError(err.message || "Error al cargar el perfil");
         } finally {
@@ -59,29 +86,56 @@ export const useSellerProfile = () => {
 
     useEffect(() => {
         let cancelled = false;
-
         const init = async () => {
             if (!cancelled) await loadProfile();
         };
-
         init();
-
         return () => {
             cancelled = true;
         };
     }, [loadProfile]);
 
     const saveProfile = async (updatedProfile) => {
-        console.log("payload enviado:", mapProfileToVendor(updatedProfile));
         setSaving(true);
         try {
-            const payload = mapProfileToVendor(updatedProfile);
-            const { error: saveError } = await updateVendor(vendorId, payload);
-            if (saveError) throw new Error(saveError);
+            const { error } = await updateVendor(
+                vendorId,
+                mapProfileToVendor(updatedProfile),
+            );
+            if (error) throw new Error(error);
+            return { success: true };
+        } catch (err) {
+            return { success: false, error: err.message };
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const savePolicy = async (description) => {
+        setSaving(true);
+        try {
+            const { error } = await updateVendorPolicy(vendorId, description);
+            if (error) throw new Error(error);
+            return { success: true };
+        } catch (err) {
+            return { success: false, error: err.message };
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const saveLogo = async (file) => {
+        setSaving(true);
+        try {
+            const { data, error } = await uploadVendorLogo(vendorId, file);
+            console.log("respuesta uploadVendorLogo:", { data, error }); // añadir
+            console.log("logo_url recibida:", data?.logo_url);
+            console.log("data completa:", JSON.stringify(data));
+            if (error) throw new Error(error);
 
             setSellerData((prev) => ({
                 ...prev,
-                profile: { ...prev.profile, ...updatedProfile },
+                profile: { ...prev.profile, logo: data.logo_url },
             }));
 
             return { success: true };
@@ -91,14 +145,15 @@ export const useSellerProfile = () => {
             setSaving(false);
         }
     };
-
     return {
         sellerData,
-        setSellerData, // añadir
+        setSellerData,
         loading,
         saving,
         error,
         saveProfile,
+        savePolicy,
+        saveLogo,
         reload: loadProfile,
     };
 };

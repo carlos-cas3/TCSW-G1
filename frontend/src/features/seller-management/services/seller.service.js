@@ -15,3 +15,22 @@ export const updateVendor = async (vendorId, data) => {
     console.log("respuesta updateVendor:", result);
     return result;
 };
+
+export const getVendorPolicy = (vendorId) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/policy`);
+
+export const updateVendorPolicy = (vendorId, description) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/policy`, {
+        method: "PUT",
+        body: JSON.stringify({ description }),
+    });
+
+export const uploadVendorLogo = (vendorId, file) => {
+    const formData = new FormData();
+    formData.append("logo", file);
+
+    return fetchWithAuth(`${VENDOR_URL}/${vendorId}/logo`, {
+        method: "POST",
+        body: formData,
+    });
+};

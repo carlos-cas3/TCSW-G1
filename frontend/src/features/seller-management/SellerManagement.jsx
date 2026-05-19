@@ -12,9 +12,10 @@ export default function SellerManagement() {
         loading,
         error,
         saveProfile,
+        savePolicy,
+        saveLogo,
         saving,
     } = useSellerProfile();
-
     const handleChange = (updater) => {
         setSellerData((prev) =>
             typeof updater === "function" ? updater(prev) : updater,
@@ -22,25 +23,33 @@ export default function SellerManagement() {
     };
 
     const handleSaveAll = async () => {
-        const { success, error: saveError } = await saveProfile(sellerData.profile);
-        if (success) {
+        const [profileResult, policyResult] = await Promise.all([
+            saveProfile(sellerData.profile),
+            savePolicy(sellerData.returnPolicy?.description ?? ""),
+        ]);
+
+        if (profileResult.success && policyResult.success) {
             alert("Configuración guardada correctamente");
         } else {
-            alert(`Error al guardar: ${saveError}`);
+            alert(
+                `Error al guardar: ${profileResult.error || policyResult.error}`,
+            );
         }
     };
 
-    if (loading) return (
-        <div className="seller-page p-6 lg:p-8">
-            <p className="seller-subtitle">Cargando configuración...</p>
-        </div>
-    );
+    if (loading)
+        return (
+            <div className="seller-page p-6 lg:p-8">
+                <p className="seller-subtitle">Cargando configuración...</p>
+            </div>
+        );
 
-    if (error) return (
-        <div className="seller-page p-6 lg:p-8">
-            <p className="seller-subtitle">Error: {error}</p>
-        </div>
-    );
+    if (error)
+        return (
+            <div className="seller-page p-6 lg:p-8">
+                <p className="seller-subtitle">Error: {error}</p>
+            </div>
+        );
 
     if (!sellerData) return null;
 
@@ -49,17 +58,28 @@ export default function SellerManagement() {
             <div className="seller-header">
                 <h1 className="seller-title">Configuración de Tienda</h1>
                 <p className="seller-subtitle">
-                    Administra la información de tu empresa y configuración comercial
+                    Administra la información de tu empresa y configuración
+                    comercial
                 </p>
             </div>
             <div className="seller-grid">
                 <div className="seller-col-main">
-                    <SellerProfileCard data={sellerData} onChange={handleChange} />
-                    <ReturnPolicyCard data={sellerData} onChange={handleChange} />
+                    <SellerProfileCard
+                        data={sellerData}
+                        onChange={handleChange}
+                        onLogoChange={saveLogo}
+                    />
+                    <ReturnPolicyCard
+                        data={sellerData}
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="seller-col-side">
                     <AccountStatusCard data={sellerData} />
-                    <BusinessConfigCard data={sellerData} onChange={handleChange} />
+                    <BusinessConfigCard
+                        data={sellerData}
+                        onChange={handleChange}
+                    />
                 </div>
             </div>
             <div className="seller-footer">
