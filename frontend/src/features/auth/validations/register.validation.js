@@ -13,7 +13,7 @@ export const validateField = (name, value, allFormData, categories) => {
             }
             return "";
 
-        case "phone":
+        case "personal_phone":
             return !value.trim() ? "El teléfono es requerido" : "";
 
         case "password":

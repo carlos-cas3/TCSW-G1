@@ -11,7 +11,7 @@ export const useRegisterForm = () => {
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
+        personal_phone: "",
         password: "",
         confirmPassword: "",
         company: "",
@@ -148,7 +148,7 @@ export const useRegisterForm = () => {
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
-            phone: formData.phone,
+            personal_phone: formData.personal_phone,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
             company: {

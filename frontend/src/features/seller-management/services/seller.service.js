@@ -34,3 +34,19 @@ export const uploadVendorLogo = (vendorId, file) => {
         body: formData,
     });
 };
+
+
+// revisar luego con claude 
+export const getPaymentMethods = () =>
+    fetchWithAuth(`${VENDOR_URL}/payment-methods`);
+
+export const getVendorPaymentMethods = (vendorId) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/payment-methods`);
+
+export const updateVendorPaymentMethods = (vendorId, paymentMethodIds) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/payment-methods`, {
+        method: "PUT",
+        body: JSON.stringify({
+            payment_method_ids: paymentMethodIds,
+        }),
+    });

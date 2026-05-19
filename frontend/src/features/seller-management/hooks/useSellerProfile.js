@@ -6,6 +6,7 @@ import {
     getVendorPolicy,
     updateVendorPolicy,
     uploadVendorLogo,
+    
 } from "../services/seller.service";
 
 import { getUser } from "../../../app/auth";
@@ -17,7 +18,7 @@ const mapVendorToProfile = (vendor) => ({
         companyName: vendor.vendor_name,
         companyEmail: vendor.vendor_email,
         ruc: vendor.vendor_ruc,
-        phone: vendor.vendor_phone,
+        personal_phone: vendor.vendor_phone,
         address: vendor.vendor_address,
         logo: vendor.vendor_logo_url,
     },
@@ -31,7 +32,7 @@ const mapVendorToProfile = (vendor) => ({
 const mapProfileToVendor = (profile) => ({
     vendor_name: profile.companyName,
     vendor_email: profile.companyEmail,
-    vendor_phone: profile.phone,
+    vendor_phone: profile.personal_phone,
     vendor_address: profile.address,
 });
 

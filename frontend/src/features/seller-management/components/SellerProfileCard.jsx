@@ -36,6 +36,9 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
 
         // Sube directo — sin preview base64
         const { success, error } = await onLogoChange(file);
+        if (success) {
+            alert("Logo actualizado correctamente");
+        }
         if (!success) alert(`Error al subir logo: ${error}`);
     };
 
@@ -112,9 +115,9 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
                                 </label>
                                 <input
                                     type="text"
-                                    name="phone"
+                                    name="personal_phone"
                                     className="profile-form-input"
-                                    value={data.profile.phone ?? ""}
+                                    value={data.profile.personal_phone ?? ""}
                                     onChange={handleChange}
                                 />
                                 <p className="profile-form-help">
