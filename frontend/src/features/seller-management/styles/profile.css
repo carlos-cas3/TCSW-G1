@@ -73,4 +73,16 @@
   .profile-form-input-full {
     @apply md:col-span-2;
   }
+
+  .profile-form-footer {
+    @apply mt-5 pt-4 border-t border-gray-200;
+  }
+
+  .profile-form-footer p {
+    @apply text-xs text-gray-500 leading-relaxed;
+  }
+
+  .profile-form-help {
+    @apply text-xs text-gray-500 mt-1 leading-relaxed;
+  }
 }

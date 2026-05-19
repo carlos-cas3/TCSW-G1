@@ -23,17 +23,26 @@ export default function SellerManagement() {
     };
 
     const handleSaveAll = async () => {
-        const [profileResult, policyResult] = await Promise.all([
+        const results = await Promise.allSettled([
             saveProfile(sellerData.profile),
             savePolicy(sellerData.returnPolicy?.description ?? ""),
         ]);
 
-        if (profileResult.success && policyResult.success) {
+        const rejected = results.find((r) => r.status === "rejected");
+
+        const failed = results.find(
+            (r) => r.status === "fulfilled" && !r.value.success,
+        );
+
+        if (!rejected && !failed) {
             alert("Configuración guardada correctamente");
         } else {
-            alert(
-                `Error al guardar: ${profileResult.error || policyResult.error}`,
-            );
+            const errorMessage =
+                rejected?.reason?.message ||
+                failed?.value?.error ||
+                "Error al guardar";
+
+            alert(errorMessage);
         }
     };
 

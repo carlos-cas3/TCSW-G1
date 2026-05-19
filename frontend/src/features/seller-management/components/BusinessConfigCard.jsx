@@ -17,8 +17,14 @@ const ICONS = {
 };
 
 const DEFAULT_PAYMENT_METHODS = [
-    { id: "1", name: "Boleta", icon: "card", selected: false },
-    { id: "2", name: "Factura", icon: "bank", selected: false },
+    {
+        id: "5",
+        name: "Tarjeta de Crédito / Débito",
+        icon: "card",
+        selected: false,
+    },
+    { id: "6", name: "Transferencia Bancaria", icon: "bank", selected: false },
+    { id: "8", name: "Yape / Plin", icon: "mobile", selected: false },
 ];
 
 const DEFAULT_BUSINESS = {
