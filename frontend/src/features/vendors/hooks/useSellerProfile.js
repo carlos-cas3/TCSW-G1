@@ -9,6 +9,7 @@ import {
     getAllCategories,
     getVendorCategories,
     updateVendorCategories,
+    getVendorCommission
 
 } from "../services/vendor.service";
 
@@ -54,8 +55,11 @@ export const useSellerProfile = () => {
     const [categories, setCategories] = useState([]);
 
     const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+    
+    const [commission, setCommission] = useState(null);
 
     const vendorId = getUser()?.vendorId;
+
 
     const loadProfile = useCallback(async () => {
         if (!vendorId) {
@@ -78,11 +82,13 @@ export const useSellerProfile = () => {
                 { data: policyData },
                 { data: allCategories },
                 { data: vendorCategories },
+                { data: commissionData },
             ] = await Promise.all([
                 getVendorById(vendorId),
                 getVendorPolicy(vendorId),
                 getAllCategories(),
                 getVendorCategories(vendorId),
+                getVendorCommission(vendorId),
             ]);
 
             if (vendorError) {
@@ -110,6 +116,7 @@ export const useSellerProfile = () => {
 
             setCategories(allCategories ?? []);
             setSelectedCategoryIds(mappedData.categories.selectedIds);
+            setCommission(commissionData ?? null);
 
             setInitialEditableData(
                 extractEditableData(mappedData)
@@ -139,6 +146,10 @@ export const useSellerProfile = () => {
             cancelled = true;
         };
     }, [loadProfile]);
+
+    
+
+    
 
     const saveProfile = async (updatedProfile) => {
         setSaving(true);
@@ -269,5 +280,6 @@ export const useSellerProfile = () => {
         selectedCategoryIds,
 
         reload: loadProfile,
+        commission
     };
 };

@@ -69,3 +69,31 @@ export const updateVendorPaymentMethods = (vendorId, paymentMethodIds) =>
             payment_method_ids: paymentMethodIds,
         }),
     });
+
+// Commission endpoints
+export const getVendorCommission = (vendorId) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/commission`);
+
+export const createVendorCommission = (vendorId, commission_rate) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/commission`, {
+        method: "POST",
+        body: JSON.stringify({ commission_rate }),
+    });
+
+export const updateVendorCommission = (configId, commission_rate) =>
+    fetchWithAuth(`${VENDOR_URL}/commission/${configId}`, {
+        method: "PUT",
+        body: JSON.stringify({ commission_rate }),
+    });
+
+// Auth endpoints (admin)
+const AUTH_URL = `${API.AUTH}/admin`;
+
+export const getUserByVendorId = (vendorId) =>
+    fetchWithAuth(`${AUTH_URL}/vendors/${vendorId}/user`);
+
+export const updateVendorUser = (userId, data) =>
+    fetchWithAuth(`${AUTH_URL}/users/${userId}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+    });

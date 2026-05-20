@@ -26,6 +26,8 @@ export default function UserVendorPage() {
         saveLogo,
         saveCategories,
 
+        commission,
+
         saving,
 
         categories,
@@ -75,7 +77,7 @@ export default function UserVendorPage() {
                     categories: {
                         selectedIds: selectedCats,
                     },
-                })
+                }),
             );
         } else {
             const errorMessage =
@@ -131,7 +133,10 @@ export default function UserVendorPage() {
                 </div>
 
                 <div className="seller-col-side">
-                    <AccountStatusCard data={sellerData} />
+                    <AccountStatusCard
+                        data={sellerData}
+                        commission={commission}
+                    />
 
                     <BusinessConfigCard
                         data={sellerData}

@@ -5,7 +5,7 @@
     @apply mb-5;
   }
 
-  .business-section-label {
+  .business-section-label { 
     @apply text-sm font-medium text-gray-600 mb-3 block;
   }
 

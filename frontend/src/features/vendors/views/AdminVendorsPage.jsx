@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { useVendors } from "../hooks/useVendors";
 import VendorsTable from "../components/VendorsTable";
 
 export default function AdminVendorsPage() {
+    const navigate = useNavigate();
     const { vendors, loading, error, reload, changeStatus, changingId } = useVendors();
     const [rowErrors, setRowErrors] = useState({});
 
@@ -59,6 +61,7 @@ export default function AdminVendorsPage() {
                     changingId={changingId}
                     changeStatus={handleStatusChange}
                     rowErrors={rowErrors}
+                    onView={(id) => navigate(`/admin/vendors/${id}`)}
                 />
             </div>
         </div>
