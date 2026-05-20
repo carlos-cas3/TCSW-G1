@@ -25,11 +25,7 @@ const TABLE_HEADERS = [
 ];
 
 export default function VendorsTable({
-    vendors,
-    loading,
-    changingId,
-    changeStatus,
-    rowErrors,
+    vendors, loading, changingId, changeStatus, rowErrors, onView,
 }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
@@ -166,7 +162,7 @@ export default function VendorsTable({
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex gap-2">
                                         <button
-                                            onClick={() => console.log("View:", vendor.vendor_id)}
+                                            onClick={() => onView?.(vendor.vendor_id)}
                                             className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
                                             title="Ver más información"
                                         >

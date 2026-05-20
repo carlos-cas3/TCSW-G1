@@ -1,0 +1,23 @@
+@reference "tailwindcss";
+
+@layer components {
+  .branches-stats-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-8;
+  }
+
+  .branches-stats-card {
+    @apply bg-white rounded-lg border border-gray-200 p-3 sm:p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .branches-stats-card-body {
+    @apply flex items-center justify-between gap-2;
+  }
+
+  .branches-stats-card-icon {
+    @apply p-2 sm:p-3 rounded-lg flex-shrink-0;
+  }
+
+  .branches-stats-card-icon svg {
+    @apply w-5 h-5 sm:w-6 sm:h-6;
+  }
+}

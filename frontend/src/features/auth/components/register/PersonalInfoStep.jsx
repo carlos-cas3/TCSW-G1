@@ -67,16 +67,16 @@ export default function PersonalInfoStep({
                         <label className={styles.label}>Teléfono</label>
                         <input
                             type="tel"
-                            name="phone"
-                            value={formData.phone}
+                            name="personal_phone"
+                            value={formData.personal_phone}
                             onChange={onChange}
-                            onBlur={() => onBlur("phone")}
-                            className={`${styles.input} ${showError("phone") ? styles.inputError : ""}`}
+                            onBlur={() => onBlur("personal_phone")}
+                            className={`${styles.input} ${showError("personal_phone") ? styles.inputError : ""}`}
                             placeholder="+51 999 999 999"
                         />
-                        {showError("phone") && (
+                        {showError("personal_phone") && (
                             <span className={styles.errorText}>
-                                {errors.phone}
+                                {errors.personal_phone}
                             </span>
                         )}
                     </div>

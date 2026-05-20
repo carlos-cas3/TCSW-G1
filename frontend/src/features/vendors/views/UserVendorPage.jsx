@@ -1,31 +1,65 @@
-import { useSellerProfile } from "./hooks/useSellerProfile";
-import SellerProfileCard from "./components/SellerProfileCard";
-import AccountStatusCard from "./components/AccountStatusCard";
-import BusinessConfigCard from "./components/BusinessConfigCard";
-import ReturnPolicyCard from "./components/ReturnPolicyCard";
-import "./styles/shared.css";
+import { useSellerProfile } from "../hooks/useSellerProfile";
 
-export default function SellerManagement() {
+import { extractEditableData } from "../helpers/sellerEditableData";
+
+import SellerProfileCard from "../components/SellerProfileCard";
+import AccountStatusCard from "../components/AccountStatusCard";
+import BusinessConfigCard from "../components/BusinessConfigCard";
+import ReturnPolicyCard from "../components/ReturnPolicyCard";
+import VendorCategoriesCard from "../components/VendorCategoriesCard";
+
+import "../styles/shared.css";
+
+export default function UserVendorPage() {
     const {
         sellerData,
         setSellerData,
+
+        initialEditableData,
+        setInitialEditableData,
+
         loading,
         error,
+
         saveProfile,
         savePolicy,
         saveLogo,
+        saveCategories,
+
+        commission,
+
         saving,
+
+        categories,
+        selectedCategoryIds,
     } = useSellerProfile();
+
     const handleChange = (updater) => {
         setSellerData((prev) =>
             typeof updater === "function" ? updater(prev) : updater,
         );
     };
 
+    const currentEditableData = extractEditableData(sellerData);
+
+    const hasUnsavedChanges =
+        JSON.stringify(currentEditableData) !==
+        JSON.stringify(initialEditableData);
+
     const handleSaveAll = async () => {
+        const selectedCats = sellerData.categories?.selectedIds ?? [];
+
+        if (selectedCats.length === 0) {
+            alert("Selecciona al menos una categoría antes de guardar");
+            return;
+        }
+
         const results = await Promise.allSettled([
             saveProfile(sellerData.profile),
+
             savePolicy(sellerData.returnPolicy?.description ?? ""),
+
+            saveCategories(selectedCats),
         ]);
 
         const rejected = results.find((r) => r.status === "rejected");
@@ -36,6 +70,15 @@ export default function SellerManagement() {
 
         if (!rejected && !failed) {
             alert("Configuración guardada correctamente");
+
+            setInitialEditableData(
+                extractEditableData({
+                    ...sellerData,
+                    categories: {
+                        selectedIds: selectedCats,
+                    },
+                }),
+            );
         } else {
             const errorMessage =
                 rejected?.reason?.message ||
@@ -46,19 +89,21 @@ export default function SellerManagement() {
         }
     };
 
-    if (loading)
+    if (loading) {
         return (
             <div className="seller-page p-6 lg:p-8">
                 <p className="seller-subtitle">Cargando configuración...</p>
             </div>
         );
+    }
 
-    if (error)
+    if (error) {
         return (
             <div className="seller-page p-6 lg:p-8">
                 <p className="seller-subtitle">Error: {error}</p>
             </div>
         );
+    }
 
     if (!sellerData) return null;
 
@@ -66,11 +111,13 @@ export default function SellerManagement() {
         <div className="seller-page p-6 lg:p-8">
             <div className="seller-header">
                 <h1 className="seller-title">Configuración de Tienda</h1>
+
                 <p className="seller-subtitle">
                     Administra la información de tu empresa y configuración
                     comercial
                 </p>
             </div>
+
             <div className="seller-grid">
                 <div className="seller-col-main">
                     <SellerProfileCard
@@ -78,29 +125,44 @@ export default function SellerManagement() {
                         onChange={handleChange}
                         onLogoChange={saveLogo}
                     />
+
                     <ReturnPolicyCard
                         data={sellerData}
                         onChange={handleChange}
                     />
                 </div>
+
                 <div className="seller-col-side">
-                    <AccountStatusCard data={sellerData} />
+                    <AccountStatusCard
+                        data={sellerData}
+                        commission={commission}
+                    />
+
                     <BusinessConfigCard
                         data={sellerData}
                         onChange={handleChange}
                     />
+
+                    <VendorCategoriesCard
+                        categories={categories}
+                        selectedCategoryIds={selectedCategoryIds}
+                        onChange={handleChange}
+                    />
                 </div>
             </div>
-            <div className="seller-footer">
-                <button
-                    type="button"
-                    className="seller-btn-primary"
-                    onClick={handleSaveAll}
-                    disabled={saving}
-                >
-                    {saving ? "Guardando..." : "Guardar Configuración"}
-                </button>
-            </div>
+
+            {hasUnsavedChanges && (
+                <div className="seller-footer">
+                    <button
+                        type="button"
+                        className="seller-btn-primary"
+                        onClick={handleSaveAll}
+                        disabled={saving}
+                    >
+                        {saving ? "Guardando..." : "Guardar Configuración"}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

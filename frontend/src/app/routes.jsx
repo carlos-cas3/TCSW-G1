@@ -2,8 +2,11 @@ import { Navigate } from "react-router-dom";
 import Layout from "../layout/dashboard/Layout";
 import AuthLayout from "../layout/auth/AuthLayout";
 import LoginForm from "../features/auth/components/login/LoginForm";
-import Vendors from "../features/vendors/Vendors";
-import SellerManagement from "../features/seller-management/SellerManagement";
+import AdminVendorsPage from "../features/vendors/views/AdminVendorsPage";
+import AdminVendorDetailPage from "../features/vendors/views/AdminVendorDetailPage";
+import UserVendorPage from "../features/vendors/views/UserVendorPage";
+import AdminBranchesPage from "../features/branches/views/AdminBranchesPage";
+import UserBranchesPage from "../features/branches/views/UserBranchesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const ROLES = {
@@ -26,8 +29,9 @@ const routes = [
         ),
         children: [
             { path: "", element: <h1>Admin Dashboard</h1> },
-            { path: "vendors", element: <Vendors /> },
-            { path: "branches", element: <h1>Branches</h1> },
+            { path: "vendors", element: <AdminVendorsPage /> },
+            { path: "vendors/:vendor_id", element: <AdminVendorDetailPage /> },
+            { path: "branches", element: <AdminBranchesPage /> },
             { path: "catalog", element: <h1>Catalog</h1> },
             { path: "analytics", element: <h1>Analytics</h1> },
         ],
@@ -43,7 +47,8 @@ const routes = [
         children: [
             { path: "", element: <h1>Vendor Dashboard</h1> },
             { path: "catalog", element: <h1>Catalog</h1> },
-            { path: "seller-management", element: <SellerManagement /> },
+            { path: "seller-management", element: <UserVendorPage /> },
+            { path: "branches", element: <UserBranchesPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
