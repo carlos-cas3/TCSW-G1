@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import {
     getAllVendors,
     getVendorBranches,
+    getVendorCategories,
     updateVendorStatus,
 } from "../services/vendor.service";
 
-const BRANCH_CONCURRENCY = 5;
+const CONCURRENCY_LIMIT = 5;
 
-async function fetchBranchesWithLimit(vendors, limit = BRANCH_CONCURRENCY) {
+// Enriquece cada vendor con branches + categories en paralelo, respetando el límite
+async function enrichVendors(vendors, limit = CONCURRENCY_LIMIT) {
     const results = [];
 
     for (let i = 0; i < vendors.length; i += limit) {
@@ -15,14 +17,23 @@ async function fetchBranchesWithLimit(vendors, limit = BRANCH_CONCURRENCY) {
 
         const chunkResults = await Promise.all(
             chunk.map(async (vendor) => {
-                try {
-                    const { data: branches } = await getVendorBranches(
-                        vendor.vendor_id,
-                    );
-                    return { ...vendor, branches: branches ?? [] };
-                } catch {
-                    return { ...vendor, branches: [] };
-                }
+                const [branchesResult, categoriesResult] =
+                    await Promise.allSettled([
+                        getVendorBranches(vendor.vendor_id),
+                        getVendorCategories(vendor.vendor_id),
+                    ]);
+
+                const branches =
+                    branchesResult.status === "fulfilled"
+                        ? (branchesResult.value.data ?? [])
+                        : [];
+
+                const vendor_categories =
+                    categoriesResult.status === "fulfilled"
+                        ? (categoriesResult.value.data ?? [])
+                        : [];
+
+                return { ...vendor, branches, vendor_categories };
             }),
         );
 
@@ -47,9 +58,9 @@ export const useVendors = () => {
 
             if (fetchError) throw new Error(fetchError);
 
-            const vendorsWithBranches = await fetchBranchesWithLimit(data ?? []);
+            const enrichedVendors = await enrichVendors(data ?? []);
 
-            setVendors(vendorsWithBranches);
+            setVendors(enrichedVendors);
         } catch (err) {
             setError(err.message || "Error al cargar vendedores");
         } finally {
@@ -71,30 +82,37 @@ export const useVendors = () => {
         };
     }, [loadVendors]);
 
-    // Retorna { success, error } para que el componente pueda reaccionar
-    const changeStatus = useCallback(async (vendorId, newStatus) => {
-        // Optimistic update — si falla, loadVendors() hace el rollback desde el servidor
-        setVendors((prev) =>
-            prev.map((v) =>
-                v.vendor_id === vendorId ? { ...v, status: newStatus } : v,
-            ),
-        );
+    const changeStatus = useCallback(
+        async (vendorId, newStatus) => {
+            // Optimistic update — si falla, loadVendors() hace el rollback
+            setVendors((prev) =>
+                prev.map((v) =>
+                    v.vendor_id === vendorId
+                        ? { ...v, vendor_status: newStatus }
+                        : v,
+                ),
+            );
 
-        setChangingId(vendorId);
+            setChangingId(vendorId);
 
-        try {
-            const { error: updateError } = await updateVendorStatus(vendorId, newStatus);
+            try {
+                const { error: updateError } = await updateVendorStatus(
+                    vendorId,
+                    newStatus,
+                );
 
-            if (updateError) throw new Error(updateError);
+                if (updateError) throw new Error(updateError);
 
-            return { success: true };
-        } catch (err) {
-            await loadVendors();
-            return { success: false, error: err.message };
-        } finally {
-            setChangingId(null);
-        }
-    }, [loadVendors]);
+                return { success: true };
+            } catch (err) {
+                await loadVendors();
+                return { success: false, error: err.message };
+            } finally {
+                setChangingId(null);
+            }
+        },
+        [loadVendors],
+    );
 
     return {
         vendors,

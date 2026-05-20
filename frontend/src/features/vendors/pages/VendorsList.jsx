@@ -1,18 +1,15 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useVendorFilters } from '../hooks/useVendorFilters';
-import { VENDOR_STATUS } from '../constants/vendorConstants';
 import { VENDORS_MOCK } from '../data/vendorsMock';
 import VendorStatsCards from '../components/VendorStatsCards';
 import VendorFilters from '../components/VendorFilters';
 import VendorsTable from '../components/VendorsTable';
-import AddVendorModal from '../components/AddVendorModal';
 import '../styles/layout.css';
 import '../styles/buttons.css';
 
 export default function VendorsList() {
     const [vendors, setVendors] = useState(VENDORS_MOCK);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         filteredVendors,
@@ -30,17 +27,6 @@ export default function VendorsList() {
                     : vendor
             )
         );
-    };
-
-    const handleAddVendor = (vendorData) => {
-        const newVendor = {
-            vendor_id: Math.max(...vendors.map(v => v.vendor_id)) + 1,
-            ...vendorData,
-            vendor_status: VENDOR_STATUS.PENDING,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        };
-        setVendors(prev => [...prev, newVendor]);
     };
 
     return (
@@ -84,12 +70,6 @@ export default function VendorsList() {
                         onStatusChange={handleStatusChange}
                     />
                 )}
-
-                <AddVendorModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onSubmit={handleAddVendor}
-                />
             </div>
         </div>
     );
