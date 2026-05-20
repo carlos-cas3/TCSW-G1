@@ -1,0 +1,55 @@
+@reference "tailwindcss";
+
+@layer components {
+  .branches-page {
+    @apply p-4 sm:p-6;
+  }
+
+  .branches-page-header {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6;
+  }
+
+  .branches-page-header-start {
+    @apply flex flex-col;
+  }
+
+  .branches-page-title {
+    @apply text-xl sm:text-2xl font-bold text-gray-900;
+  }
+
+  .branches-page-subtitle {
+    @apply text-gray-500 mt-1 text-sm;
+  }
+
+  .branches-page-actions {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .branches-page-btn {
+    @apply flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium rounded-lg transition-colors;
+  }
+
+  .branches-page-btn-primary {
+    @apply text-white bg-blue-600 hover:bg-blue-700;
+  }
+
+  .branches-page-btn-secondary {
+    @apply text-gray-700 bg-white border border-gray-300 hover:bg-gray-50;
+  }
+
+  .branches-error-banner {
+    @apply mb-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg;
+  }
+
+  .branches-error-content {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2;
+  }
+
+  .branches-error-message {
+    @apply text-red-700 text-sm;
+  }
+
+  .branches-error-btn {
+    @apply px-3 sm:px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 whitespace-nowrap;
+  }
+}

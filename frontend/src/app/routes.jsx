@@ -4,6 +4,8 @@ import AuthLayout from "../layout/auth/AuthLayout";
 import LoginForm from "../features/auth/components/login/LoginForm";
 import Vendors from "../features/vendors/Vendors";
 import SellerManagement from "../features/seller-management/SellerManagement";
+import AdminBranchesPage from "../features/branches/views/AdminBranchesPage";
+import UserBranchesPage from "../features/branches/views/UserBranchesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const ROLES = {
@@ -27,10 +29,9 @@ const routes = [
         children: [
             { path: "", element: <h1>Admin Dashboard</h1> },
             { path: "vendors", element: <Vendors /> },
-            { path: "branches", element: <h1>Branches</h1> },
+            { path: "branches", element: <AdminBranchesPage /> },
             { path: "catalog", element: <h1>Catalog</h1> },
             { path: "analytics", element: <h1>Analytics</h1> },
-            { path: "branches", element: <h1>Branches Admin</h1> }
         ],
     },
     // VENDOR_ADMIN
@@ -45,7 +46,7 @@ const routes = [
             { path: "", element: <h1>Vendor Dashboard</h1> },
             { path: "catalog", element: <h1>Catalog</h1> },
             { path: "seller-management", element: <SellerManagement /> },
-            { path: "branches", element: <h1>Branches User</h1> },
+            { path: "branches", element: <UserBranchesPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
