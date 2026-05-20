@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Mail, Lock, LogIn, Eye, EyeOff, Zap } from "lucide-react";
 import styles from "./LoginForm.module.css";
 import RegisterModal from "../register/RegisterModal";
-import { loginUser } from "../../services/auth.service";
+import { loginUser, getMe } from "../../services/auth.service";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -31,20 +31,21 @@ export default function LoginForm() {
                 return;
             }
 
-            const { token, user } = res.data;
+            const { token } = res.data;
+
+            // Obtener user completo con rol resuelto
+            const meRes = await getMe(token);
+            const user = meRes.data;
 
             const TOKEN_KEY = "tcsw_token";
             const USER_KEY = "tcsw_user";
 
-            if (formData.remember) {
-                localStorage.setItem(TOKEN_KEY, token);
-                localStorage.setItem(USER_KEY, JSON.stringify(user));
-            } else {
-                sessionStorage.setItem(TOKEN_KEY, token);
-                sessionStorage.setItem(USER_KEY, JSON.stringify(user));
-            }
+            const storage = formData.remember ? localStorage : sessionStorage;
+            storage.setItem(TOKEN_KEY, token);
+            storage.setItem(USER_KEY, JSON.stringify(user));
 
-            if (user.roleId === 1) {
+            // Usar roleName en lugar de roleId hardcodeado
+            if (user.role?.roleName === "SUPER_ADMIN") {
                 window.location.href = "/admin";
             } else {
                 window.location.href = "/dashboard";

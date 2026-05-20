@@ -6,22 +6,8 @@ import AnalyticsIcon from "../../../assets/analytics-icon.svg?react";
 import SellerIcon from "../../../assets/seller-icon.svg?react";
 
 const allMenuItems = [
-    { path: "/admin", 
-      label: "Dashboard", 
-      icon: HomeIcon, 
-      roles: [1] 
-    },
-    { path: "/admin/vendors",
-      label: "Vendors",
-      icon: VendorsIcon,
-      roles: [1]
-    },
-    {
-        path: "/admin/branches",
-        label: "Branches",
-        icon: BranchesIcon,
-        roles: [1],
-    },
+    { path: "/admin", label: "Dashboard", icon: HomeIcon, roles: [1] },
+    { path: "/admin/vendors", label: "Vendors", icon: VendorsIcon, roles: [1] },
     { path: "/admin/catalog", label: "Catalog", icon: CatalogIcon, roles: [1] },
     {
         path: "/admin/analytics",
@@ -29,11 +15,13 @@ const allMenuItems = [
         icon: AnalyticsIcon,
         roles: [1],
     },
-    { path: "/dashboard",
-      label: "Dashboard",
-      icon: HomeIcon,
-      roles: [2]
+    {
+        path: "/admin/branches",
+        label: "Branches Admin",
+        icon: BranchesIcon,
+        roles: [1],
     },
+    { path: "/dashboard", label: "Dashboard", icon: HomeIcon, roles: [2] },
     {
         path: "/dashboard/catalog",
         label: "Catalog",
@@ -44,6 +32,12 @@ const allMenuItems = [
         path: "/dashboard/seller-management",
         label: "Mi Tienda",
         icon: SellerIcon,
+        roles: [2],
+    },
+    {
+        path: "/dashboard/branches",
+        label: "Branches",
+        icon: BranchesIcon,
         roles: [2],
     },
 ];
