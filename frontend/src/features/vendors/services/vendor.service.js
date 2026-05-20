@@ -11,6 +11,15 @@ export const getVendorBranches = (vendorId) =>
 export const getVendorCategories = (vendorId) =>
     fetchWithAuth(`${VENDOR_URL}/${vendorId}/categories`);
 
+export const getAllCategories = () =>
+    fetchWithAuth(`${VENDOR_URL}/categories`);
+
+export const updateVendorCategories = (vendorId, categoryIds) =>
+    fetchWithAuth(`${VENDOR_URL}/${vendorId}/categories`, {
+        method: "PUT",
+        body: JSON.stringify({ category_ids: categoryIds }),
+    });
+
 export const updateVendorStatus = (vendorId, status) =>
     fetchWithAuth(`${VENDOR_URL}/${vendorId}/status`, {
         method: "PATCH",

@@ -6,6 +6,7 @@ import SellerProfileCard from "../components/SellerProfileCard";
 import AccountStatusCard from "../components/AccountStatusCard";
 import BusinessConfigCard from "../components/BusinessConfigCard";
 import ReturnPolicyCard from "../components/ReturnPolicyCard";
+import VendorCategoriesCard from "../components/VendorCategoriesCard";
 
 import "../styles/shared.css";
 
@@ -23,8 +24,12 @@ export default function UserVendorPage() {
         saveProfile,
         savePolicy,
         saveLogo,
+        saveCategories,
 
         saving,
+
+        categories,
+        selectedCategoryIds,
     } = useSellerProfile();
 
     const handleChange = (updater) => {
@@ -40,10 +45,19 @@ export default function UserVendorPage() {
         JSON.stringify(initialEditableData);
 
     const handleSaveAll = async () => {
+        const selectedCats = sellerData.categories?.selectedIds ?? [];
+
+        if (selectedCats.length === 0) {
+            alert("Selecciona al menos una categoría antes de guardar");
+            return;
+        }
+
         const results = await Promise.allSettled([
             saveProfile(sellerData.profile),
 
             savePolicy(sellerData.returnPolicy?.description ?? ""),
+
+            saveCategories(selectedCats),
         ]);
 
         const rejected = results.find((r) => r.status === "rejected");
@@ -55,7 +69,14 @@ export default function UserVendorPage() {
         if (!rejected && !failed) {
             alert("Configuración guardada correctamente");
 
-            setInitialEditableData(extractEditableData(sellerData));
+            setInitialEditableData(
+                extractEditableData({
+                    ...sellerData,
+                    categories: {
+                        selectedIds: selectedCats,
+                    },
+                })
+            );
         } else {
             const errorMessage =
                 rejected?.reason?.message ||
@@ -114,6 +135,12 @@ export default function UserVendorPage() {
 
                     <BusinessConfigCard
                         data={sellerData}
+                        onChange={handleChange}
+                    />
+
+                    <VendorCategoriesCard
+                        categories={categories}
+                        selectedCategoryIds={selectedCategoryIds}
                         onChange={handleChange}
                     />
                 </div>

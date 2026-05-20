@@ -4,4 +4,5 @@ export const extractEditableData = (data) => ({
     address: data?.profile?.address ?? "",
     policyDescription:
         data?.returnPolicy?.description ?? "",
+    selectedCategoryIds: data?.categories?.selectedIds ?? [],
 });

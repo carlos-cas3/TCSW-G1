@@ -6,6 +6,9 @@ import {
     getVendorPolicy,
     updateVendorPolicy,
     uploadVendorLogo,
+    getAllCategories,
+    getVendorCategories,
+    updateVendorCategories,
 
 } from "../services/vendor.service";
 
@@ -48,6 +51,10 @@ export const useSellerProfile = () => {
 
     const [error, setError] = useState(null);
 
+    const [categories, setCategories] = useState([]);
+
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+
     const vendorId = getUser()?.vendorId;
 
     const loadProfile = useCallback(async () => {
@@ -69,9 +76,13 @@ export const useSellerProfile = () => {
             const [
                 { data: vendorData, error: vendorError },
                 { data: policyData },
+                { data: allCategories },
+                { data: vendorCategories },
             ] = await Promise.all([
                 getVendorById(vendorId),
                 getVendorPolicy(vendorId),
+                getAllCategories(),
+                getVendorCategories(vendorId),
             ]);
 
             if (vendorError) {
@@ -86,9 +97,19 @@ export const useSellerProfile = () => {
                         policyData?.return_policy_description ??
                         "",
                 },
+
+                categories: {
+                    selectedIds:
+                        vendorCategories?.map(
+                            (item) => item.categories.category_id
+                        ) ?? [],
+                },
             };
 
             setSellerData(mappedData);
+
+            setCategories(allCategories ?? []);
+            setSelectedCategoryIds(mappedData.categories.selectedIds);
 
             setInitialEditableData(
                 extractEditableData(mappedData)
@@ -202,6 +223,32 @@ export const useSellerProfile = () => {
         }
     };
 
+    const saveCategories = async (categoryIds) => {
+        setSaving(true);
+
+        try {
+            const { error } = await updateVendorCategories(
+                vendorId,
+                categoryIds,
+            );
+
+            if (error) {
+                throw new Error(error);
+            }
+
+            setSelectedCategoryIds(categoryIds);
+
+            return { success: true };
+        } catch (err) {
+            return {
+                success: false,
+                error: err.message,
+            };
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return {
         sellerData,
         setSellerData,
@@ -216,6 +263,10 @@ export const useSellerProfile = () => {
         saveProfile,
         savePolicy,
         saveLogo,
+        saveCategories,
+
+        categories,
+        selectedCategoryIds,
 
         reload: loadProfile,
     };
