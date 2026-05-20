@@ -34,7 +34,6 @@ export default function SellerProfileCard({ data, onChange, onLogoChange }) {
             return;
         }
 
-        // Sube directo — sin preview base64
         const { success, error } = await onLogoChange(file);
         if (success) {
             alert("Logo actualizado correctamente");

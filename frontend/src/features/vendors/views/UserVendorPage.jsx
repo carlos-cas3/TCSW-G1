@@ -1,15 +1,15 @@
-import { useSellerProfile } from "./hooks/useSellerProfile";
+import { useSellerProfile } from "../hooks/useSellerProfile";
 
-import { extractEditableData } from "./helpers/sellerEditableData";
+import { extractEditableData } from "../helpers/sellerEditableData";
 
-import SellerProfileCard from "./components/SellerProfileCard";
-import AccountStatusCard from "./components/AccountStatusCard";
-import BusinessConfigCard from "./components/BusinessConfigCard";
-import ReturnPolicyCard from "./components/ReturnPolicyCard";
+import SellerProfileCard from "../components/SellerProfileCard";
+import AccountStatusCard from "../components/AccountStatusCard";
+import BusinessConfigCard from "../components/BusinessConfigCard";
+import ReturnPolicyCard from "../components/ReturnPolicyCard";
 
-import "./styles/shared.css";
+import "../styles/shared.css";
 
-export default function SellerManagement() {
+export default function UserVendorPage() {
     const {
         sellerData,
         setSellerData,

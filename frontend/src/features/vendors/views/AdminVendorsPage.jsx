@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { RefreshCw } from "lucide-react";
-import { useVendors } from "./hooks/useVendors";
-import VendorsTable from "./components/VendorsTable";
+import { useVendors } from "../hooks/useVendors";
+import VendorsTable from "../components/VendorsTable";
 
-export default function Vendors() {
+export default function AdminVendorsPage() {
     const { vendors, loading, error, reload, changeStatus, changingId } = useVendors();
     const [rowErrors, setRowErrors] = useState({});
 

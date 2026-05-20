@@ -1,5 +1,5 @@
 import { Percent, Calendar, Package } from "lucide-react";
-import { STATUS_LABELS } from "../constants/sellerConstants";
+import { STATUS_LABELS } from "../constants/vendorConstants";
 import "../styles/status.css";
 import "../styles/cards.css";
 

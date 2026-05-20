@@ -6,8 +6,8 @@ import {
     getVendorPolicy,
     updateVendorPolicy,
     uploadVendorLogo,
-    
-} from "../services/seller.service";
+
+} from "../services/vendor.service";
 
 import { getUser } from "../../../app/auth";
 
