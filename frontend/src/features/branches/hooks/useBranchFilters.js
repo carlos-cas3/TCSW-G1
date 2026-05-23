@@ -1,12 +1,8 @@
 import { useState, useMemo } from "react";
-import { filterBranches, getBranchStats, extractCities, extractVendors } from "../utils/branchFilters";
+import { filterBranches, getBranchStats } from "../utils/branchFilters";
 
-export function useBranchFilters(branches, mode) {
-    const initialFilters = mode === "admin"
-        ? { search: "", vendor: "all", city: "all", status: "all" }
-        : { search: "", city: "all", status: "all" };
-
-    const [filters, setFilters] = useState(initialFilters);
+export function useBranchFilters(branches) {
+    const [filters, setFilters] = useState({ search: "", status: "all" });
 
     const filteredBranches = useMemo(() => {
         return filterBranches(branches, filters);
@@ -16,14 +12,6 @@ export function useBranchFilters(branches, mode) {
         return getBranchStats(filteredBranches);
     }, [filteredBranches]);
 
-    const cities = useMemo(() => {
-        return extractCities(branches);
-    }, [branches]);
-
-    const vendors = useMemo(() => {
-        return extractVendors(branches);
-    }, [branches]);
-
     const updateFilter = (key, value) => {
         setFilters((prev) => ({
             ...prev,
@@ -32,15 +20,13 @@ export function useBranchFilters(branches, mode) {
     };
 
     const resetFilters = () => {
-        setFilters(initialFilters);
+        setFilters({ search: "", status: "all" });
     };
 
     return {
         filters,
         filteredBranches,
         stats,
-        cities,
-        vendors,
         updateFilter,
         resetFilters,
     };

@@ -11,6 +11,8 @@ import {
     updateVendorCommission,
     getUserByVendorId,
     updateVendorUser,
+    getPaymentMethods,
+    getVendorPaymentMethods,
 } from "../services/vendor.service";
 
 const mapVendorToData = (vendor) => ({
@@ -40,6 +42,8 @@ export default function useVendorDetail() {
     const [categories, setCategories] = useState([]);
     const [vendorCategories, setVendorCategories] = useState([]);
     const [commission, setCommission] = useState(null);
+    const [allPaymentMethods, setAllPaymentMethods] = useState([]);
+    const [vendorPaymentMethodIds, setVendorPaymentMethodIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -55,6 +59,8 @@ export default function useVendorDetail() {
                 getAllCategories(),
                 getVendorCategories(vendorId),
                 getVendorCommission(vendorId),
+                getPaymentMethods(),
+                getVendorPaymentMethods(vendorId),
             ]);
 
             const getData = (result, defaultValue = null) =>
@@ -67,6 +73,8 @@ export default function useVendorDetail() {
             const allCats = getData(results[2], []);
             const vendorCats = getData(results[3], []);
             const comm = getData(results[4]);
+            const methods = getData(results[5], []);
+            const vendorMethods = getData(results[6], []);
 
             if (!vendor) {
                 throw new Error("No se encontraron datos del vendor");
@@ -79,6 +87,10 @@ export default function useVendorDetail() {
             setCategories(allCats);
             setVendorCategories(vendorCats);
             setCommission(comm);
+            setAllPaymentMethods(methods);
+            setVendorPaymentMethodIds(
+                vendorMethods?.map(pm => pm.payment_method_id) ?? []
+            );
         } catch (err) {
             setError(err.message || "Error al cargar datos del vendor");
         } finally {
@@ -176,6 +188,8 @@ export default function useVendorDetail() {
         categories,
         vendorCategories,
         commission,
+        allPaymentMethods,
+        vendorPaymentMethodIds,
         loading,
         error,
         saving,

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import useVendorDetail from "../hooks/useVendorDetail";
 import SellerProfileCard from "../components/SellerProfileCard";
 import AccountStatusCard from "../components/AccountStatusCard";
+import BusinessConfigCard from "../components/BusinessConfigCard";
 import ReturnPolicyCard from "../components/ReturnPolicyCard";
 import VendorCategoriesCard from "../components/VendorCategoriesCard";
 import VendorUserCard from "../components/VendorUserCard";
@@ -18,6 +19,8 @@ export default function AdminVendorDetailPage() {
         categories,
         vendorCategories,
         commission,
+        allPaymentMethods,
+        vendorPaymentMethodIds,
         loading,
         error,
         saveUser,
@@ -100,6 +103,11 @@ export default function AdminVendorDetailPage() {
                         title="Perfil Comercial"
                     />
                     <ReturnPolicyCard data={mappedVendorData} readOnly />
+                    <BusinessConfigCard
+                        paymentMethods={allPaymentMethods}
+                        selectedIds={vendorPaymentMethodIds}
+                        readOnly
+                    />
                 </div>
 
                 <div className="seller-col-side">

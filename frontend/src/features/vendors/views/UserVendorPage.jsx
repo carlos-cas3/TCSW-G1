@@ -25,6 +25,7 @@ export default function UserVendorPage() {
         savePolicy,
         saveLogo,
         saveCategories,
+        savePaymentMethods,
 
         commission,
 
@@ -32,6 +33,12 @@ export default function UserVendorPage() {
 
         categories,
         selectedCategoryIds,
+
+        allPaymentMethods,
+        vendorPaymentMethodIds,
+        setVendorPaymentMethodIds,
+        initialPaymentMethodIds,
+        setInitialPaymentMethodIds,
     } = useSellerProfile();
 
     const handleChange = (updater) => {
@@ -44,7 +51,9 @@ export default function UserVendorPage() {
 
     const hasUnsavedChanges =
         JSON.stringify(currentEditableData) !==
-        JSON.stringify(initialEditableData);
+        JSON.stringify(initialEditableData) ||
+        JSON.stringify(vendorPaymentMethodIds) !==
+        JSON.stringify(initialPaymentMethodIds);
 
     const handleSaveAll = async () => {
         const selectedCats = sellerData.categories?.selectedIds ?? [];
@@ -60,6 +69,8 @@ export default function UserVendorPage() {
             savePolicy(sellerData.returnPolicy?.description ?? ""),
 
             saveCategories(selectedCats),
+
+            savePaymentMethods(vendorPaymentMethodIds),
         ]);
 
         const rejected = results.find((r) => r.status === "rejected");
@@ -79,6 +90,8 @@ export default function UserVendorPage() {
                     },
                 }),
             );
+
+            setInitialPaymentMethodIds(vendorPaymentMethodIds);
         } else {
             const errorMessage =
                 rejected?.reason?.message ||
@@ -139,8 +152,13 @@ export default function UserVendorPage() {
                     />
 
                     <BusinessConfigCard
-                        data={sellerData}
-                        onChange={handleChange}
+                        paymentMethods={allPaymentMethods}
+                        selectedIds={vendorPaymentMethodIds}
+                        onToggle={(id) => setVendorPaymentMethodIds(prev =>
+                            prev.includes(id)
+                                ? prev.filter(mid => mid !== id)
+                                : [...prev, id]
+                        )}
                     />
 
                     <VendorCategoriesCard

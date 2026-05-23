@@ -31,7 +31,7 @@ export const getVendorById = (vendorId) =>
 
 export const updateVendor = async (vendorId, data) => {
     const result = await fetchWithAuth(`${VENDOR_URL}/${vendorId}`, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(data),
     });
     return result;

@@ -41,7 +41,8 @@ export const filterBranches = (branches, filters) => {
             const matchesSearch =
                 branch.branch_name?.toLowerCase().includes(searchLower) ||
                 branch.branch_address?.toLowerCase().includes(searchLower) ||
-                branch.vendor_name?.toLowerCase().includes(searchLower);
+                branch.vendor_name?.toLowerCase().includes(searchLower) ||
+                branch.cities?.city_name?.toLowerCase().includes(searchLower);
             if (!matchesSearch) return false;
         }
 
@@ -58,6 +59,36 @@ export const filterBranches = (branches, filters) => {
         }
 
         return true;
+    });
+};
+
+export const sortBranches = (branches, sortKey, sortDir) => {
+    if (!sortKey || !sortDir) return branches;
+
+    return [...branches].sort((a, b) => {
+        switch (sortKey) {
+            case "branchName": {
+                const valA = a.branch_name ?? "";
+                const valB = b.branch_name ?? "";
+                const cmp = valA.localeCompare(valB, "es", { sensitivity: "base" });
+                return sortDir === "asc" ? cmp : -cmp;
+            }
+            case "vendorName": {
+                const valA = a.vendor_name ?? "";
+                const valB = b.vendor_name ?? "";
+                const cmp = valA.localeCompare(valB, "es", { sensitivity: "base" });
+                return sortDir === "asc" ? cmp : -cmp;
+            }
+            case "createdAt": {
+                const valA = new Date(a.created_at).getTime();
+                const valB = new Date(b.created_at).getTime();
+                if (isNaN(valA)) return sortDir === "asc" ? -1 : 1;
+                if (isNaN(valB)) return sortDir === "asc" ? 1 : -1;
+                return sortDir === "asc" ? valA - valB : valB - valA;
+            }
+            default:
+                return 0;
+        }
     });
 };
 
