@@ -20,7 +20,7 @@ export const createBranch = (vendorId, branchData) =>
 
 export const updateBranch = (branchId, branchData) =>
     fetchWithAuth(`${VENDORS_URL}/vendors/branches/${branchId}`, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(branchData),
     });
 
