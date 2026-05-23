@@ -1,5 +1,4 @@
 import { VENDOR_STATUS, VENDOR_STATUS_COLORS } from '../constants/vendorConstants';
-import { CATEGORIES, PAYMENT_METHODS } from '../data/vendorsMock';
 
 export function getStatusColor(status) {
     return VENDOR_STATUS_COLORS[status] || 'bg-gray-100 text-gray-800';
@@ -24,30 +23,17 @@ export function formatCurrency(amount, currency) {
     return `${symbols[currency] || ''}${amount}`;
 }
 
-export function getCategoryNames(categoryIds) {
-    return CATEGORIES.filter(cat => categoryIds.includes(cat.category_id))
-        .map(cat => cat.category_name);
-}
-
-export function getCategoryNamesString(categoryIds) {
-    const names = getCategoryNames(categoryIds);
-    return names.length > 0 ? names.join(', ') : '-';
-}
-
-export function getPaymentMethodNames(methodIds) {
-    return PAYMENT_METHODS.filter(pm => methodIds.includes(pm.payment_method_id))
-        .map(pm => pm.payment_method_name);
-}
-
 export function filterVendors(vendors, filters) {
     return vendors.filter(vendor => {
         if (filters.search) {
             const searchLower = filters.search.toLowerCase();
-            const matchesSearch = 
-                vendor.vendor_name.toLowerCase().includes(searchLower) ||
-                vendor.vendor_ruc.includes(searchLower) ||
-                vendor.vendor_email.toLowerCase().includes(searchLower) ||
-                getCategoryNamesString(vendor.categories).toLowerCase().includes(searchLower);
+            const matchesSearch =
+                vendor.vendor_name?.toLowerCase().includes(searchLower) ||
+                vendor.vendor_ruc?.includes(searchLower) ||
+                vendor.vendor_email?.toLowerCase().includes(searchLower) ||
+                vendor.vendor_categories?.some(c =>
+                    c.categories?.category_name?.toLowerCase().includes(searchLower)
+                );
             if (!matchesSearch) return false;
         }
 
@@ -55,11 +41,53 @@ export function filterVendors(vendors, filters) {
             if (vendor.vendor_status !== filters.status) return false;
         }
 
-        if (filters.category && filters.category !== 'all') {
-            if (!vendor.categories.includes(parseInt(filters.category))) return false;
+        if (filters.rucType && filters.rucType !== 'all') {
+            const prefix = vendor.vendor_ruc?.substring(0, 2);
+            if (prefix !== filters.rucType) return false;
+        }
+
+        if (filters.categories?.length > 0) {
+            const vendorCatIds = vendor.vendor_categories?.map(
+                c => c.categories?.category_id
+            ) ?? [];
+            const hasMatch = filters.categories.some(id => vendorCatIds.includes(id));
+            if (!hasMatch) return false;
         }
 
         return true;
+    });
+}
+
+export function sortVendors(vendors, sortKey, sortDir) {
+    if (!sortKey || !sortDir) return vendors;
+
+    return [...vendors].sort((a, b) => {
+        let valA, valB;
+
+        switch (sortKey) {
+            case 'vendorName':
+                valA = a.vendor_name?.toLowerCase() ?? '';
+                valB = b.vendor_name?.toLowerCase() ?? '';
+                break;
+            case 'products':
+                valA = a.products?.length ?? 0;
+                valB = b.products?.length ?? 0;
+                break;
+            case 'branches':
+                valA = a.branches?.length ?? 0;
+                valB = b.branches?.length ?? 0;
+                break;
+            case 'createdAt':
+                valA = a.created_at ?? '';
+                valB = b.created_at ?? '';
+                break;
+            default:
+                return 0;
+        }
+
+        if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
     });
 }
 

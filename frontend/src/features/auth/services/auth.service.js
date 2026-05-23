@@ -1,7 +1,9 @@
-const API_URL = "http://localhost:3006/api/auth";
+import { API } from "../../../config/api";
+
+const AUTH_URL = `${API.AUTH}/auth`;
 
 export const registerUser = async (data) => {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(`${AUTH_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -10,7 +12,7 @@ export const registerUser = async (data) => {
 };
 
 export const loginUser = async (data) => {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`${AUTH_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -19,7 +21,7 @@ export const loginUser = async (data) => {
 };
 
 export const getMe = async (token) => {
-    const res = await fetch(`${API_URL}/me`, {
+    const res = await fetch(`${AUTH_URL}/me`, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return res.json();

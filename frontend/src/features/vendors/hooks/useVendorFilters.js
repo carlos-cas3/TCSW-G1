@@ -1,21 +1,17 @@
 import { useState, useMemo } from 'react';
-import { filterVendors, getStats } from '../utils/vendorHelpers';
-import { VENDOR_STATUS } from '../constants/vendorConstants';
+import { filterVendors } from '../utils/vendorHelpers';
 
 export function useVendorFilters(vendors) {
     const [filters, setFilters] = useState({
         search: '',
         status: 'all',
-        category: 'all'
+        rucType: 'all',
+        categories: [],
     });
 
     const filteredVendors = useMemo(() => {
         return filterVendors(vendors, filters);
     }, [vendors, filters]);
-
-    const stats = useMemo(() => {
-        return getStats(filteredVendors);
-    }, [filteredVendors]);
 
     const updateFilter = (key, value) => {
         setFilters(prev => ({
@@ -28,23 +24,15 @@ export function useVendorFilters(vendors) {
         setFilters({
             search: '',
             status: 'all',
-            category: 'all'
+            rucType: 'all',
+            categories: [],
         });
-    };
-
-    const updateVendorStatus = (vendorId, newStatus) => {
-        if (!Object.values(VENDOR_STATUS).includes(newStatus)) {
-            return false;
-        }
-        return true;
     };
 
     return {
         filters,
         filteredVendors,
-        stats,
         updateFilter,
         resetFilters,
-        updateVendorStatus
     };
 }

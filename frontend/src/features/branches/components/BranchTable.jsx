@@ -47,6 +47,7 @@ export default function BranchTable({
 }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
+    const [pendingStatuses, setPendingStatuses] = useState({});
 
     const isAdmin = mode === "admin";
     const headers = isAdmin ? TABLE_HEADERS_ADMIN : TABLE_HEADERS_USER;
@@ -80,6 +81,7 @@ export default function BranchTable({
     }
 
     const handleStatusChange = (branch, newStatus) => {
+        setPendingStatuses(prev => ({ ...prev, [branch.branch_id]: newStatus }));
         setModalData({ branch, newStatus, mode: "status" });
         setModalOpen(true);
     };
@@ -98,11 +100,21 @@ export default function BranchTable({
             await onDelete(modalData.branch.branch_id);
         }
 
+        setPendingStatuses(prev => {
+            const next = { ...prev };
+            if (modalData.branch) delete next[modalData.branch.branch_id];
+            return next;
+        });
         setModalOpen(false);
         setModalData(null);
     };
 
     const handleCancel = () => {
+        setPendingStatuses(prev => {
+            const next = { ...prev };
+            if (modalData?.branch) delete next[modalData.branch.branch_id];
+            return next;
+        });
         setModalOpen(false);
         setModalData(null);
     };
@@ -169,6 +181,7 @@ export default function BranchTable({
                                         <>
                                             <BranchStatusSelect
                                                 currentStatus={branch.branch_status}
+                                                pendingStatus={pendingStatuses[branch.branch_id]}
                                                 onChange={(newStatus) => handleStatusChange(branch, newStatus)}
                                                 disabled={changingId === branch.branch_id}
                                             />

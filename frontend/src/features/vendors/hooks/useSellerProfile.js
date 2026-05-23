@@ -9,8 +9,10 @@ import {
     getAllCategories,
     getVendorCategories,
     updateVendorCategories,
-    getVendorCommission
-
+    getVendorCommission,
+    getPaymentMethods,
+    getVendorPaymentMethods,
+    updateVendorPaymentMethods,
 } from "../services/vendor.service";
 
 import { getUser } from "../../../app/auth";
@@ -58,6 +60,12 @@ export const useSellerProfile = () => {
     
     const [commission, setCommission] = useState(null);
 
+    const [allPaymentMethods, setAllPaymentMethods] = useState([]);
+
+    const [vendorPaymentMethodIds, setVendorPaymentMethodIds] = useState([]);
+
+    const [initialPaymentMethodIds, setInitialPaymentMethodIds] = useState([]);
+
     const vendorId = getUser()?.vendorId;
 
 
@@ -83,12 +91,16 @@ export const useSellerProfile = () => {
                 { data: allCategories },
                 { data: vendorCategories },
                 { data: commissionData },
+                { data: methods },
+                { data: vendorMethods },
             ] = await Promise.all([
                 getVendorById(vendorId),
                 getVendorPolicy(vendorId),
                 getAllCategories(),
                 getVendorCategories(vendorId),
                 getVendorCommission(vendorId),
+                getPaymentMethods(),
+                getVendorPaymentMethods(vendorId),
             ]);
 
             if (vendorError) {
@@ -117,6 +129,10 @@ export const useSellerProfile = () => {
             setCategories(allCategories ?? []);
             setSelectedCategoryIds(mappedData.categories.selectedIds);
             setCommission(commissionData ?? null);
+            const paymentMethodIds = vendorMethods?.map(pm => pm.payment_method_id) ?? [];
+            setAllPaymentMethods(methods ?? []);
+            setVendorPaymentMethodIds(paymentMethodIds);
+            setInitialPaymentMethodIds(paymentMethodIds);
 
             setInitialEditableData(
                 extractEditableData(mappedData)
@@ -260,6 +276,32 @@ export const useSellerProfile = () => {
         }
     };
 
+    const savePaymentMethods = async (paymentMethodIds) => {
+        setSaving(true);
+
+        try {
+            const { error } = await updateVendorPaymentMethods(
+                vendorId,
+                paymentMethodIds,
+            );
+
+            if (error) {
+                throw new Error(error);
+            }
+
+            setVendorPaymentMethodIds(paymentMethodIds);
+
+            return { success: true };
+        } catch (err) {
+            return {
+                success: false,
+                error: err.message,
+            };
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return {
         sellerData,
         setSellerData,
@@ -278,6 +320,13 @@ export const useSellerProfile = () => {
 
         categories,
         selectedCategoryIds,
+
+        allPaymentMethods,
+        vendorPaymentMethodIds,
+        setVendorPaymentMethodIds,
+        initialPaymentMethodIds,
+        setInitialPaymentMethodIds,
+        savePaymentMethods,
 
         reload: loadProfile,
         commission

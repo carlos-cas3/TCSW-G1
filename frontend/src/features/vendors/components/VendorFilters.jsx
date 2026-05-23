@@ -1,13 +1,19 @@
 import { Search, X } from 'lucide-react';
-import { CATEGORIES } from '../data/vendorsMock';
-import { VENDOR_STATUS_LABELS } from '../constants/vendorConstants';
+import { STATUS_LABELS } from '../constants/vendorConstants';
+import CategoryMultiSelect from './CategoryMultiSelect';
 import '../styles/filters.css';
 import '../styles/buttons.css';
 
-const STATUS_OPTIONS = ['all', ...Object.keys(VENDOR_STATUS_LABELS)];
+const STATUS_OPTIONS = ['all', 'PENDING', 'ACTIVE', 'INACTIVE', 'SUSPENDED'];
 
-export default function VendorFilters({ filters, onFilterChange, onReset }) {
-    const hasFilters = filters.search || filters.status !== 'all' || filters.category !== 'all';
+const RUC_OPTIONS = [
+    { value: 'all', label: 'Todos los RUC' },
+    { value: '10', label: 'RUC 10 (Persona Natural)' },
+    { value: '20', label: 'RUC 20 (Persona Jurídica)' },
+];
+
+export default function VendorFilters({ filters, onFilterChange, onReset, allCategories }) {
+    const hasFilters = filters.search || filters.status !== 'all' || filters.rucType !== 'all' || filters.categories.length > 0;
 
     return (
         <div className="vendors-filters-bar">
@@ -18,7 +24,7 @@ export default function VendorFilters({ filters, onFilterChange, onReset }) {
                     </div>
                     <input
                         type="text"
-                        placeholder="Search vendor, RUC, email, category..."
+                        placeholder="Buscar por empresa, RUC, email..."
                         value={filters.search}
                         onChange={(e) => onFilterChange('search', e.target.value)}
                         className="vendors-filters-search-input"
@@ -40,31 +46,36 @@ export default function VendorFilters({ filters, onFilterChange, onReset }) {
                 >
                     {STATUS_OPTIONS.map(status => (
                         <option key={status} value={status}>
-                            {status === 'all' ? 'All Status' : VENDOR_STATUS_LABELS[status]}
+                            {status === 'all' ? 'Todos los estados' : STATUS_LABELS[status]}
                         </option>
                     ))}
                 </select>
 
-                <select
-                    value={filters.category}
-                    onChange={(e) => onFilterChange('category', e.target.value)}
-                    className="vendors-filters-select"
-                >
-                    <option value="all">All Categories</option>
-                    {CATEGORIES.map(cat => (
-                        <option key={cat.category_id} value={cat.category_id}>
-                            {cat.category_name}
-                        </option>
-                    ))}
-                </select>
+                <CategoryMultiSelect
+                    categories={allCategories ?? []}
+                    selectedIds={filters.categories}
+                    onChange={(ids) => onFilterChange('categories', ids)}
+                />
 
-                <div className="flex items-center">
+                <div className="flex gap-2">
+                    <select
+                        value={filters.rucType}
+                        onChange={(e) => onFilterChange('rucType', e.target.value)}
+                        className="vendors-filters-select"
+                    >
+                        {RUC_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+
                     {hasFilters && (
                         <button
                             onClick={onReset}
-                            className="vendors-btn-secondary w-full"
+                            className="vendors-btn-secondary whitespace-nowrap"
                         >
-                            Clear Filters
+                            Limpiar
                         </button>
                     )}
                 </div>

@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Eye, Pencil } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Eye, Pencil, ArrowUp, ArrowDown } from "lucide-react";
 import VendorStatusSelect from "./VendorStatusSelect";
 import VendorConfirmModal from "./VendorConfirmModal";
 import VendorSkeletonRow from "./VendorSkeletonRow";
+import { sortVendors } from "../utils/vendorHelpers";
 
 const formatDate = (dateString) => {
     if (!dateString) return "—";
@@ -14,13 +15,13 @@ const formatDate = (dateString) => {
 };
 
 const TABLE_HEADERS = [
-    { key: "vendorName", label: "Empresa" },
+    { key: "vendorName", label: "Empresa", sortable: true },
     { key: "ruc", label: "RUC" },
     { key: "categories", label: "Categorías" },
     { key: "status", label: "Status" },
-    { key: "products", label: "Productos" },
-    { key: "branches", label: "Sucursales" },
-    { key: "createdAt", label: "Fecha Ingreso" },
+    { key: "products", label: "Productos", sortable: true },
+    { key: "branches", label: "Sucursales", sortable: true },
+    { key: "createdAt", label: "Fecha Ingreso", sortable: true },
     { key: "actions", label: "Acciones" },
 ];
 
@@ -29,6 +30,40 @@ export default function VendorsTable({
 }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
+    const [pendingStatuses, setPendingStatuses] = useState({});
+    const [sortKey, setSortKey] = useState(null);
+    const [sortDir, setSortDir] = useState(null);
+
+    const sortedVendors = useMemo(() =>
+        sortVendors(vendors, sortKey, sortDir),
+        [vendors, sortKey, sortDir]
+    );
+
+    const handleSort = (key) => {
+        if (sortKey !== key) {
+            setSortKey(key);
+            setSortDir('asc');
+        } else if (sortDir === 'asc') {
+            setSortDir('desc');
+        } else {
+            setSortKey(null);
+            setSortDir(null);
+        }
+    };
+
+    const SortIcon = ({ columnKey }) => {
+        const isAsc = sortKey === columnKey && sortDir === 'asc';
+        const isDesc = sortKey === columnKey && sortDir === 'desc';
+        const mute = "text-gray-400";
+        const active = "text-blue-600";
+
+        return (
+            <div className="flex flex-col items-center leading-none">
+                <ArrowUp className={`w-3 h-3 ${isAsc ? active : mute}`} />
+                <ArrowDown className={`w-3 h-3 ${isDesc ? active : mute} -mt-1`} />
+            </div>
+        );
+    };
 
     const showSkeleton = loading;
 
@@ -59,6 +94,7 @@ export default function VendorsTable({
     }
 
     const handleStatusChange = (vendor, newStatus) => {
+        setPendingStatuses(prev => ({ ...prev, [vendor.vendor_id]: newStatus }));
         setModalData({ vendor, newStatus });
         setModalOpen(true);
     };
@@ -66,12 +102,22 @@ export default function VendorsTable({
     const handleConfirm = async () => {
         if (modalData) {
             await changeStatus(modalData.vendor.vendor_id, modalData.newStatus);
+            setPendingStatuses(prev => {
+                const next = { ...prev };
+                delete next[modalData.vendor.vendor_id];
+                return next;
+            });
             setModalOpen(false);
             setModalData(null);
         }
     };
 
     const handleCancel = () => {
+        setPendingStatuses(prev => {
+            const next = { ...prev };
+            if (modalData) delete next[modalData.vendor.vendor_id];
+            return next;
+        });
         setModalOpen(false);
         setModalData(null);
     };
@@ -90,18 +136,22 @@ export default function VendorsTable({
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            {TABLE_HEADERS.map(({ key, label }) => (
+                            {TABLE_HEADERS.map(({ key, label, sortable }) => (
                                 <th
                                     key={key}
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${sortable ? "cursor-pointer select-none hover:text-gray-700 hover:bg-gray-100" : ""}`}
+                                    onClick={sortable ? () => handleSort(key) : undefined}
                                 >
-                                    {label}
+                                    <div className="flex items-center gap-1">
+                                        {label}
+                                        {sortable && <SortIcon columnKey={key} />}
+                                    </div>
                                 </th>
                             ))}
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {vendors.map((vendor) => (
+                        {sortedVendors.map((vendor) => (
                             <tr key={vendor.vendor_id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">
@@ -137,6 +187,7 @@ export default function VendorsTable({
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <VendorStatusSelect
                                         currentStatus={vendor.vendor_status}
+                                        pendingStatus={pendingStatuses[vendor.vendor_id]}
                                         onChange={(newStatus) => handleStatusChange(vendor, newStatus)}
                                         disabled={changingId === vendor.vendor_id}
                                     />

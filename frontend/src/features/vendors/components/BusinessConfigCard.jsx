@@ -1,67 +1,23 @@
-import { useState } from "react";
-import {
-    CreditCard,
-    Building2,
-    Banknote,
-    Smartphone,
-    Check,
-} from "lucide-react";
+import { CreditCard, Building2, Banknote, Smartphone, Check } from "lucide-react";
 import "../styles/business.css";
 import "../styles/cards.css";
 
-const ICONS = {
-    card: CreditCard,
-    bank: Building2,
-    cash: Banknote,
-    mobile: Smartphone,
+const METHOD_ICONS = {
+    5: CreditCard,
+    6: Building2,
+    8: Smartphone,
 };
+
+const getMethodIcon = (methodId) => METHOD_ICONS[methodId] || Banknote;
 
 const DEFAULT_PAYMENT_METHODS = [
-    {
-        id: "5",
-        name: "Tarjeta de Crédito / Débito",
-        icon: "card",
-        selected: false,
-    },
-    { id: "6", name: "Transferencia Bancaria", icon: "bank", selected: false },
-    { id: "8", name: "Yape / Plin", icon: "mobile", selected: false },
+    { payment_method_id: 5, payment_method_name: "Tarjeta de Crédito / Débito" },
+    { payment_method_id: 6, payment_method_name: "Transferencia Bancaria" },
+    { payment_method_id: 8, payment_method_name: "Yape / Plin" },
 ];
 
-const DEFAULT_BUSINESS = {
-    currencyName: "Sol Peruano (S/)",
-    paymentMethods: DEFAULT_PAYMENT_METHODS,
-};
-
-const getInitialSelectedMethods = (paymentMethods) =>
-    paymentMethods.filter((m) => m.selected).map((m) => m.id);
-
-export default function BusinessConfigCard({ data, onChange }) {
-    const business = data.business ?? DEFAULT_BUSINESS;
-
-    const [selectedMethods, setSelectedMethods] = useState(() =>
-        getInitialSelectedMethods(business.paymentMethods),
-    );
-
-    const handleToggleMethod = (methodId) => {
-        const newSelected = selectedMethods.includes(methodId)
-            ? selectedMethods.filter((id) => id !== methodId)
-            : [...selectedMethods, methodId];
-
-        setSelectedMethods(newSelected);
-
-        const updatedMethods = business.paymentMethods.map((method) => ({
-            ...method,
-            selected: newSelected.includes(method.id),
-        }));
-
-        onChange((prevSeller) => ({
-            ...prevSeller,
-            business: {
-                ...prevSeller.business,
-                paymentMethods: updatedMethods,
-            },
-        }));
-    };
+export default function BusinessConfigCard({ paymentMethods, selectedIds, onToggle, readOnly = false }) {
+    const methods = paymentMethods?.length > 0 ? paymentMethods : DEFAULT_PAYMENT_METHODS;
 
     return (
         <div className="seller-card">
@@ -69,49 +25,25 @@ export default function BusinessConfigCard({ data, onChange }) {
                 <h2 className="seller-card-title">Configuración Comercial</h2>
             </div>
             <div className="seller-card-body">
-                <div className="business-section">
-                    <label className="business-section-label">
-                        Moneda Principal
-                    </label>
-                    <div className="business-currency-display">
-                        <div className="business-currency-icon">S/</div>
-                        <div className="business-currency-content">
-                            <span className="business-currency-label">
-                                Moneda
-                            </span>
-                            <span className="business-currency-value">
-                                {business.currencyName}
-                            </span>
-                        </div>
-                    </div>
-                </div>
                 <div>
                     <label className="business-section-label">
-                        Métodos de Pago <span className="text-red-500">*</span>
+                        Métodos de Pago {!readOnly && <span className="text-red-500">*</span>}
                     </label>
                     <div className="business-payments">
-                        {business.paymentMethods.map((method) => {
-                            const IconComponent =
-                                ICONS[method.icon] || CreditCard;
-                            const isSelected = selectedMethods.includes(
-                                method.id,
-                            );
+                        {methods.map((method) => {
+                            const IconComponent = getMethodIcon(method.payment_method_id);
+                            const isSelected = selectedIds?.includes(method.payment_method_id);
                             return (
                                 <div
-                                    key={method.id}
-                                    className={`business-payment-toggle ${isSelected ? "selected" : ""}`}
-                                    onClick={() =>
-                                        handleToggleMethod(method.id)
-                                    }
+                                    key={method.payment_method_id}
+                                    className={`business-payment-toggle ${isSelected ? "selected" : ""} ${readOnly ? "cursor-default" : ""}`}
+                                    onClick={readOnly ? undefined : () => onToggle?.(method.payment_method_id)}
                                 >
                                     <div className="business-payment-check">
-                                        <Check
-                                            className="w-3 h-3"
-                                            strokeWidth={3}
-                                        />
+                                        <Check className="w-3 h-3" strokeWidth={3} />
                                     </div>
                                     <IconComponent />
-                                    <span>{method.name}</span>
+                                    <span>{method.payment_method_name}</span>
                                 </div>
                             );
                         })}

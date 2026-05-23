@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { useVendors } from "../hooks/useVendors";
+import { useVendorFilters } from "../hooks/useVendorFilters";
+import { getAllCategories } from "../services/vendor.service";
 import VendorsTable from "../components/VendorsTable";
+import VendorFilters from "../components/VendorFilters";
 
 export default function AdminVendorsPage() {
     const navigate = useNavigate();
     const { vendors, loading, error, reload, changeStatus, changingId } = useVendors();
     const [rowErrors, setRowErrors] = useState({});
+    const [allCategories, setAllCategories] = useState([]);
+
+    const { filters, filteredVendors, updateFilter, resetFilters } = useVendorFilters(vendors);
+
+    useEffect(() => {
+        getAllCategories().then(({ data }) => {
+            setAllCategories(data ?? []);
+        }).catch(() => {});
+    }, []);
 
     const handleStatusChange = async (vendorId, newStatus) => {
         setRowErrors((prev) => ({ ...prev, [vendorId]: null }));
@@ -27,7 +39,7 @@ export default function AdminVendorsPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Gestión de Vendedores</h1>
                     <p className="text-gray-500 mt-1">
-                        {vendors.length} vendedor{vendors.length !== 1 ? "es" : ""} registrado{vendors.length !== 1 ? "s" : ""}
+                        {filteredVendors.length} vendedor{filteredVendors.length !== 1 ? "es" : ""} registrado{filteredVendors.length !== 1 ? "s" : ""}
                     </p>
                 </div>
                 <button
@@ -54,9 +66,16 @@ export default function AdminVendorsPage() {
                 </div>
             )}
 
+            <VendorFilters
+                filters={filters}
+                onFilterChange={updateFilter}
+                onReset={resetFilters}
+                allCategories={allCategories}
+            />
+
             <div className="bg-white rounded-lg shadow overflow-hidden">
                 <VendorsTable
-                    vendors={vendors}
+                    vendors={filteredVendors}
                     loading={loading}
                     changingId={changingId}
                     changeStatus={handleStatusChange}
