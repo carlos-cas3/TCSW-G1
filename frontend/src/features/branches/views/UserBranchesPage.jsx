@@ -22,8 +22,8 @@ export default function UserBranchesPage() {
         deleteBranch,
         changingId,
     } = useBranches({ vendorId, mode: "user" });
-    const { filters, filteredBranches, cities, updateFilter, resetFilters } =
-        useBranchFilters(branches, "user");
+    const { filters, filteredBranches, updateFilter, resetFilters } =
+        useBranchFilters(branches);
     const [rowErrors, setRowErrors] = useState({});
 
     const [modalState, setModalState] = useState({
@@ -111,10 +111,7 @@ export default function UserBranchesPage() {
             )}
 
             <BranchFilters
-                mode="user"
                 filters={filters}
-                cities={cities}
-                vendors={[]}
                 onFilterChange={updateFilter}
                 onReset={resetFilters}
             />

@@ -10,8 +10,8 @@ import "../styles/buttons.css";
 
 export default function AdminBranchesPage() {
     const { branches, loading, error, reload } = useBranches({ mode: "admin" });
-    const { filters, filteredBranches, stats, cities, vendors, updateFilter, resetFilters } =
-        useBranchFilters(branches, "admin");
+    const { filters, filteredBranches, stats, updateFilter, resetFilters } =
+        useBranchFilters(branches);
 
     return (
         <div className="branches-page">
@@ -49,10 +49,7 @@ export default function AdminBranchesPage() {
             <BranchStatsCards stats={stats} />
 
             <BranchFilters
-                mode="admin"
                 filters={filters}
-                cities={cities}
-                vendors={vendors}
                 onFilterChange={updateFilter}
                 onReset={resetFilters}
             />

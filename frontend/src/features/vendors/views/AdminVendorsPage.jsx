@@ -6,6 +6,9 @@ import { useVendorFilters } from "../hooks/useVendorFilters";
 import { getAllCategories } from "../services/vendor.service";
 import VendorsTable from "../components/VendorsTable";
 import VendorFilters from "../components/VendorFilters";
+import VendorStatsCards from "../components/VendorStatsCards";
+import { getStats } from "../utils/vendorHelpers";
+import "../styles/stats.css";
 
 export default function AdminVendorsPage() {
     const navigate = useNavigate();
@@ -20,6 +23,8 @@ export default function AdminVendorsPage() {
             setAllCategories(data ?? []);
         }).catch(() => {});
     }, []);
+
+    const stats = getStats(filteredVendors);
 
     const handleStatusChange = async (vendorId, newStatus) => {
         setRowErrors((prev) => ({ ...prev, [vendorId]: null }));
@@ -65,6 +70,8 @@ export default function AdminVendorsPage() {
                     </div>
                 </div>
             )}
+
+            <VendorStatsCards stats={stats} />
 
             <VendorFilters
                 filters={filters}

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Eye, Pencil, ArrowUp, ArrowDown } from "lucide-react";
+import { Eye, Pencil, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import VendorStatusSelect from "./VendorStatusSelect";
 import VendorConfirmModal from "./VendorConfirmModal";
 import VendorSkeletonRow from "./VendorSkeletonRow";
@@ -34,10 +34,26 @@ export default function VendorsTable({
     const [sortKey, setSortKey] = useState(null);
     const [sortDir, setSortDir] = useState(null);
 
+    const PAGE_SIZE_KEY = "vendors_page_size";
+    const [pageSize, setPageSize] = useState(() => {
+        const saved = localStorage.getItem(PAGE_SIZE_KEY);
+        return saved ? parseInt(saved, 10) : 10;
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+
     const sortedVendors = useMemo(() =>
         sortVendors(vendors, sortKey, sortDir),
         [vendors, sortKey, sortDir]
     );
+
+    const totalPages = Math.ceil(sortedVendors.length / pageSize);
+
+    const safeCurrentPage = currentPage > totalPages ? 1 : currentPage;
+
+    const paginatedVendors = useMemo(() => {
+        const start = (safeCurrentPage - 1) * pageSize;
+        return sortedVendors.slice(start, start + pageSize);
+    }, [sortedVendors, safeCurrentPage, pageSize]);
 
     const handleSort = (key) => {
         if (sortKey !== key) {
@@ -130,9 +146,60 @@ export default function VendorsTable({
         );
     }
 
+    if (sortedVendors.length === 0) {
+        return (
+            <div className="text-center py-12">
+                <p className="text-gray-500">No se encontraron resultados con los filtros actuales</p>
+            </div>
+        );
+    }
+
+    const pageStart = sortedVendors.length === 0 ? 0 : (safeCurrentPage - 1) * pageSize + 1;
+    const pageEnd = Math.min(safeCurrentPage * pageSize, sortedVendors.length);
+
+    const handlePageSizeChange = (e) => {
+        const newSize = parseInt(e.target.value, 10);
+        setPageSize(newSize);
+        localStorage.setItem(PAGE_SIZE_KEY, newSize);
+        setCurrentPage(1);
+    };
+
+    const goToPage = (page) => {
+        setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    };
+
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisible = 5;
+        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(totalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
     return (
         <>
             <div className="overflow-x-auto">
+                <div className="flex items-center justify-end px-6 py-3 bg-white border-b border-gray-200">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span>Mostrar</span>
+                        <select
+                            value={pageSize}
+                            onChange={handlePageSizeChange}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                        </select>
+                        <span>por página</span>
+                    </div>
+                </div>
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -151,7 +218,7 @@ export default function VendorsTable({
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {sortedVendors.map((vendor) => (
+                        {paginatedVendors.map((vendor) => (
                             <tr key={vendor.vendor_id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">
@@ -232,6 +299,42 @@ export default function VendorsTable({
                         ))}
                     </tbody>
                 </table>
+                {sortedVendors.length > 0 && (
+                    <div className="flex items-center justify-between px-6 py-3 bg-white border-t border-gray-200">
+                        <span className="text-sm text-gray-600">
+                            Mostrando {pageStart}–{pageEnd} de {sortedVendors.length}
+                        </span>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </button>
+                            {getPageNumbers().map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => goToPage(page)}
+                                    className={`px-3 py-1 text-sm rounded ${
+                                        page === currentPage
+                                            ? "bg-blue-600 text-white"
+                                            : "text-gray-600 hover:bg-gray-100"
+                                    }`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
             <VendorConfirmModal
                 isOpen={modalOpen}

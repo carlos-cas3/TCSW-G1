@@ -50,8 +50,8 @@ export function filterVendors(vendors, filters) {
             const vendorCatIds = vendor.vendor_categories?.map(
                 c => c.categories?.category_id
             ) ?? [];
-            const hasMatch = filters.categories.some(id => vendorCatIds.includes(id));
-            if (!hasMatch) return false;
+            const hasAll = filters.categories.every(id => vendorCatIds.includes(id));
+            if (!hasAll) return false;
         }
 
         return true;
@@ -94,8 +94,8 @@ export function sortVendors(vendors, sortKey, sortDir) {
 export function getStats(vendors) {
     return {
         total: vendors.length,
-        pending: vendors.filter(v => v.vendor_status === VENDOR_STATUS.PENDING).length,
-        rejected: vendors.filter(v => v.vendor_status === VENDOR_STATUS.REJECTED).length,
-        approved: vendors.filter(v => v.vendor_status === VENDOR_STATUS.APPROVED).length
+        active: vendors.filter(v => v.vendor_status === "ACTIVE").length,
+        pending: vendors.filter(v => v.vendor_status === "PENDING").length,
+        suspended: vendors.filter(v => v.vendor_status === "SUSPENDED").length,
     };
 }
