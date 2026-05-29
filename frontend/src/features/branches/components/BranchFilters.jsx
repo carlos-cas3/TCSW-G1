@@ -6,13 +6,14 @@ export default function BranchFilters({
     filters,
     onFilterChange,
     onReset,
+    showInactive = false,
 }) {
     const hasActiveFilters = filters.search !== "" || filters.status !== "all";
 
     return (
         <div className="branches-filters-container">
-            <div className="branches-filters-row branches-filters-row-admin">
-                <div className="branches-filters-field lg:col-span-2">
+            <div className="branches-filters-row">
+                <div className="branches-filters-field-search">
                     <label className="branches-filters-label">
                         Buscar
                     </label>
@@ -28,7 +29,7 @@ export default function BranchFilters({
                     </div>
                 </div>
 
-                <div className="branches-filters-field">
+                <div className="branches-filters-field-status">
                     <label className="branches-filters-label">
                         Estado
                     </label>
@@ -38,7 +39,7 @@ export default function BranchFilters({
                         className="branches-filters-select"
                     >
                         <option value="all">Todos</option>
-                        {STATUS_OPTIONS.filter((s) => s !== "INACTIVE").map((s) => (
+                        {STATUS_OPTIONS.filter((s) => showInactive || s !== "INACTIVE").map((s) => (
                             <option key={s} value={s}>
                                 {getStatusLabel(s)}
                             </option>
