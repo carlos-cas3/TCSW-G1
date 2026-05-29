@@ -97,6 +97,6 @@ export const getBranchStats = (branches) => {
         total: branches.length,
         active: branches.filter((b) => b.branch_status === "ACTIVE").length,
         inactive: branches.filter((b) => b.branch_status === "INACTIVE").length,
-        maintaining: branches.filter((b) => b.branch_status === "MAINTAINING").length,
+        maintaining: branches.filter((b) => b.branch_status === "MAINTENANCE").length,
     };
-};
+};

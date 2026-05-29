@@ -48,7 +48,7 @@ export default function LoginForm() {
             if (user.role?.roleName === "SUPER_ADMIN") {
                 window.location.href = "/admin";
             } else {
-                window.location.href = "/dashboard";
+                window.location.href = "/user";
             }
         } catch {
             setError("Error de conexión con el servidor");

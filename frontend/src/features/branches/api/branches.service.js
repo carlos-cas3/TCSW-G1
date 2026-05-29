@@ -9,6 +9,9 @@ const CONCURRENCY_LIMIT = 5;
 export const getVendorBranches = (vendorId) =>
     fetchWithAuth(`${VENDORS_URL}/vendors/${vendorId}/branches`);
 
+export const getVendorActiveBranches = (vendorId) =>
+    fetchWithAuth(`${VENDORS_URL}/vendors/${vendorId}/branches/active`);
+
 export const getBranchById = (branchId) =>
     fetchWithAuth(`${VENDORS_URL}/vendors/branches/${branchId}`);
 
@@ -69,4 +72,4 @@ export const fetchAllBranches = async () => {
     if (vendorsError) throw new Error(vendorsError);
 
     return fetchBranchesFromVendors(vendors ?? []);
-};
+};

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getUser } from "../../../app/auth";
 import {
     getVendorBranches,
+    getVendorActiveBranches,
     fetchAllBranches,
     changeBranchStatus,
     deleteBranch,
@@ -30,7 +31,7 @@ export const useBranches = ({ vendorId, mode }) => {
                 if (!effectiveVendorId) {
                     throw new Error("No se ha proporcionado vendorId");
                 }
-                const { data, error: fetchError } = await getVendorBranches(effectiveVendorId);
+                const { data, error: fetchError } = await getVendorActiveBranches(effectiveVendorId);
                 if (fetchError) throw new Error(fetchError);
                 branchesData = data ?? [];
             }
@@ -162,4 +163,4 @@ export const useBranches = ({ vendorId, mode }) => {
         updateBranch: editBranch,
         deleteBranch: removeBranch,
     };
-};
+};

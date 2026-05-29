@@ -6,15 +6,15 @@
   }
 
   .branches-filters-row {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4;
+    @apply flex flex-wrap items-end gap-3 sm:gap-4;
   }
 
-  .branches-filters-row-admin {
-    @apply lg:grid-cols-3;
+  .branches-filters-field-search {
+    @apply flex-1 min-w-[200px];
   }
 
-  .branches-filters-field {
-    @apply w-full;
+  .branches-filters-field-status {
+    @apply w-44;
   }
 
   .branches-filters-label {
@@ -38,7 +38,7 @@
   }
 
   .branches-filters-reset-btn {
-    @apply flex items-center justify-center gap-1 px-3 py-2 w-full sm:w-auto text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors;
+    @apply flex items-center justify-center gap-1 px-3 py-2 w-full sm:w-auto text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:text-gray-900 hover:bg-gray-100 transition-colors;
   }
 
   .branches-filters-actions {

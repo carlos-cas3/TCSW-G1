@@ -52,6 +52,7 @@ export default function AdminBranchesPage() {
                 filters={filters}
                 onFilterChange={updateFilter}
                 onReset={resetFilters}
+                showInactive={true}
             />
 
             <div className="branches-table-container">

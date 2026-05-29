@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { getStatusLabel } from "../utils/statusColors";
 
 export default function BranchConfirmModal({
     isOpen,
@@ -48,7 +49,7 @@ export default function BranchConfirmModal({
                             <>
                                 ¿Cambiar el estado de{" "}
                                 <strong className="text-gray-900">{branchName}</strong> de{" "}
-                                <strong>{currentStatus}</strong> a <strong>{newStatus}</strong>?
+                                <strong>{getStatusLabel(currentStatus)}</strong> a <strong>{getStatusLabel(newStatus)}</strong>?
                             </>
                         )}
                     </p>

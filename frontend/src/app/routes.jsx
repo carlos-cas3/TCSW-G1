@@ -38,7 +38,7 @@ const routes = [
     },
     // VENDOR_ADMIN
     {
-        path: "/dashboard",
+        path: "/user",
         element: (
             <ProtectedRoute allowedRoles={[ROLES.VENDOR_ADMIN]}>
                 <Layout />

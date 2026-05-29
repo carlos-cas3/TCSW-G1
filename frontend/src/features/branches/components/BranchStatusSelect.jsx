@@ -1,4 +1,4 @@
-import { STATUS_OPTIONS, getStatusColors } from "../utils/statusColors";
+import { STATUS_OPTIONS, getStatusColors, getStatusLabel } from "../utils/statusColors";
 
 export default function BranchStatusSelect({
     currentStatus,
@@ -18,9 +18,9 @@ export default function BranchStatusSelect({
                 disabled ? "opacity-50 cursor-not-allowed" : ""
             }`}
         >
-            {STATUS_OPTIONS.map((status) => (
+            {STATUS_OPTIONS.filter((s) => s !== "INACTIVE").map((status) => (
                 <option key={status} value={status}>
-                    {status}
+                    {getStatusLabel(status)}
                 </option>
             ))}
         </select>
