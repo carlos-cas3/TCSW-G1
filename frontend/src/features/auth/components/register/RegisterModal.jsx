@@ -1,3 +1,4 @@
+import { useCallback, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 
 import styles from "./RegisterModal.module.css";
@@ -9,6 +10,8 @@ import { STEPS } from "../../constants/register.constants";
 import { useRegisterForm } from "../../hooks/useRegisterForm";
 
 export default function RegisterModal({ onClose }) {
+    const modalRef = useRef(null);
+
     const {
         currentStep,
         formData,
@@ -31,14 +34,41 @@ export default function RegisterModal({ onClose }) {
 
     const showError = (field) => errors[field] && touched[field];
 
+    const handleKeyDown = useCallback(
+        (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                const activeTag = document.activeElement?.tagName;
+                if (activeTag === "INPUT" || activeTag === "TEXTAREA") {
+                    e.preventDefault();
+                    if (currentStep < STEPS.length) {
+                        handleNext();
+                    } else {
+                        handleSubmit();
+                    }
+                }
+            }
+            if (e.key === "Escape") {
+                onClose();
+            }
+        },
+        [currentStep, handleNext, handleSubmit, onClose],
+    );
+
+    useEffect(() => {
+        const firstInput = modalRef.current?.querySelector("input");
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 100);
+        }
+    }, [currentStep]);
+
     return (
-        <div className={styles.registerModal}>
+        <div className={styles.registerModal} onKeyDown={handleKeyDown}>
             <div className={styles.overlay} onClick={handleOverlayClick}>
-                <div className={styles.modal}>
+                <div className={styles.modal} ref={modalRef}>
                     <div className={styles.header}>
                         <div className={styles.titleSection}>
                             <h2 className={styles.title}>
-                                Create Seller Account
+                                Crear cuenta de vendedor
                             </h2>
                             <p className={styles.subtitle}>
                                 Paso {currentStep} de {STEPS.length}
@@ -47,6 +77,7 @@ export default function RegisterModal({ onClose }) {
                         <button
                             className={styles.closeButton}
                             onClick={onClose}
+                            aria-label="Cerrar"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -54,7 +85,6 @@ export default function RegisterModal({ onClose }) {
 
                     <RegisterStepper steps={STEPS} currentStep={currentStep} />
 
-                    {/* Sin <form> — cada botón maneja su propia acción */}
                     <div>
                         <div className={styles.content}>
                             {currentStep === 1 && (
@@ -94,7 +124,7 @@ export default function RegisterModal({ onClose }) {
                                 </button>
                             )}
 
-                            {currentStep < 2 ? (
+                            {currentStep < STEPS.length ? (
                                 <button
                                     type="button"
                                     className={styles.nextButton}

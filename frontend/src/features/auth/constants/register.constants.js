@@ -1,12 +1,12 @@
 export const SPORTS_CATEGORIES = [
-    { id: 1, label: "Fútbol" },
-    { id: 2, label: "Baloncesto" },
-    { id: 3, label: "Natación" },
-    { id: 4, label: "Atletismo" },
-    { id: 5, label: "Ciclismo" },
-    { id: 6, label: "Tenis" },
-    { id: 7, label: "Futsal" },
-    { id: 8, label: "Voleibol" },
+    { id: 1, label: "Fútbol", icon: "⚽" },
+    { id: 2, label: "Baloncesto", icon: "🏀" },
+    { id: 3, label: "Natación", icon: "🏊" },
+    { id: 4, label: "Atletismo", icon: "🏃" },
+    { id: 5, label: "Ciclismo", icon: "🚴" },
+    { id: 6, label: "Tenis", icon: "🎾" },
+    { id: 7, label: "Futsal", icon: "⚽" },
+    { id: 8, label: "Voleibol", icon: "🏐" },
 ];
 
 export const STEPS = [
@@ -28,4 +28,4 @@ export const STEP2_FIELDS = [
     "ruc",
     "address",
     "categories",
-];
+];

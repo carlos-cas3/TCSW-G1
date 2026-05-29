@@ -38,6 +38,9 @@ export const validateField = (name, value, allFormData, categories) => {
             if (!/^\d{11}$/.test(value)) {
                 return "El RUC debe tener 11 dígitos";
             }
+            if (value.slice(0, 2) !== "10" && value.slice(0, 2) !== "20") {
+                return "El RUC debe empezar con 10 o 20";
+            }
             return "";
 
         case "address":
@@ -51,4 +54,4 @@ export const validateField = (name, value, allFormData, categories) => {
         default:
             return "";
     }
-};
+};
