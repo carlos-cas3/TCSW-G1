@@ -1,21 +1,9 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./topbar/Topbar";
-import { Outlet, useLocation } from "react-router-dom";
-
-const pageTitles = {
-    "/admin": "Admin Dashboard",
-    "/admin/vendors": "Gestión de Vendedores",
-    "/admin/branches": "Gestión de Sucursales",
-    "/admin/catalog": "Gestión de Catálogo",
-    "/admin/analytics": "Análisis y Reportes",
-    "/user": "Dashboard",
-    "/user/catalog": "Catálogo",
-};
+import { Outlet } from "react-router-dom";
 
 export default function Layout() {
-    const location = useLocation();
-    const title = pageTitles[location.pathname] || "Dashboard";
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -46,7 +34,6 @@ export default function Layout() {
                 onClose={() => setMobileOpen(false)}
             />
             <Topbar
-                title={title}
                 collapsed={collapsed}
                 onToggle={handleToggle}
             />

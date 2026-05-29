@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getUser } from "../../../app/auth";
 import { getVendorById } from "../../../features/vendors/services/vendor.service";
 
-export default function Topbar({ title, collapsed, onToggle }) {
+export default function Topbar({ collapsed, onToggle }) {
     const user = getUser();
     const shouldFetch = user?.roleId === 2 && !!user?.vendorId;
     const [vendorInfo, setVendorInfo] = useState(null);
@@ -78,9 +78,6 @@ export default function Topbar({ title, collapsed, onToggle }) {
                         <line x1="3" y1="18" x2="21" y2="18" />
                     </svg>
                 </button>
-                <h1 className="text-lg font-bold text-slate-900 tracking-tight m-0">
-                    {title}
-                </h1>
             </div>
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg cursor-default transition-colors duration-200 hover:bg-gray-50">

@@ -31,7 +31,7 @@ export default function Sidebar({ collapsed, mobileOpen, onClose }) {
             >
                 <div className="h-16 px-5 flex items-center gap-3 border-b border-white/[0.06] shrink-0">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center font-bold text-sm shrink-0">
-                        A
+                        S
                     </div>
                     <span
                         className={[
@@ -39,7 +39,7 @@ export default function Sidebar({ collapsed, mobileOpen, onClose }) {
                             collapsed ? "opacity-0" : "opacity-100",
                         ].join(" ")}
                     >
-                        AdminPanel
+                        SportMarket
                     </span>
                 </div>
 

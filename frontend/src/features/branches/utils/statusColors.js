@@ -13,7 +13,7 @@ export const STATUS_COLORS = {
         border: "border-gray-200",
         selectBg: "bg-gray-100 text-gray-800 border-gray-200",
     },
-    MAINTAINING: {
+    MAINTENANCE: {
         bg: "bg-red-50",
         text: "text-red-700",
         dot: "bg-red-500",
@@ -23,15 +23,15 @@ export const STATUS_COLORS = {
 };
 
 export const STATUS_LABELS = {
-    ACTIVE: "Activa",
+    ACTIVE: "Activo",
     INACTIVE: "Inactiva",
-    MAINTAINING: "En mantenimiento",
+    MAINTENANCE: "En mantenimiento",
 };
 
-export const STATUS_OPTIONS = ["ACTIVE", "INACTIVE", "MAINTAINING"];
+export const STATUS_OPTIONS = ["ACTIVE", "INACTIVE", "MAINTENANCE"];
 
 export const getStatusColors = (status) =>
     STATUS_COLORS[status] || STATUS_COLORS.INACTIVE;
 
 export const getStatusLabel = (status) =>
-    STATUS_LABELS[status] || status;
+    STATUS_LABELS[status] || status;

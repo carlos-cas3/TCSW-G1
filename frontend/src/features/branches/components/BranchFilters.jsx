@@ -38,7 +38,7 @@ export default function BranchFilters({
                         className="branches-filters-select"
                     >
                         <option value="all">Todos</option>
-                        {STATUS_OPTIONS.map((s) => (
+                        {STATUS_OPTIONS.filter((s) => s !== "INACTIVE").map((s) => (
                             <option key={s} value={s}>
                                 {getStatusLabel(s)}
                             </option>
@@ -60,4 +60,4 @@ export default function BranchFilters({
             </div>
         </div>
     );
-}
+}
