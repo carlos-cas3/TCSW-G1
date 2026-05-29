@@ -33,18 +33,12 @@ export default function AdminCatalogPage() {
   };
 
   const handleSave = async (form) => {
-    try {
-      if (editingProduct) {
-        await updateProduct(editingProduct.product_id, form);
-      } else {
-        await createProduct(form);
-      }
-      await reload();
-      setOpenModal(false);
-      setEditingProduct(null);
-    } catch {
-      alert("Error guardando producto");
+    if (editingProduct) {
+      await updateProduct(editingProduct.product_id, form);
+    } else {
+      await createProduct(form);
     }
+    await reload();
   };
 
   const handleDelete = async (id) => {

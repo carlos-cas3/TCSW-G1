@@ -45,34 +45,27 @@ export default function VendorCatalogPage() {
   };
 
   const handleSave = async (form) => {
-    try {
-      if (!vendorId) {
-        alert("No se encontró el ID del vendedor");
-        return;
-      }
-
-      if (editingProduct) {
-        await updateVendorProduct(editingProduct.vendor_product_id, {
-          price: Number(form.price),
-          stock: Number(form.stock),
-          status: form.status,
-        });
-      } else {
-        await createVendorProduct({
-          vendor_id: Number(vendorId),
-          product_id: Number(form.product_id),
-          price: Number(form.price),
-          stock: Number(form.stock),
-          status: form.status,
-        });
-      }
-
-      await reload();
-      setOpenModal(false);
-      setEditingProduct(null);
-    } catch {
-      alert("Error guardando");
+    if (!vendorId) {
+      throw new Error("No se encontró el ID del vendedor");
     }
+
+    if (editingProduct) {
+      await updateVendorProduct(editingProduct.vendor_product_id, {
+        price: Number(form.price),
+        stock: Number(form.stock),
+        status: form.status,
+      });
+    } else {
+      await createVendorProduct({
+        vendor_id: Number(vendorId),
+        product_id: Number(form.product_id),
+        price: Number(form.price),
+        stock: Number(form.stock),
+        status: form.status,
+      });
+    }
+
+    await reload();
   };
 
   const handleDelete = async (id) => {
