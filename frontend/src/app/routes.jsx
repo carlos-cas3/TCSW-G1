@@ -6,6 +6,9 @@ import Vendors from "../features/vendors/Vendors";
 import SellerManagement from "../features/seller-management/SellerManagement";
 import ProtectedRoute from "./ProtectedRoute";
 
+import AdminCatalogPage from "../features/catalog/views/AdminCatalogPage";
+import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
+
 const ROLES = {
     SUPER_ADMIN: 1,
     VENDOR_ADMIN: 2,
@@ -28,7 +31,7 @@ const routes = [
             { path: "", element: <h1>Admin Dashboard</h1> },
             { path: "vendors", element: <Vendors /> },
             { path: "branches", element: <h1>Branches</h1> },
-            { path: "catalog", element: <h1>Catalog</h1> },
+            { path: "catalog", element: <AdminCatalogPage /> },
             { path: "analytics", element: <h1>Analytics</h1> },
         ],
     },
@@ -36,13 +39,16 @@ const routes = [
     {
         path: "/dashboard",
         element: (
-            <ProtectedRoute allowedRoles={[ROLES.VENDOR_ADMIN]}>
+           <ProtectedRoute allowedRoles={[ROLES.VENDOR_ADMIN]}>
                 <Layout />
             </ProtectedRoute>
         ),
         children: [
             { path: "", element: <h1>Vendor Dashboard</h1> },
-            { path: "catalog", element: <h1>Catalog</h1> },
+            {
+                 path: "catalog",
+                  element: <VendorCatalogPage />,
+            },
             { path: "seller-management", element: <SellerManagement /> },
         ],
     },
