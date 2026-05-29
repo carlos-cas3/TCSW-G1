@@ -1,0 +1,59 @@
+@reference "tailwindcss";
+
+@layer components {
+  .catalog-table-scroll {
+    @apply overflow-x-auto;
+  }
+
+  .catalog-table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+
+  .catalog-table-head {
+    @apply bg-gray-50;
+  }
+
+  .catalog-table-header {
+    @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap;
+  }
+
+  .catalog-table-header-sortable {
+    @apply cursor-pointer select-none hover:text-gray-700 hover:bg-gray-100;
+  }
+
+  .catalog-table-body {
+    @apply bg-white divide-y divide-gray-200;
+  }
+
+  .catalog-table-row {
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  .catalog-table-cell {
+    @apply px-4 py-4 whitespace-nowrap text-sm;
+  }
+
+  .catalog-table-empty {
+    @apply text-center py-12 text-sm text-gray-500;
+  }
+
+  .catalog-pagination-top {
+    @apply flex items-center justify-end px-4 py-3 bg-white border-b border-gray-200;
+  }
+
+  .catalog-pagination-bottom {
+    @apply flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200;
+  }
+
+  .catalog-pagination-btn {
+    @apply p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed;
+  }
+
+  .catalog-pagination-page {
+    @apply px-3 py-1 text-sm rounded text-gray-600 hover:bg-gray-100;
+  }
+
+  .catalog-pagination-page-active {
+    @apply bg-blue-600 text-white hover:bg-blue-600;
+  }
+}
