@@ -9,6 +9,9 @@ import AdminBranchesPage from "../features/branches/views/AdminBranchesPage";
 import UserBranchesPage from "../features/branches/views/UserBranchesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
+import AdminCatalogPage from "../features/catalog/views/AdminCatalogPage";
+import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
+
 const ROLES = {
     SUPER_ADMIN: 1,
     VENDOR_ADMIN: 2,
@@ -32,7 +35,7 @@ const routes = [
             { path: "vendors", element: <AdminVendorsPage /> },
             { path: "vendors/:vendor_id", element: <AdminVendorDetailPage /> },
             { path: "branches", element: <AdminBranchesPage /> },
-            { path: "catalog", element: <h1>Catalog</h1> },
+            { path: "catalog", element: <AdminCatalogPage /> },
             { path: "analytics", element: <h1>Analytics</h1> },
         ],
     },
@@ -46,7 +49,7 @@ const routes = [
         ),
         children: [
             { path: "", element: <h1>Vendor Dashboard</h1> },
-            { path: "catalog", element: <h1>Catalog</h1> },
+            { path: "catalog", element: <VendorCatalogPage /> },
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },
         ],

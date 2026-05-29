@@ -1,7 +1,8 @@
-import { Navigate } from "react-router-dom";
-import { getUser, isAuthenticated } from "./auth";
+ import { Navigate } from "react-router-dom";
+ import { getUser, isAuthenticated } from "./auth";
 
 export default function ProtectedRoute({ children, allowedRoles }) {
+
     console.log('isAuthenticated:', isAuthenticated());
     console.log('user:', getUser());
     console.log('allowedRoles:', allowedRoles);
