@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { filterBranches, getBranchStats } from "../utils/branchFilters";
 
 export function useBranchFilters(branches) {
-    const [filters, setFilters] = useState({ search: "", status: "all" });
+    const [filters, setFilters] = useState({ search: "", status: "all", vendor: "all", city: "all" });
 
     const filteredBranches = useMemo(() => {
         return filterBranches(branches, filters);
@@ -20,7 +20,7 @@ export function useBranchFilters(branches) {
     };
 
     const resetFilters = () => {
-        setFilters({ search: "", status: "all" });
+        setFilters({ search: "", status: "all", vendor: "all", city: "all" });
     };
 
     return {

@@ -5,8 +5,7 @@ import { VENDORS_MOCK } from '../data/vendorsMock';
 import VendorStatsCards from '../components/VendorStatsCards';
 import VendorFilters from '../components/VendorFilters';
 import VendorsTable from '../components/VendorsTable';
-import '../styles/layout.css';
-import '../styles/buttons.css';
+
 
 export default function VendorsList() {
     const [vendors, setVendors] = useState(VENDORS_MOCK);
@@ -67,7 +66,7 @@ export default function VendorsList() {
                 ) : (
                     <VendorsTable
                         vendors={filteredVendors}
-                        onStatusChange={handleStatusChange}
+                        changeStatus={handleStatusChange}
                     />
                 )}
             </div>

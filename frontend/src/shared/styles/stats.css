@@ -1,23 +1,23 @@
 @reference "tailwindcss";
 
 @layer components {
-  .catalog-stats-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-5 mb-6;
+  .stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6 mb-6;
   }
 
-  .catalog-stats-card {
+  .stats-card {
     @apply bg-white rounded-lg border border-gray-200 p-5 hover:shadow-md transition-shadow duration-200;
   }
 
-  .catalog-stats-card-body {
+  .stats-card-body {
     @apply flex items-center justify-between gap-4;
   }
 
-  .catalog-stats-card-icon {
+  .stats-card-icon {
     @apply p-3 rounded-lg flex-shrink-0;
   }
 
-  .catalog-stats-card-icon svg {
+  .stats-card-icon svg {
     @apply w-6 h-6;
   }
 }

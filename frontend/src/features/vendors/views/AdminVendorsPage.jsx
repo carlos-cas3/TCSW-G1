@@ -8,7 +8,6 @@ import VendorsTable from "../components/VendorsTable";
 import VendorFilters from "../components/VendorFilters";
 import VendorStatsCards from "../components/VendorStatsCards";
 import { getStats } from "../utils/vendorHelpers";
-import "../styles/stats.css";
 
 export default function AdminVendorsPage() {
     const navigate = useNavigate();
@@ -80,16 +79,14 @@ export default function AdminVendorsPage() {
                 allCategories={allCategories}
             />
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <VendorsTable
-                    vendors={filteredVendors}
-                    loading={loading}
-                    changingId={changingId}
-                    changeStatus={handleStatusChange}
-                    rowErrors={rowErrors}
-                    onView={(id) => navigate(`/admin/vendors/${id}`)}
-                />
-            </div>
+            <VendorsTable
+                vendors={filteredVendors}
+                loading={loading}
+                changingId={changingId}
+                changeStatus={handleStatusChange}
+                rowErrors={rowErrors}
+                onView={(id) => navigate(`/admin/vendors/${id}`)}
+            />
         </div>
     );
 }

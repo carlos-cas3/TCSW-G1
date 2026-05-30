@@ -1,0 +1,43 @@
+@reference "tailwindcss";
+
+@layer components {
+  .page {
+    @apply p-6;
+  }
+
+  .page-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .page-header-start {
+    @apply flex flex-col;
+  }
+
+  .page-title {
+    @apply text-2xl font-bold text-gray-900;
+  }
+
+  .page-subtitle {
+    @apply text-gray-500 mt-1;
+  }
+
+  .page-actions {
+    @apply flex items-center gap-3;
+  }
+
+  .error-banner {
+    @apply mb-4 p-4 bg-red-50 border border-red-200 rounded-lg;
+  }
+
+  .error-content {
+    @apply flex items-center justify-between;
+  }
+
+  .error-message {
+    @apply text-red-700;
+  }
+
+  .error-btn {
+    @apply px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200;
+  }
+}
