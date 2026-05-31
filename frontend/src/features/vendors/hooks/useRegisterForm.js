@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { STEP1_FIELDS, STEP2_FIELDS } from "../constants/register.constants";
 import { validateField } from "../validations/register.validation";
-import { registerUser } from "../services/auth.service";
+import { registerUser } from "../../auth/services/auth.service";
 
-export const useRegisterForm = () => {
+export const useRegisterForm = ({ onSuccess, onError } = {}) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const [formData, setFormData] = useState({
@@ -23,6 +23,8 @@ export const useRegisterForm = () => {
 
     const [stepErrors, setStepErrors] = useState({ 1: {}, 2: {} });
     const [stepTouched, setStepTouched] = useState({ 1: {}, 2: {} });
+    const [submitError, setSubmitError] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
 
     const errors = stepErrors[currentStep];
     const touched = stepTouched[currentStep];
@@ -145,13 +147,41 @@ export const useRegisterForm = () => {
     const handleSubmit = async () => {
         if (!validateStep()) return;
 
+        setSubmitError(null);
+        setSubmitting(true);
+
         try {
             const payload = buildRegisterPayload();
             const response = await registerUser(payload);
-            console.log(response);
+            onSuccess?.(response);
         } catch (error) {
-            console.error(error.message);
+            const message = error.message || "Error al crear vendedor";
+            setSubmitError(message);
+            onError?.(error);
+        } finally {
+            setSubmitting(false);
         }
+    };
+
+    const resetForm = () => {
+        setCurrentStep(1);
+        setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            personal_phone: "",
+            password: "",
+            confirmPassword: "",
+            company: "",
+            ruc: "",
+            address: "",
+            categories: [],
+        });
+        setSelectedCategories([]);
+        setStepErrors({ 1: {}, 2: {} });
+        setStepTouched({ 1: {}, 2: {} });
+        setSubmitError(null);
+        setSubmitting(false);
     };
 
     return {
@@ -160,11 +190,14 @@ export const useRegisterForm = () => {
         selectedCategories,
         errors,
         touched,
+        submitError,
+        submitting,
         handleInputChange,
         handleFieldBlur,
         handleCategoryToggle,
         handleNext,
         handlePrev,
         handleSubmit,
+        resetForm,
     };
 };
