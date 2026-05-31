@@ -17,7 +17,8 @@ export default function AdminVendorsPage() {
     const [allCategories, setAllCategories] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const handleCreateSuccess = () => {
+    const handleCreateSuccess = (response) => {
+        console.log("🔑 Contraseña temporal del vendedor:", response?.data?.temp_password);
         setIsCreateModalOpen(false);
         reload();
     };

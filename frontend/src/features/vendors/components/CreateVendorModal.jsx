@@ -1,30 +1,14 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import {
     X,
     ChevronLeft,
     ChevronRight,
     Check,
-    Eye,
-    EyeOff,
     AtSign,
     Loader2,
 } from "lucide-react";
 import { useRegisterForm } from "../hooks/useRegisterForm";
 import { STEPS, SPORTS_CATEGORIES } from "../constants/register.constants";
-
-const getPasswordStrength = (password) => {
-    if (!password) return { score: 0, label: "", color: "", width: "0%" };
-    let score = 0;
-    if (password.length >= 6) score += 1;
-    if (password.length >= 8) score += 1;
-    if (/[A-Z]/.test(password)) score += 1;
-    if (/[0-9]/.test(password)) score += 1;
-    if (/[^A-Za-z0-9]/.test(password)) score += 1;
-    const labels = ["", "Débil", "Débil", "Media", "Fuerte", "Muy fuerte"];
-    const colors = ["", "#ef4444", "#ef4444", "#d97706", "#65a30d", "#16a34a"];
-    const widths = ["0%", "20%", "40%", "60%", "80%", "100%"];
-    return { score, label: labels[score], color: colors[score], width: widths[score] };
-};
 
 const formatPhone = (value) => {
     const d = value.replace(/\D/g, "");
@@ -41,7 +25,6 @@ const formatRuc = (value) => {
 
 export default function CreateVendorModal({ isOpen, onClose, onSuccess }) {
     const modalRef = useRef(null);
-    const [showPasswords, setShowPasswords] = useState({ password: false, confirmPassword: false });
 
     const handleSuccess = useCallback(
         (response) => {
@@ -111,7 +94,6 @@ export default function CreateVendorModal({ isOpen, onClose, onSuccess }) {
     if (!isOpen) return null;
 
     const showError = (field) => errors[field] && touched[field];
-    const strength = getPasswordStrength(formData.password);
 
     const renderPhoneField = () => {
         const isError = showError("personal_phone");
@@ -169,60 +151,6 @@ export default function CreateVendorModal({ isOpen, onClose, onSuccess }) {
                     />
                 </div>
                 {isError && <p className="text-sm text-red-600">{errors.email}</p>}
-            </div>
-        );
-    };
-
-    const renderPasswordField = (field, label) => {
-        const isPass = field === "password";
-        const isError = showError(field);
-        const show = showPasswords[field];
-        const toggle = () => setShowPasswords((p) => ({ ...p, [field]: !p[field] }));
-
-        return (
-            <div className="space-y-1.5" key={field}>
-                <label className="text-sm font-medium text-gray-700">{label}</label>
-                <div className="relative">
-                    <input
-                        type={show ? "text" : "password"}
-                        name={field}
-                        value={formData[field]}
-                        onBlur={() => handleFieldBlur(field)}
-                        onChange={handleInputChange}
-                        className={`w-full pr-10 pl-3 py-2.5 text-sm border rounded-lg outline-none transition-colors ${
-                            isError
-                                ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                                : "border-gray-300 bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-                        }`}
-                        placeholder="••••••••"
-                        autoComplete={isPass ? "new-password" : "off"}
-                    />
-                    <button
-                        type="button"
-                        onClick={toggle}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
-                        tabIndex={-1}
-                    >
-                        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                </div>
-                {isPass && formData.password && (
-                    <>
-                        <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                            <div
-                                className="h-full rounded-full transition-all duration-300"
-                                style={{
-                                    width: strength.width,
-                                    background: strength.color,
-                                }}
-                            />
-                        </div>
-                        <p className="text-xs font-medium" style={{ color: strength.color }}>
-                            {strength.label}
-                        </p>
-                    </>
-                )}
-                {isError && <p className="text-sm text-red-600">{errors[field]}</p>}
             </div>
         );
     };
@@ -400,8 +328,6 @@ export default function CreateVendorModal({ isOpen, onClose, onSuccess }) {
                                 {renderTextField("lastName", "Apellidos", "Pérez", { autoComplete: "family-name" })}
                                 {renderEmailField()}
                                 {renderPhoneField()}
-                                {renderPasswordField("password", "Contraseña")}
-                                {renderPasswordField("confirmPassword", "Confirmar Contraseña")}
                             </div>
                         )}
 

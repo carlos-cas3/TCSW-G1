@@ -19,8 +19,6 @@ export const STEP1_FIELDS = [
     "lastName",
     "email",
     "personal_phone",
-    "password",
-    "confirmPassword",
 ];
 
 export const STEP2_FIELDS = [

@@ -16,18 +16,6 @@ export const validateField = (name, value, allFormData, categories) => {
         case "personal_phone":
             return !value.trim() ? "El teléfono es requerido" : "";
 
-        case "password":
-            if (!value) return "La contraseña es requerida";
-            if (value.length < 6) return "Mínimo 6 caracteres";
-            return "";
-
-        case "confirmPassword":
-            if (!value) return "Confirma tu contraseña";
-            if (value !== allFormData.password) {
-                return "Las contraseñas no coinciden";
-            }
-            return "";
-
         case "company":
             return !value.trim()
                 ? "El nombre de la empresa es requerido"

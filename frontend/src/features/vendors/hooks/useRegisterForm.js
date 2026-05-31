@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { STEP1_FIELDS, STEP2_FIELDS } from "../constants/register.constants";
 import { validateField } from "../validations/register.validation";
-import { registerUser } from "../../auth/services/auth.service";
+import { createVendor } from "../services/vendor.service";
 
 export const useRegisterForm = ({ onSuccess, onError } = {}) => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -11,8 +11,6 @@ export const useRegisterForm = ({ onSuccess, onError } = {}) => {
         lastName: "",
         email: "",
         personal_phone: "",
-        password: "",
-        confirmPassword: "",
         company: "",
         ruc: "",
         address: "",
@@ -130,18 +128,14 @@ export const useRegisterForm = ({ onSuccess, onError } = {}) => {
     };
 
     const buildRegisterPayload = () => ({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        personal_phone: formData.personal_phone,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        company: {
-            name: formData.company,
-            ruc: formData.ruc,
-            address: formData.address,
-            categories: selectedCategories,
-        },
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        vendor_email: formData.email,
+        vendor_phone: formData.personal_phone,
+        vendor_name: formData.company,
+        vendor_ruc: formData.ruc,
+        vendor_address: formData.address,
+        categories: selectedCategories,
     });
 
     const handleSubmit = async () => {
@@ -152,8 +146,9 @@ export const useRegisterForm = ({ onSuccess, onError } = {}) => {
 
         try {
             const payload = buildRegisterPayload();
-            const response = await registerUser(payload);
-            onSuccess?.(response);
+            const response = await createVendor(payload);
+
+            onSuccess?.(response); // response.data.temp_password estará aquí
         } catch (error) {
             const message = error.message || "Error al crear vendedor";
             setSubmitError(message);
@@ -170,8 +165,6 @@ export const useRegisterForm = ({ onSuccess, onError } = {}) => {
             lastName: "",
             email: "",
             personal_phone: "",
-            password: "",
-            confirmPassword: "",
             company: "",
             ruc: "",
             address: "",
