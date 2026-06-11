@@ -4,6 +4,9 @@ import BranchesIcon from "../../../assets/branches-icon.svg?react";
 import CatalogIcon from "../../../assets/catalog-icon.svg?react";
 import AnalyticsIcon from "../../../assets/analytics-icon.svg?react";
 import SellerIcon from "../../../assets/seller-icon.svg?react";
+
+//routes Grupo 3
+import OrdersIcon from "../../../assets/orders-icon.svg?react";
 import { UserCog } from "lucide-react";
 
 const allMenuItems = [
@@ -47,6 +50,12 @@ const allMenuItems = [
         icon: UserCog,
         roles: [2],
     },
+    {
+        path: "/user/orders",
+        label: "Orders",
+        icon: OrdersIcon,
+        roles: [2],
+    }   
 ];
 
 export const getMenuByRole = (roleId) =>

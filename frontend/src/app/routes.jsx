@@ -13,6 +13,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminCatalogPage from "../features/catalog/views/AdminCatalogPage";
 import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
 
+
+//routes Grupo 3
+import OrderPage from "../features/orders/views/OrderPage";
+
 const ROLES = {
     SUPER_ADMIN: 1,
     VENDOR_ADMIN: 2,
@@ -54,6 +58,8 @@ const routes = [
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },
             { path: "staff", element: <UserStaffPage /> },
+            //routes Grupo 3
+            { path: "orders", element: <OrderPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
