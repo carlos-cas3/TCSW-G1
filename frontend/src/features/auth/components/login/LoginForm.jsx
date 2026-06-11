@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Mail, Lock, LogIn, Eye, EyeOff, Zap } from "lucide-react";
 import styles from "./LoginForm.module.css";
-import RegisterModal from "../register/RegisterModal";
 import { loginUser, getMe } from "../../services/auth.service";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
-    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
@@ -162,22 +160,7 @@ export default function LoginForm() {
                     </button>
                 </form>
 
-                <div className={styles.footer}>
-                    <p className={styles.footerText}>
-                        ¿No tienes una cuenta?{" "}
-                        <button
-                            className={styles.registerButton}
-                            onClick={() => setIsRegisterModalOpen(true)}
-                        >
-                            Crear cuenta de vendedor
-                        </button>
-                    </p>
-                </div>
             </div>
-
-            {isRegisterModalOpen && (
-                <RegisterModal onClose={() => setIsRegisterModalOpen(false)} />
-            )}
         </>
     );
 }

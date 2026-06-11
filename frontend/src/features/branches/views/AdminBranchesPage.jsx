@@ -1,17 +1,21 @@
+import { useMemo } from "react";
 import { RefreshCw } from "lucide-react";
 import { useBranches } from "../hooks/useBranches";
 import { useBranchFilters } from "../hooks/useBranchFilters";
+import { extractVendors, extractCities } from "../utils/branchFilters";
 import BranchTable from "../components/BranchTable";
 import BranchFilters from "../components/BranchFilters";
 import BranchStatsCards from "../components/BranchStatsCards";
 import "../styles/layout.css";
-import "../styles/table.css";
 import "../styles/buttons.css";
 
 export default function AdminBranchesPage() {
     const { branches, loading, error, reload } = useBranches({ mode: "admin" });
     const { filters, filteredBranches, stats, updateFilter, resetFilters } =
         useBranchFilters(branches);
+
+    const vendors = useMemo(() => extractVendors(branches), [branches]);
+    const cities = useMemo(() => extractCities(branches), [branches]);
 
     return (
         <div className="branches-page">
@@ -53,15 +57,17 @@ export default function AdminBranchesPage() {
                 onFilterChange={updateFilter}
                 onReset={resetFilters}
                 showInactive={true}
+                showVendorFilter={true}
+                vendors={vendors}
+                showCityFilter={true}
+                cities={cities}
             />
 
-            <div className="branches-table-container">
-                <BranchTable
-                    mode="admin"
-                    branches={filteredBranches}
-                    loading={loading}
-                />
-            </div>
+            <BranchTable
+                mode="admin"
+                branches={filteredBranches}
+                loading={loading}
+            />
         </div>
     );
 }

@@ -5,6 +5,10 @@ import CatalogIcon from "../../../assets/catalog-icon.svg?react";
 import AnalyticsIcon from "../../../assets/analytics-icon.svg?react";
 import SellerIcon from "../../../assets/seller-icon.svg?react";
 
+//routes Grupo 3
+import OrdersIcon from "../../../assets/orders-icon.svg?react";
+import { UserCog } from "lucide-react";
+
 const allMenuItems = [
     { path: "/admin", label: "Dashboard", icon: HomeIcon, roles: [1] },
     { path: "/admin/vendors", label: "Vendors", icon: VendorsIcon, roles: [1] },
@@ -40,6 +44,18 @@ const allMenuItems = [
         icon: BranchesIcon,
         roles: [2],
     },
+    {
+        path: "/user/staff",
+        label: "Staff",
+        icon: UserCog,
+        roles: [2],
+    },
+    {
+        path: "/user/orders",
+        label: "Orders",
+        icon: OrdersIcon,
+        roles: [2],
+    }   
 ];
 
 export const getMenuByRole = (roleId) =>

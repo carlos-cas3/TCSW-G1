@@ -1,20 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Plus } from "lucide-react";
 import { useVendors } from "../hooks/useVendors";
 import { useVendorFilters } from "../hooks/useVendorFilters";
 import { getAllCategories } from "../services/vendor.service";
 import VendorsTable from "../components/VendorsTable";
 import VendorFilters from "../components/VendorFilters";
 import VendorStatsCards from "../components/VendorStatsCards";
+import CreateVendorModal from "../components/CreateVendorModal";
 import { getStats } from "../utils/vendorHelpers";
-import "../styles/stats.css";
 
 export default function AdminVendorsPage() {
     const navigate = useNavigate();
     const { vendors, loading, error, reload, changeStatus, changingId } = useVendors();
     const [rowErrors, setRowErrors] = useState({});
     const [allCategories, setAllCategories] = useState([]);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const handleCreateSuccess = (response) => {
+        console.log("🔑 Contraseña temporal del vendedor:", response?.data?.temp_password);
+        setIsCreateModalOpen(false);
+        reload();
+    };
 
     const { filters, filteredVendors, updateFilter, resetFilters } = useVendorFilters(vendors);
 
@@ -47,14 +54,23 @@ export default function AdminVendorsPage() {
                         {filteredVendors.length} vendedor{filteredVendors.length !== 1 ? "es" : ""} registrado{filteredVendors.length !== 1 ? "s" : ""}
                     </p>
                 </div>
-                <button
-                    onClick={reload}
-                    disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                >
-                    <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-                    Actualizar
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={reload}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+                        Actualizar
+                    </button>
+                    <button
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                    >
+                        <Plus size={18} />
+                        Crear Vendedor
+                    </button>
+                </div>
             </div>
 
             {error && (
@@ -80,16 +96,19 @@ export default function AdminVendorsPage() {
                 allCategories={allCategories}
             />
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <VendorsTable
-                    vendors={filteredVendors}
-                    loading={loading}
-                    changingId={changingId}
-                    changeStatus={handleStatusChange}
-                    rowErrors={rowErrors}
-                    onView={(id) => navigate(`/admin/vendors/${id}`)}
-                />
-            </div>
+            <VendorsTable
+                vendors={filteredVendors}
+                loading={loading}
+                changingId={changingId}
+                changeStatus={handleStatusChange}
+                rowErrors={rowErrors}
+                onView={(id) => navigate(`/admin/vendors/${id}`)}
+            />
+            <CreateVendorModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSuccess={handleCreateSuccess}
+            />
         </div>
     );
 }

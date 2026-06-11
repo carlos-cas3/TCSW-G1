@@ -1,0 +1,43 @@
+@reference "tailwindcss";
+
+@layer components {
+  .filter-bar {
+    @apply bg-white rounded-lg border border-gray-200 p-4 mb-5;
+  }
+
+  .filter-bar-row {
+    @apply flex flex-wrap items-end gap-4;
+  }
+
+  .filter-bar-field {
+    @apply flex-1 min-w-[200px];
+  }
+
+  .filter-bar-field-narrow {
+    @apply w-44;
+  }
+
+  .filter-bar-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .filter-bar-search-wrapper {
+    @apply relative;
+  }
+
+  .filter-bar-search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400;
+  }
+
+  .filter-bar-input {
+    @apply w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .filter-bar-select {
+    @apply w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .filter-bar-reset-btn {
+    @apply flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:text-gray-900 hover:bg-gray-100 transition-colors;
+  }
+}

@@ -1,0 +1,23 @@
+@reference "tailwindcss";
+
+@layer components {
+  .stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6 mb-6;
+  }
+
+  .stats-card {
+    @apply bg-white rounded-lg border border-gray-200 p-5 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .stats-card-body {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  .stats-card-icon {
+    @apply p-3 rounded-lg flex-shrink-0;
+  }
+
+  .stats-card-icon svg {
+    @apply w-6 h-6;
+  }
+}

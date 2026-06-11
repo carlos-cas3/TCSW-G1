@@ -3,6 +3,12 @@ import { API } from "../../../config/api";
 
 const VENDOR_URL = `${API.VENDORS}/vendors`;
 
+export const createVendor = (data) =>
+    fetchWithAuth(VENDOR_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+
 export const getAllVendors = () => fetchWithAuth(VENDOR_URL);
 
 export const getVendorBranches = (vendorId) =>

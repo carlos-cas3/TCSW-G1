@@ -7,10 +7,15 @@ import AdminVendorDetailPage from "../features/vendors/views/AdminVendorDetailPa
 import UserVendorPage from "../features/vendors/views/UserVendorPage";
 import AdminBranchesPage from "../features/branches/views/AdminBranchesPage";
 import UserBranchesPage from "../features/branches/views/UserBranchesPage";
+import UserStaffPage from "../features/staff/views/UserStaffPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 import AdminCatalogPage from "../features/catalog/views/AdminCatalogPage";
 import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
+
+
+//routes Grupo 3
+import OrderPage from "../features/orders/views/OrderPage";
 
 const ROLES = {
     SUPER_ADMIN: 1,
@@ -52,6 +57,9 @@ const routes = [
             { path: "catalog", element: <VendorCatalogPage /> },
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },
+            { path: "staff", element: <UserStaffPage /> },
+            //routes Grupo 3
+            { path: "orders", element: <OrderPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
