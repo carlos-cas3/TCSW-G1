@@ -7,6 +7,7 @@ import AdminVendorDetailPage from "../features/vendors/views/AdminVendorDetailPa
 import UserVendorPage from "../features/vendors/views/UserVendorPage";
 import AdminBranchesPage from "../features/branches/views/AdminBranchesPage";
 import UserBranchesPage from "../features/branches/views/UserBranchesPage";
+import UserStaffPage from "../features/staff/views/UserStaffPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 import AdminCatalogPage from "../features/catalog/views/AdminCatalogPage";
@@ -52,6 +53,7 @@ const routes = [
             { path: "catalog", element: <VendorCatalogPage /> },
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },
+            { path: "staff", element: <UserStaffPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },

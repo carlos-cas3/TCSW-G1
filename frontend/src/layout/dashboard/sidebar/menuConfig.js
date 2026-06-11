@@ -4,6 +4,7 @@ import BranchesIcon from "../../../assets/branches-icon.svg?react";
 import CatalogIcon from "../../../assets/catalog-icon.svg?react";
 import AnalyticsIcon from "../../../assets/analytics-icon.svg?react";
 import SellerIcon from "../../../assets/seller-icon.svg?react";
+import { UserCog } from "lucide-react";
 
 const allMenuItems = [
     { path: "/admin", label: "Dashboard", icon: HomeIcon, roles: [1] },
@@ -38,6 +39,12 @@ const allMenuItems = [
         path: "/user/branches",
         label: "Branches",
         icon: BranchesIcon,
+        roles: [2],
+    },
+    {
+        path: "/user/staff",
+        label: "Staff",
+        icon: UserCog,
         roles: [2],
     },
 ];
