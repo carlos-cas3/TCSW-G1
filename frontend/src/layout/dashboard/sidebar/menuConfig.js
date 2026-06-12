@@ -51,11 +51,18 @@ const allMenuItems = [
         roles: [2],
     },
     {
-        path: "/user/orders",
+        path: "/admin/orders",
         label: "Orders",
         icon: OrdersIcon,
+        roles: [1],
+    },
+    {
+        path: "/user/sub-orders",
+        label: "Sub-Órdenes",
+        icon: OrdersIcon,
         roles: [2],
-    }   
+    }
+    
 ];
 
 export const getMenuByRole = (roleId) =>
