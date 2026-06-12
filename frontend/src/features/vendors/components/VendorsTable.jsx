@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Eye, Pencil } from "lucide-react";
 import DataTable from "../../../shared/components/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import StatusSelect from "../../../shared/components/StatusSelect";
+import TableActions from "../../../shared/components/TableActions";
 import { formatDate } from "../../../shared/utils/formatDate";
 import { sortVendors } from "../utils/vendorHelpers";
 
@@ -156,22 +156,11 @@ export default function VendorsTable({
       return {
         ...col,
         render: (vendor) => (
-          <div className="flex gap-2">
-            <button
-              onClick={() => onView?.(vendor.vendor_id)}
-              className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-              title="Ver más información"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => console.log("Edit:", vendor.vendor_id)}
-              className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-              title="Editar"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
-          </div>
+          <TableActions
+            show={["view", "edit"]}
+            onView={() => onView?.(vendor.vendor_id)}
+            onEdit={() => console.log("Edit:", vendor.vendor_id)}
+          />
         ),
       };
     }

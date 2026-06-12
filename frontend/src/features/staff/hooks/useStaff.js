@@ -11,7 +11,7 @@ export const useStaff = () => {
     setError(null);
     try {
       const res = await getStaff();
-      setStaff(res.data ?? []);
+      setStaff(Array.isArray(res) ? res : (res.data ?? []));
     } catch (err) {
       setError(err.message || "Error al cargar staff");
     } finally {

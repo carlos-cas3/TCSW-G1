@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Pencil, Ban, UserCheck, UserCog } from "lucide-react";
+import { UserCheck, UserCog } from "lucide-react";
 import DataTable from "../../../shared/components/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
+import TableActions from "../../../shared/components/TableActions";
 import { ROLE_MAP } from "../constants/staffConstants";
 
 const TABLE_HEADERS = [
@@ -65,24 +66,10 @@ export default function StaffTable({ staff, loading }) {
       return {
         ...col,
         render: () => (
-          <div className="flex items-center gap-2">
-            <button
-              disabled
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed"
-              title="Endpoint no disponible"
-            >
-              <Pencil className="w-3.5 h-3.5" />
-              Editar
-            </button>
-            <button
-              disabled
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed"
-              title="Endpoint no disponible"
-            >
-              <Ban className="w-3.5 h-3.5" />
-              Desactivar
-            </button>
-          </div>
+          <TableActions
+            show={["edit", "delete"]}
+            disabled
+          />
         ),
       };
     }
