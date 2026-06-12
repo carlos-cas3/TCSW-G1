@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
 import DataTable from "../../../shared/components/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import StatusBadge from "../../../shared/components/StatusBadge";
 import StatusSelect from "../../../shared/components/StatusSelect";
+import TableActions from "../../../shared/components/TableActions";
 import { formatDate } from "../../../shared/utils/formatDate";
 import { BRANCH_STATUS_OPTIONS } from "../constants/branchConstants";
 import { sortBranches } from "../utils/branchFilters";
@@ -154,24 +154,12 @@ export default function BranchTable({
       return {
         ...col,
         render: (branch) => (
-          <div className="flex gap-2">
-            <button
-              onClick={() => onEdit(branch)}
-              disabled={changingId === branch.branch_id}
-              className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
-              title="Editar sucursal"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => handleDelete(branch)}
-              disabled={changingId === branch.branch_id}
-              className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
-              title="Eliminar sucursal"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
+          <TableActions
+            show={["edit", "delete"]}
+            onEdit={() => onEdit(branch)}
+            onDelete={() => handleDelete(branch)}
+            disabled={changingId === branch.branch_id}
+          />
         ),
       };
     }

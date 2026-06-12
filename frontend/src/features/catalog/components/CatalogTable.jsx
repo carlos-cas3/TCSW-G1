@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { Eye, Pencil, Trash2 } from "lucide-react";
 import DataTable from "../../../shared/components/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
+import TableStatusBadge from "../../../shared/components/TableStatusBadge";
+import TableActions from "../../../shared/components/TableActions";
 import { sortProducts } from "../utils/catalogHelpers";
-
-const STATUS_STYLE = {
-  ACTIVE: "bg-green-100 text-green-700",
-  INACTIVE: "bg-red-100 text-red-700",
-};
 
 const COLUMNS_ADMIN = [
   { key: "productName", label: "Producto", sortable: true },
@@ -121,11 +117,7 @@ export default function CatalogTable({
         render: (product) => {
           const info = getInfo(product);
           const status = product.status || info.product_status || "INACTIVE";
-          return (
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${STATUS_STYLE[status] || STATUS_STYLE.INACTIVE}`}>
-              {status}
-            </span>
-          );
+          return <TableStatusBadge status={status} />;
         },
       };
     }
@@ -133,17 +125,13 @@ export default function CatalogTable({
       return {
         ...col,
         render: (product) => (
-          <div className="flex items-center justify-end gap-4">
-            <button onClick={() => onView(product)} className="text-blue-600 hover:text-blue-800">
-              <Eye size={18} />
-            </button>
-            <button onClick={() => onEdit(product)} className="text-yellow-600 hover:text-yellow-800">
-              <Pencil size={18} />
-            </button>
-            <button onClick={() => handleDeleteClick(product)} className="text-red-600 hover:text-red-800">
-              <Trash2 size={18} />
-            </button>
-          </div>
+          <TableActions
+            show={["view", "edit", "delete"]}
+            onView={() => onView(product)}
+            onEdit={() => onEdit(product)}
+            onDelete={() => handleDeleteClick(product)}
+            size="md"
+          />
         ),
       };
     }
