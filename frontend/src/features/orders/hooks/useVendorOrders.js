@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { getUser, getToken } from "../../../app/auth";
-import { obtenerOrdenesPorVendedor } from "../services/ordersService";
+import { getUser } from "../../../app/auth";
+import { getVendorOrders } from "../services/orders.service";
 
 export const useVendorOrders = () => {
   const [ordenesVendedor, setOrdenesVendedor] = useState([]);
@@ -12,17 +12,15 @@ export const useVendorOrders = () => {
     setError(null);
     try {
       const user = getUser();
-      const token = getToken();
-      
+
       if (!user || !user.vendorId) {
         setOrdenesVendedor([]);
         setLoading(false);
         return;
       }
 
-      const res = await obtenerOrdenesPorVendedor(user.vendorId, token);
-      // Usamos res directo o res.data dependiendo de si usas fetch o axios
-      setOrdenesVendedor(res.data || res || []); 
+      const res = await getVendorOrders(user.vendorId);
+      setOrdenesVendedor(res ?? []);
     } catch (err) {
       setError(err.message || "Error al cargar las ventas de la tienda");
     } finally {
