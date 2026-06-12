@@ -67,13 +67,13 @@ export default function OrdenesGlobales({ ordenes }) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50/80">
-                    <th className={headerClass}>ID Orden</th>
+                    <th className={headerClass}>ID Orden Maestra</th>
                     <th className={headerClass}>Fecha</th>
                     <th className={headerClass}>Cliente</th>
                     <th className={headerClass}>DNI</th>
                     <th className={headerClass}>Estado Logístico</th>
                     <th className={headerClass}>Monto Total</th>
-                    <th className={`${headerClass} text-right`}>Detalles</th>
+                    <th className={`${headerClass} text-right`}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>

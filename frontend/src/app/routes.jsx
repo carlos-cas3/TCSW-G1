@@ -16,6 +16,7 @@ import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
 
 //routes Grupo 3
 import OrderPage from "../features/orders/views/OrderPage";
+import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
 
 const ROLES = {
     SUPER_ADMIN: 1,
@@ -42,6 +43,7 @@ const routes = [
             { path: "branches", element: <AdminBranchesPage /> },
             { path: "catalog", element: <AdminCatalogPage /> },
             { path: "analytics", element: <h1>Analytics</h1> },
+            { path: "orders", element: <OrderPage /> },
         ],
     },
     // VENDOR_ADMIN
@@ -59,7 +61,8 @@ const routes = [
             { path: "branches", element: <UserBranchesPage /> },
             { path: "staff", element: <UserStaffPage /> },
             //routes Grupo 3
-            { path: "orders", element: <OrderPage /> },
+            
+            { path: "sub-orders", element: <VendorOrdersPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },

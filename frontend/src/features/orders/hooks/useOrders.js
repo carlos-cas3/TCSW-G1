@@ -11,7 +11,7 @@ export const useOrders = () => {
     setError(null);
     try {
       const res = await getOrders();
-      setOrdenes(res.data ?? []);
+      setOrdenes(res ?? []);
     } catch (err) {
       setError(err.message || "Error al cargar órdenes");
     } finally {
