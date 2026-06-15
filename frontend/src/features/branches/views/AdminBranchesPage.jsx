@@ -17,6 +17,10 @@ export default function AdminBranchesPage() {
     const vendors = useMemo(() => extractVendors(branches), [branches]);
     const cities = useMemo(() => extractCities(branches), [branches]);
 
+    const handleView = (branchId) => {
+        console.log("View branch", branchId);
+    };
+
     return (
         <div className="branches-page">
             <div className="branches-page-header">
@@ -52,21 +56,23 @@ export default function AdminBranchesPage() {
 
             <BranchStatsCards stats={stats} />
 
-            <BranchFilters
-                filters={filters}
-                onFilterChange={updateFilter}
-                onReset={resetFilters}
-                showInactive={true}
-                showVendorFilter={true}
-                vendors={vendors}
-                showCityFilter={true}
-                cities={cities}
-            />
-
             <BranchTable
                 mode="admin"
                 branches={filteredBranches}
                 loading={loading}
+                onView={handleView}
+                toolbar={
+                    <BranchFilters
+                        filters={filters}
+                        onFilterChange={updateFilter}
+                        onReset={resetFilters}
+                        showInactive={true}
+                        showVendorFilter={true}
+                        vendors={vendors}
+                        showCityFilter={true}
+                        cities={cities}
+                    />
+                }
             />
         </div>
     );
