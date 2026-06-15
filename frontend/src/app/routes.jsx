@@ -19,6 +19,7 @@ import OrderPage from "../features/orders/views/OrderPage";
 import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
 
 import DataTablePlayground from "../shared/dev/DataTablePlayground";
+import StatsCardsPlayground from "../shared/dev/StatsCardsPlayground";
 
 const ROLES = {
     SUPER_ADMIN: 1,
@@ -26,7 +27,8 @@ const ROLES = {
 };
 
 const devRoutes = import.meta.env.DEV
-  ? [{ path: "/dev/table", element: <DataTablePlayground /> }]
+  ? [{ path: "/dev/table", element: <DataTablePlayground /> },
+     { path: "/dev/cards", element: <StatsCardsPlayground /> }]
   : [];
 
 const routes = [
