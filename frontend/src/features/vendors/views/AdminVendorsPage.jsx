@@ -6,7 +6,15 @@ import { useVendorFilters } from "../hooks/useVendorFilters";
 import { getAllCategories } from "../services/vendor.service";
 import VendorsTable from "../components/VendorsTable";
 import VendorFilters from "../components/VendorFilters";
-import VendorStatsCards from "../components/VendorStatsCards";
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { Store, CircleCheck, Clock, Ban } from "lucide-react";
+
+const VendorStatsCards = createStatsCards([
+  { label: "Total Vendedores", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activos", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "Pendientes", valueKey: "pending", icon: Clock, color: "yellow" },
+  { label: "Suspendidos", valueKey: "suspended", icon: Ban, color: "red" },
+]);
 import CreateVendorModal from "../components/CreateVendorModal";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import { getStats } from "../utils/vendorHelpers";

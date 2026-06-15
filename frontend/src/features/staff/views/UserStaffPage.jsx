@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Plus, RefreshCw } from "lucide-react";
 import { useStaff } from "../hooks/useStaff";
 import { useStaffFilters } from "../hooks/useStaffFilters";
-import StaffStatsCards from "../components/StaffStatsCards";
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { STATS_CONFIG } from "../constants/staffConstants";
+
+const StaffStatsCards = createStatsCards(STATS_CONFIG);
 import StaffTable from "../components/StaffTable";
 import StaffFormModal from "../components/StaffFormModal";
 import FilterBar from "../../../shared/components/FilterBar";

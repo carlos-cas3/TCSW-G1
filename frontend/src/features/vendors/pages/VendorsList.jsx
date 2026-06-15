@@ -2,7 +2,15 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useVendorFilters } from '../hooks/useVendorFilters';
 import { VENDORS_MOCK } from '../data/vendorsMock';
-import VendorStatsCards from '../components/VendorStatsCards';
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { Store, CircleCheck, Clock, Ban } from "lucide-react";
+
+const VendorStatsCards = createStatsCards([
+  { label: "Total Vendedores", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activos", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "Pendientes", valueKey: "pending", icon: Clock, color: "yellow" },
+  { label: "Suspendidos", valueKey: "suspended", icon: Ban, color: "red" },
+]);
 import VendorFilters from '../components/VendorFilters';
 import VendorsTable from '../components/VendorsTable';
 
