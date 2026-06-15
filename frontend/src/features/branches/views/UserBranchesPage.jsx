@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { RefreshCw, Plus } from "lucide-react";
+import { RefreshCw, Plus, Store, CircleCheck, Settings } from "lucide-react";
 import { getUser } from "../../../app/auth";
 import { useBranches } from "../hooks/useBranches";
 import { useBranchFilters } from "../hooks/useBranchFilters";
+import createStatsCards from "../../../shared/components/createStatsCards";
 import BranchTable from "../components/BranchTable";
 import BranchFilters from "../components/BranchFilters";
 import BranchFormModal from "../components/BranchFormModal";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import "../styles/layout.css";
 import "../styles/buttons.css";
+
+const BranchStatsCards = createStatsCards([
+  { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activas", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "yellow" },
+]);
 
 export default function UserBranchesPage() {
     const vendorId = getUser()?.vendorId;
@@ -23,7 +30,7 @@ export default function UserBranchesPage() {
         deleteBranch,
         changingId,
     } = useBranches({ vendorId, mode: "user" });
-    const { filters, filteredBranches, updateFilter, resetFilters } =
+    const { filters, filteredBranches, stats, updateFilter, resetFilters } =
         useBranchFilters(branches);
     const [rowErrors, setRowErrors] = useState({});
     const [pendingStatuses, setPendingStatuses] = useState({});
@@ -146,6 +153,8 @@ export default function UserBranchesPage() {
                     </div>
                 </div>
             )}
+
+            <BranchStatsCards stats={stats} />
 
             <div className="branches-table-container">
                 <BranchTable
