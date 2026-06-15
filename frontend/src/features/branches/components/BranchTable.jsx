@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DataTable from "../../../shared/components/DataTable";
+import DataTable from "../../../shared/table/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import StatusBadge from "../../../shared/components/StatusBadge";
 import StatusSelect from "../../../shared/components/StatusSelect";

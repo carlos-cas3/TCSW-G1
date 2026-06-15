@@ -18,12 +18,19 @@ import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
 import OrderPage from "../features/orders/views/OrderPage";
 import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
 
+import DataTablePlayground from "../shared/dev/DataTablePlayground";
+
 const ROLES = {
     SUPER_ADMIN: 1,
     VENDOR_ADMIN: 2,
 };
 
+const devRoutes = import.meta.env.DEV
+  ? [{ path: "/dev/table", element: <DataTablePlayground /> }]
+  : [];
+
 const routes = [
+  ...devRoutes,
     {
         element: <AuthLayout />,
         children: [{ path: "/login", element: <LoginForm /> }],

@@ -5,6 +5,18 @@
     @apply overflow-x-auto bg-white rounded-lg border border-gray-200;
   }
 
+  .data-table-scroll-fixed {
+    @apply overflow-auto bg-white;
+  }
+
+  .data-table-scroll-inner {
+    @apply overflow-x-auto;
+  }
+
+  .data-table-container {
+    @apply bg-white rounded-lg border border-gray-200 overflow-hidden;
+  }
+
   .data-table {
     @apply min-w-full divide-y divide-gray-200;
   }
@@ -35,6 +47,10 @@
 
   .data-table-empty {
     @apply text-center py-12 text-sm text-gray-500;
+  }
+
+  .data-table-toolbar {
+    @apply border-b border-gray-200 px-4 py-3 bg-white;
   }
 
   .data-pagination-top {
