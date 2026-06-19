@@ -57,8 +57,26 @@ const allMenuItems = [
         roles: [1],
     },
     {
+        path: "/admin/vendor-orders",
+        label: "Órdenes por Vendedor",
+        icon: OrdersIcon,
+        roles: [1],
+    },
+    {
         path: "/user/sub-orders",
         label: "Sub-Órdenes",
+        icon: OrdersIcon,
+        roles: [2],
+    },
+    {
+        path: "/user/logistica",
+        label: "Logística",
+        icon: OrdersIcon,
+        roles: [2],
+    },
+    {
+        path: "/user/historial",
+        label: "Historial de Sub-ordenes",
         icon: OrdersIcon,
         roles: [2],
     }
