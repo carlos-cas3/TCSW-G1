@@ -46,10 +46,33 @@ export const MOCK_REVENUE_SERIES = [
     { date: "2026-01-30", total: 26300 },
 ];
 
+export const MOCK_REVENUE_MONTHLY = [
+    { month: "Ene", revenue: 125000, quarter: "Q1", date: "2026-01-15" },
+    { month: "Feb", revenue: 142000, quarter: "Q1", date: "2026-02-15" },
+    { month: "Mar", revenue: 158000, quarter: "Q1", date: "2026-03-15" },
+    { month: "Abr", revenue: 162000, quarter: "Q2", date: "2026-04-15" },
+    { month: "May", revenue: 148000, quarter: "Q2", date: "2026-05-15" },
+    { month: "Jun", revenue: 171000, quarter: "Q2", date: "2026-06-15" },
+    { month: "Jul", revenue: 185000, quarter: "Q3", date: "2026-07-15" },
+    { month: "Ago", revenue: 179000, quarter: "Q3", date: "2026-08-15" },
+    { month: "Sep", revenue: 164000, quarter: "Q3", date: "2026-09-15" },
+    { month: "Oct", revenue: 192000, quarter: "Q4", date: "2026-10-15" },
+    { month: "Nov", revenue: 208000, quarter: "Q4", date: "2026-11-15" },
+    { month: "Dic", revenue: 235000, quarter: "Q4", date: "2026-12-15" },
+];
+
 export const MOCK_ORDERS_DISTRIBUTION = {
     pending: 45,
     completed: 1120,
     cancelled: 78,
+};
+
+export const MOCK_ORDERS_DISTRIBUTION_BY_Q = {
+    Q1: { pending: 12, completed: 280, cancelled: 18 },
+    Q2: { pending: 8, completed: 310, cancelled: 22 },
+    Q3: { pending: 15, completed: 295, cancelled: 14 },
+    Q4: { pending: 10, completed: 235, cancelled: 24 },
+    full: { pending: 45, completed: 1120, cancelled: 78 },
 };
 
 export const MOCK_TOP_PRODUCTS = [
@@ -63,6 +86,52 @@ export const MOCK_TOP_PRODUCTS = [
     { name: "Crema Hidratante Facial", category: "Belleza", sales: 423, total: 21150.00 },
     { name: "Cafetera Automática", category: "Hogar", sales: 92, total: 46000.00 },
     { name: "Audífonos Bluetooth Pro", category: "Electrónicos", sales: 345, total: 51750.00 },
+];
+
+export const MOCK_REVENUE_QUARTERLY = {
+    2025: [
+        { quarter: "Q1", revenue: 185000 },
+        { quarter: "Q2", revenue: 212000 },
+        { quarter: "Q3", revenue: 198000 },
+        { quarter: "Q4", revenue: 241000 },
+    ],
+    2026: [
+        { quarter: "Q1", revenue: 125000 },
+        { quarter: "Q2", revenue: 142000 },
+        { quarter: "Q3", revenue: 0 },
+        { quarter: "Q4", revenue: 0 },
+    ],
+};
+
+export const MOCK_OPERATIONAL_ALERTS = [
+    {
+        id: 1,
+        type: "password",
+        severity: "high",
+        vendorName: "TechStore Perú",
+        description: "90 días sin cambiar contraseña",
+    },
+    {
+        id: 2,
+        type: "password",
+        severity: "high",
+        vendorName: "Hogar & Estilo",
+        description: "120 días sin cambiar contraseña",
+    },
+    {
+        id: 3,
+        type: "stock",
+        severity: "medium",
+        productName: "Laptop Gamer XPS 15",
+        description: "Stock en 0 unidades",
+    },
+    {
+        id: 4,
+        type: "stock",
+        severity: "low",
+        productName: "Cafetera Automática",
+        description: "Stock crítico: 2 unidades",
+    },
 ];
 
 export const MOCK_TOP_VENDORS = [
