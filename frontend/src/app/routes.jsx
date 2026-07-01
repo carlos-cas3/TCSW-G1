@@ -18,6 +18,11 @@ import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
 import OrderPage from "../features/orders/views/OrderPage";
 import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
 
+import SuperAdminDashboard from "../features/analytics/views/SuperAdminDashboard";
+import VendorAdminDashboard from "../features/analytics/views/VendorAdminDashboard";
+import SuperAdminAnalytics from "../features/analytics/views/SuperAdminAnalytics";
+import VendorAdminAnalytics from "../features/analytics/views/VendorAdminAnalytics";
+
 import DataTablePlayground from "../shared/dev/DataTablePlayground";
 import StatsCardsPlayground from "../shared/dev/StatsCardsPlayground";
 
@@ -46,12 +51,12 @@ const routes = [
             </ProtectedRoute>
         ),
         children: [
-            { path: "", element: <h1>Admin Dashboard</h1> },
+            { path: "", element: <SuperAdminDashboard /> },
             { path: "vendors", element: <AdminVendorsPage /> },
             { path: "vendors/:vendor_id", element: <AdminVendorDetailPage /> },
             { path: "branches", element: <AdminBranchesPage /> },
             { path: "catalog", element: <AdminCatalogPage /> },
-            { path: "analytics", element: <h1>Analytics</h1> },
+            { path: "analytics", element: <SuperAdminAnalytics /> },
             { path: "orders", element: <OrderPage /> },
         ],
     },
@@ -64,7 +69,8 @@ const routes = [
             </ProtectedRoute>
         ),
         children: [
-            { path: "", element: <h1>Vendor Dashboard</h1> },
+            { path: "", element: <VendorAdminDashboard /> },
+            { path: "analytics", element: <VendorAdminAnalytics /> },
             { path: "catalog", element: <VendorCatalogPage /> },
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },
