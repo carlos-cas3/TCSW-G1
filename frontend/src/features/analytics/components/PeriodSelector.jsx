@@ -2,13 +2,31 @@ import { useState, useCallback } from "react";
 import { Calendar } from "lucide-react";
 
 const periods = [
-    { value: "hoy", label: "Hoy" },
+    { value: "mtd", label: "Mes" },
     { value: "q1", label: "Q1" },
     { value: "q2", label: "Q2" },
     { value: "q3", label: "Q3" },
     { value: "q4", label: "Q4" },
     { value: "custom", label: "Personalizado" },
 ];
+
+function format(date) {
+    return date.toISOString().split("T")[0];
+}
+
+function getPreviousCustomRange(start, end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const duration = (endDate - startDate) / (1000 * 60 * 60 * 24);
+    const prevEnd = new Date(startDate);
+    prevEnd.setDate(prevEnd.getDate() - 1);
+    const prevStart = new Date(prevEnd);
+    prevStart.setDate(prevStart.getDate() - duration);
+    return {
+        startDate: format(prevStart),
+        endDate: format(prevEnd),
+    };
+}
 
 function getMonthRange() {
     const now = new Date();
@@ -35,57 +53,76 @@ export default function PeriodSelector({ value, onChange }) {
     const [customEnd, setCustomEnd] = useState(() => initCustomDates(value).end);
 
     const handlePeriodChange = useCallback((newPeriod) => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+
+        if (newPeriod === "mtd") {
+            const startDate = new Date(year, month, 1);
+            const endDate = now;
+            const prevStart = new Date(year, month - 1, 1);
+            const prevEnd = new Date(year, month - 1, endDate.getDate());
+            onChange({
+                period: "mtd",
+                current: { startDate: format(startDate), endDate: format(endDate) },
+                previous: { startDate: format(prevStart), endDate: format(prevEnd) },
+            });
+            return;
+        }
+
         if (newPeriod === "custom") {
             const range = getMonthRange();
             setCustomStart(range.start);
             setCustomEnd(range.end);
-            onChange({ period: "custom", startDate: range.start, endDate: range.end });
+            const previous = getPreviousCustomRange(range.start, range.end);
+            onChange({
+                period: "custom",
+                current: { startDate: range.start, endDate: range.end },
+                previous,
+            });
             return;
         }
-        const now = new Date();
-        const year = now.getFullYear();
-        let startDate, endDate;
 
-        switch (newPeriod) {
-            case "hoy": {
-                const today = now.toISOString().split("T")[0];
-                startDate = today;
-                endDate = today;
-                break;
-            }
-            case "q1":
-                startDate = `${year}-01-01`;
-                endDate = `${year}-03-31`;
-                break;
-            case "q2":
-                startDate = `${year}-04-01`;
-                endDate = `${year}-06-30`;
-                break;
-            case "q3":
-                startDate = `${year}-07-01`;
-                endDate = `${year}-09-30`;
-                break;
-            case "q4":
-                startDate = `${year}-10-01`;
-                endDate = `${year}-12-31`;
-                break;
-            default:
-                return;
-        }
+        const quarters = {
+            q1: { start: `${year}-01-01`, end: `${year}-03-31` },
+            q2: { start: `${year}-04-01`, end: `${year}-06-30` },
+            q3: { start: `${year}-07-01`, end: `${year}-09-30` },
+            q4: { start: `${year}-10-01`, end: `${year}-12-31` },
+        };
 
-        onChange({ period: newPeriod, startDate, endDate });
+        const current = quarters[newPeriod];
+        if (!current) return;
+
+        onChange({
+            period: newPeriod,
+            current,
+            previous: {
+                startDate: `${year - 1}-${current.start.slice(5)}`,
+                endDate: `${year - 1}-${current.end.slice(5)}`,
+            },
+        });
     }, [onChange]);
 
     const handleCustomStart = useCallback((e) => {
         const val = e.target.value;
         setCustomStart(val);
-        onChange({ period: "custom", startDate: val, endDate: customEnd });
+        const previous = getPreviousCustomRange(val, customEnd);
+        onChange({
+            period: "custom",
+            current: { startDate: val, endDate: customEnd },
+            previous,
+        });
     }, [customEnd, onChange]);
 
     const handleCustomEnd = useCallback((e) => {
         const val = e.target.value;
         setCustomEnd(val);
-        onChange({ period: "custom", startDate: customStart, endDate: val });
+        const previous = getPreviousCustomRange(customStart, val);
+        onChange({
+            period: "custom",
+            current: { startDate: customStart, endDate: val },
+            previous,
+        });
     }, [customStart, onChange]);
 
     return (

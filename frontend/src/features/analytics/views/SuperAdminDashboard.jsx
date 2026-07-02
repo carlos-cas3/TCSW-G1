@@ -18,7 +18,7 @@ const StatsCards = createStatsCards([
 
 export default function SuperAdminDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
-    const [selectedPeriod, setSelectedPeriod] = useState("hoy");
+    const [selectedPeriod, setSelectedPeriod] = useState("mtd");
     const {
         metrics,
         loadingMetrics,
@@ -35,16 +35,35 @@ export default function SuperAdminDashboard() {
     } = useAnalytics();
 
     useEffect(() => {
-        const today = new Date().toISOString().split("T")[0];
-        setFilters((prev) => ({ ...prev, startDate: today, endDate: today }));
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const s = (d) => d.toISOString().split("T")[0];
+        const startDate = s(new Date(year, month, 1));
+        const endDate = s(now);
+        const prevStart = s(new Date(year, month - 1, 1));
+        const prevEnd = s(new Date(year, month - 1, now.getDate()));
+        setFilters((prev) => ({
+            ...prev,
+            startDate,
+            endDate,
+            previousStartDate: prevStart,
+            previousEndDate: prevEnd,
+        }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const stats = useMemo(() => ({ ...metrics }), [metrics]);
 
-    const handlePeriodChange = useCallback(({ period, startDate, endDate }) => {
+    const handlePeriodChange = useCallback(({ period, current, previous }) => {
         setSelectedPeriod(period);
-        setFilters((prev) => ({ ...prev, startDate, endDate }));
+        setFilters((prev) => ({
+            ...prev,
+            startDate: current.startDate,
+            endDate: current.endDate,
+            previousStartDate: previous.startDate,
+            previousEndDate: previous.endDate,
+        }));
     }, [setFilters]);
 
     const handleReload = () => {

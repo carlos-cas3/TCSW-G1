@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import {
     BarChart,
     Bar,
@@ -50,8 +50,14 @@ function CustomTooltip({ active, payload, label }) {
     );
 }
 
-export default function CategoryChart({ data, loading, error, onRetry }) {
+const CategoryChart = ({ data, loading, error, onRetry, onCategoryClick, selectedCategory }) => {
     const chartData = useMemo(() => data || [], [data]);
+
+    const handleClick = useCallback((entry) => {
+        if (onCategoryClick && entry?.category) {
+            onCategoryClick(entry.category);
+        }
+    }, [onCategoryClick]);
 
     if (loading) return <ChartSkeleton />;
     if (error) return <ErrorState error={error} onRetry={onRetry} />;
@@ -61,12 +67,22 @@ export default function CategoryChart({ data, loading, error, onRetry }) {
         <div className="bg-white rounded-lg border border-gray-200 p-5">
             <h3 className="text-base font-semibold text-gray-900 mb-4">
                 Ingresos por Categoría
+                {selectedCategory && (
+                    <span className="ml-2 text-xs font-normal text-blue-600">
+                        (seleccionado: {selectedCategory})
+                    </span>
+                )}
             </h3>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                     data={chartData}
                     layout="vertical"
                     margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                    onClick={(e) => {
+                        if (e?.activePayload?.[0]?.payload) {
+                            handleClick(e.activePayload[0].payload);
+                        }
+                    }}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
                     <XAxis
@@ -85,13 +101,32 @@ export default function CategoryChart({ data, loading, error, onRetry }) {
                         width={90}
                     />
                     <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="revenue" radius={[0, 4, 4, 0]}>
+                    <Bar
+                        dataKey="revenue"
+                        radius={[0, 4, 4, 0]}
+                        cursor={onCategoryClick ? "pointer" : "default"}
+                    >
                         {chartData.map((entry, idx) => (
-                            <Cell key={entry.category} fill={COLORS[idx % COLORS.length]} />
+                            <Cell
+                                key={entry.category}
+                                fill={
+                                    selectedCategory === entry.category
+                                        ? COLORS[idx % COLORS.length]
+                                        : `${COLORS[idx % COLORS.length]}40`
+                                }
+                                stroke={
+                                    selectedCategory === entry.category
+                                        ? COLORS[idx % COLORS.length]
+                                        : "transparent"
+                                }
+                                strokeWidth={2}
+                            />
                         ))}
                     </Bar>
                 </BarChart>
             </ResponsiveContainer>
         </div>
     );
-}
+};
+
+export default CategoryChart;

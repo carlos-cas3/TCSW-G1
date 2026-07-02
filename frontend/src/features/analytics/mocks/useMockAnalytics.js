@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { getUser } from "../../../app/auth";
 import {
     mapRevenueSeries,
@@ -10,7 +10,10 @@ import {
     mapRevenueTrend,
     mapOrdersTrend,
     mapCategories,
-    generateInsights,
+    mapRevenueTrendWithComparison,
+    mapVendorCategories,
+    mapVendorMonthly,
+    enhanceInsights,
 } from "../mappers/analytics.mapper";
 import {
     MOCK_REVENUE_SERIES,
@@ -19,18 +22,27 @@ import {
     MOCK_TOP_PRODUCTS_BY_Q,
     MOCK_TOP_VENDORS,
     MOCK_OPERATIONAL_ALERTS,
-    MOCK_DASHBOARD_METRICS_BY_Q,
+    MOCK_DASHBOARD_METRICS_ADMIN,
     MOCK_TRENDS_MONTHLY,
+    MOCK_TRENDS_PREVIOUS,
     MOCK_CATEGORIES,
+    MOCK_CATEGORY_VENDORS,
+    MOCK_VENDOR_MONTHLY,
 } from "./mockData";
 
 const defaultFilters = (role) => ({
     startDate: "",
     endDate: "",
-    status: "all",
+    previousStartDate: "",
+    previousEndDate: "",
     category: "",
     ...(role === 2 ? {} : { vendorId: "all" }),
 });
+
+const defaultSelection = {
+    category: null,
+    vendorId: null,
+};
 
 function filterByDateRange(monthlyData, startDate, endDate) {
     if (!startDate && !endDate) return monthlyData;
@@ -88,22 +100,40 @@ function getTopProductsForPeriod(monthlyData) {
     return MOCK_TOP_PRODUCTS_BY_Q.full;
 }
 
-function getMetricsForPeriod(monthlyData) {
-    if (monthlyData.length === 0) return { totalRevenue: 0, totalOrders: 0, totalVendors: 48, activeVendors: 36, avgOrderValue: 0 };
-    const quarters = [...new Set(monthlyData.map((m) => m.quarter))];
-    if (quarters.length === 1) {
-        return MOCK_DASHBOARD_METRICS_BY_Q[quarters[0]] || MOCK_DASHBOARD_METRICS_BY_Q.full;
+function computeMetricsFromRange(trendsData, startDate, endDate) {
+    if (!startDate && !endDate) {
+        return {
+            totalRevenue: MOCK_DASHBOARD_METRICS_ADMIN.totalRevenue,
+            totalOrders: MOCK_DASHBOARD_METRICS_ADMIN.totalOrders,
+            totalVendors: 48,
+            activeVendors: 36,
+            avgOrderValue: MOCK_DASHBOARD_METRICS_ADMIN.avgOrderValue,
+        };
     }
-    return MOCK_DASHBOARD_METRICS_BY_Q.full;
-}
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
 
-function getPreviousMetrics(quarter) {
-    const Q_ORDER = ["Q1", "Q2", "Q3", "Q4"];
-    const idx = Q_ORDER.indexOf(quarter);
-    if (idx > 0) {
-        return MOCK_DASHBOARD_METRICS_BY_Q[Q_ORDER[idx - 1]];
-    }
-    return null;
+    const matched = trendsData.filter((m) => {
+        const queryYear = start ? start.getFullYear() : (end ? end.getFullYear() : new Date().getFullYear());
+        const d = new Date(m.date + "-01");
+        const monthStart = new Date(queryYear, d.getMonth(), 1);
+        const monthEnd = new Date(queryYear, d.getMonth() + 1, 0);
+        if (start && monthEnd < start) return false;
+        if (end && monthStart > end) return false;
+        return true;
+    });
+
+    const totalRevenue = matched.reduce((s, m) => s + (m.revenue || 0), 0);
+    const totalOrders = matched.reduce((s, m) => s + (m.completed || 0), 0);
+    const avgOrderValue = totalOrders > 0 ? Math.round((totalRevenue / totalOrders) * 100) / 100 : 0;
+
+    return {
+        totalRevenue,
+        totalOrders,
+        totalVendors: 48,
+        activeVendors: 36,
+        avgOrderValue,
+    };
 }
 
 function filterTrendsByPeriod(trendsData, startDate, endDate) {
@@ -123,11 +153,11 @@ export const useMockAnalytics = () => {
     const role = user?.roleId;
 
     const [filters, setFiltersState] = useState(() => defaultFilters(role));
+    const [selection, setSelectionState] = useState(defaultSelection);
     const [revenueSeries, setRevenueSeries] = useState([]);
     const [revenueQuarterly, setRevenueQuarterly] = useState({});
     const [ordersDistribution, setOrdersDistribution] = useState({ pending: 0, completed: 0, cancelled: 0 });
     const [topProducts, setTopProducts] = useState([]);
-    const [topVendors, setTopVendors] = useState([]);
     const [operationalAlerts, setOperationalAlerts] = useState([]);
     const [metrics, setMetrics] = useState({});
     const [loadingMetrics, setLoadingMetrics] = useState(true);
@@ -138,10 +168,6 @@ export const useMockAnalytics = () => {
     const [errorTables, setErrorTables] = useState(null);
 
     const [summary, setSummary] = useState([]);
-    const [trends, setTrends] = useState([]);
-    const [ordersTrend, setOrdersTrend] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [insights, setInsights] = useState([]);
     const [loadingAnalytics, setLoadingAnalytics] = useState(true);
     const [errorAnalytics, setErrorAnalytics] = useState(null);
 
@@ -158,37 +184,23 @@ export const useMockAnalytics = () => {
         await new Promise((r) => setTimeout(r, 400));
 
         const filteredMonthly = filterByDateRange(MOCK_REVENUE_MONTHLY, filters.startDate, filters.endDate);
-        const filteredTrends = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
-
-        const currentMetrics = getMetricsForPeriod(filteredMonthly);
-        const quarters = [...new Set(filteredMonthly.map((m) => m.quarter))];
-        const currentQuarter = quarters.length === 1 ? quarters[0] : null;
-        const previousMetrics = currentQuarter ? getPreviousMetrics(currentQuarter) : null;
+        const currentMetrics = computeMetricsFromRange(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        const previousMetrics = computeMetricsFromRange(MOCK_TRENDS_PREVIOUS, filters.previousStartDate, filters.previousEndDate);
 
         setMetrics(mapDashboardMetrics(1, currentMetrics));
         setRevenueSeries(mapRevenueSeries(MOCK_REVENUE_SERIES));
         setRevenueQuarterly(buildQuarterlyData(filteredMonthly));
         setOrdersDistribution(mapOrdersDistribution(getOrdersForPeriod(filteredMonthly)));
         setTopProducts(mapTopProducts(getTopProductsForPeriod(filteredMonthly)));
-        setTopVendors(mapTopVendors(MOCK_TOP_VENDORS));
         setOperationalAlerts(MOCK_OPERATIONAL_ALERTS);
 
         setSummary(mapGrowthSummary(currentMetrics, previousMetrics));
-        setTrends(mapRevenueTrend(filteredTrends));
-        setOrdersTrend(mapOrdersTrend(filteredTrends));
-        setCategories(mapCategories(MOCK_CATEGORIES, filteredTrends.reduce((s, m) => s + m.revenue, 0)));
-        setInsights(generateInsights(
-            mapRevenueTrend(filteredTrends),
-            mapCategories(MOCK_CATEGORIES),
-            currentMetrics,
-            previousMetrics,
-        ));
 
         setLoadingMetrics(false);
         setLoadingCharts(false);
         setLoadingTables(false);
         setLoadingAnalytics(false);
-    }, [filters.startDate, filters.endDate]);
+    }, [filters.startDate, filters.endDate, filters.previousStartDate, filters.previousEndDate]);
 
     useEffect(() => {
         const timeout = setTimeout(loadAll, 400);
@@ -202,13 +214,129 @@ export const useMockAnalytics = () => {
         });
     }, []);
 
+    const setSelection = useCallback((updater) => {
+        setSelectionState((prev) => {
+            const next = typeof updater === "function" ? updater(prev) : updater;
+            return next;
+        });
+    }, []);
+
     const resetFilters = useCallback(() => {
         setFiltersState(defaultFilters(role));
     }, [role]);
 
+    const resetSelection = useCallback(() => {
+        setSelectionState(defaultSelection);
+    }, []);
+
     const reload = useCallback(() => {
         loadAll();
     }, [loadAll]);
+
+    const baseTrends = useMemo(() => {
+        const filtered = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        return mapRevenueTrend(filtered);
+    }, [filters.startDate, filters.endDate]);
+
+    const baseOrdersTrend = useMemo(() => {
+        const filtered = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        return mapOrdersTrend(filtered);
+    }, [filters.startDate, filters.endDate]);
+
+    const baseCategories = useMemo(() => {
+        const filtered = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        return mapCategories(MOCK_CATEGORIES, filtered.reduce((s, m) => s + m.revenue, 0));
+    }, [filters.startDate, filters.endDate]);
+
+    const baseTopVendors = useMemo(() => mapTopVendors(MOCK_TOP_VENDORS), []);
+
+    const categoryFiltered = filters.category && filters.category !== "all";
+    const vendorFiltered = filters.vendorId && filters.vendorId !== "all";
+
+    const selCategoryActive = selection.category && !categoryFiltered;
+    const selVendorActive = selection.vendorId && !vendorFiltered;
+
+    const vendorList = useMemo(() => {
+        if (selCategoryActive) {
+            const catVendors = mapVendorCategories(MOCK_CATEGORY_VENDORS, selection.category);
+            if (catVendors.length > 0) return catVendors;
+        }
+        return baseTopVendors;
+    }, [baseTopVendors, selCategoryActive, selection.category]);
+
+    const currentTrends = useMemo(() => {
+        if (selVendorActive) {
+            return mapVendorMonthly(MOCK_VENDOR_MONTHLY, selection.vendorId);
+        }
+        if (vendorFiltered) {
+            return mapVendorMonthly(MOCK_VENDOR_MONTHLY, filters.vendorId);
+        }
+        return baseTrends;
+    }, [baseTrends, selVendorActive, vendorFiltered, selection.vendorId, filters.vendorId]);
+
+    const currentOrdersTrend = useMemo(() => {
+        if (selVendorActive) {
+            const vendorData = mapVendorMonthly(MOCK_VENDOR_MONTHLY, selection.vendorId);
+            return vendorData.map((m) => ({
+                month: m.month,
+                completed: m.completed ?? 0,
+                pending: m.pending ?? 0,
+                cancelled: m.cancelled ?? 0,
+            }));
+        }
+        if (vendorFiltered) {
+            const vendorData = mapVendorMonthly(MOCK_VENDOR_MONTHLY, filters.vendorId);
+            return vendorData.map((m) => ({
+                month: m.month,
+                completed: m.completed ?? 0,
+                pending: m.pending ?? 0,
+                cancelled: m.cancelled ?? 0,
+            }));
+        }
+        return baseOrdersTrend;
+    }, [baseOrdersTrend, selVendorActive, vendorFiltered, selection.vendorId, filters.vendorId]);
+
+    const comparisonTrends = useMemo(() => {
+        const prevFiltered = filterTrendsByPeriod(MOCK_TRENDS_PREVIOUS, filters.previousStartDate, filters.previousEndDate);
+        const mapped = mapRevenueTrendWithComparison(currentTrends, prevFiltered);
+        return mapped;
+    }, [currentTrends, filters.previousStartDate, filters.previousEndDate]);
+
+    const trendHistory = useMemo(() => {
+        if (selVendorActive) {
+            const vd = MOCK_VENDOR_MONTHLY[selection.vendorId];
+            if (vd) return vd.slice(-6).map((m) => ({ month: m.month, value: m.revenue }));
+            return [];
+        }
+        if (vendorFiltered) {
+            const vd = MOCK_VENDOR_MONTHLY[filters.vendorId];
+            if (vd) return vd.slice(-6).map((m) => ({ month: m.month, value: m.revenue }));
+            return [];
+        }
+        const filtered = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        return filtered.slice(-6).map((m) => ({ month: m.month, value: m.revenue }));
+    }, [filters.startDate, filters.endDate, selVendorActive, vendorFiltered, selection.vendorId, filters.vendorId]);
+
+    const insights = useMemo(() => {
+        const filteredMonthly = filterTrendsByPeriod(MOCK_TRENDS_MONTHLY, filters.startDate, filters.endDate);
+        const monthlyData = mapRevenueTrend(filteredMonthly);
+        const metricsForPrev = computeMetricsFromRange(MOCK_TRENDS_PREVIOUS, filters.previousStartDate, filters.previousEndDate);
+
+        return enhanceInsights({
+            trendsData: monthlyData,
+            categoriesData: baseCategories,
+            currentMetrics: metrics,
+            previousMetrics: metricsForPrev,
+            vendorMonthly: MOCK_VENDOR_MONTHLY,
+            categoryVendors: MOCK_CATEGORY_VENDORS,
+        });
+    }, [filters.startDate, filters.endDate, filters.previousStartDate, filters.previousEndDate, baseCategories, metrics]);
+
+    const hasConflict = useMemo(() => {
+        if (selection.category && categoryFiltered && selection.category !== filters.category) return true;
+        if (selection.vendorId && vendorFiltered && selection.vendorId !== filters.vendorId) return true;
+        return false;
+    }, [selection, filters, categoryFiltered, vendorFiltered]);
 
     return {
         metrics,
@@ -218,7 +346,7 @@ export const useMockAnalytics = () => {
         revenueQuarterly,
         ordersDistribution,
         topProducts,
-        topVendors,
+        topVendors: vendorList,
         operationalAlerts,
         loadingCharts,
         loadingTables,
@@ -229,11 +357,17 @@ export const useMockAnalytics = () => {
         resetFilters,
         reload,
         summary,
-        trends,
-        ordersTrend,
-        categories,
+        trends: currentTrends,
+        ordersTrend: currentOrdersTrend,
+        categories: baseCategories,
         insights,
         loadingAnalytics,
         errorAnalytics,
+        comparisonTrends,
+        trendHistory,
+        selection,
+        setSelection,
+        resetSelection,
+        hasConflict,
     };
 };
