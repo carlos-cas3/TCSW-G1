@@ -1,57 +1,64 @@
-import { useMemo } from "react";
-import { RefreshCw, DollarSign, ShoppingCart, Store, Users, Receipt } from "lucide-react";
-import createStatsCards from "../../../shared/components/createStatsCards";
-import ErrorState from "../../../shared/components/Feedback/ErrorState";
-import { useMockDashboardMetrics as useDashboardMetrics } from "../mocks/useMockDashboardMetrics";
+import { useState, useCallback, useEffect } from "react";
+import { RefreshCw } from "lucide-react";
 import { useMockAnalytics as useAnalytics } from "../mocks/useMockAnalytics";
-import RevenueChart from "../components/RevenueChart";
-import OrdersChart from "../components/OrdersChart";
-import TopProductsTable from "../components/TopProductsTable";
-import TopVendorsTable from "../components/TopVendorsTable";
-import AnalyticsFiltersBar from "../components/FiltersBar";
-import { getUser } from "../../../app/auth";
-
-const StatsCards = createStatsCards([
-    { label: "Ingresos Totales", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
-    { label: "Órdenes Totales", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
-    { label: "Total Vendedores", valueKey: "totalVendors", icon: Store, color: "purple" },
-    { label: "Vendedores Activos", valueKey: "activeVendors", icon: Users, color: "indigo" },
-    { label: "Ticket Promedio", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
-]);
+import ErrorState from "../../../shared/components/Feedback/ErrorState";
+import PeriodSelector from "../components/PeriodSelector";
+import GrowthKPI from "../components/GrowthKPI";
+import RevenueTrendChart from "../components/RevenueTrendChart";
+import OrdersTrendChart from "../components/OrdersTrendChart";
+import CategoryChart from "../components/CategoryChart";
+import VendorRanking from "../components/VendorRanking";
+import InsightsPanel from "../components/InsightsPanel";
 
 export default function SuperAdminAnalytics() {
-    const user = getUser();
-    const { metrics, loading: metricsLoading, error: metricsError, reload: reloadMetrics } = useDashboardMetrics();
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [selectedPeriod, setSelectedPeriod] = useState("hoy");
     const {
-        revenueSeries,
-        ordersDistribution,
-        topProducts,
+        summary,
+        trends,
+        ordersTrend,
+        categories,
+        insights,
         topVendors,
-        loadingCharts,
-        loadingTables,
-        errorCharts,
-        errorTables,
+        loadingAnalytics,
+        errorAnalytics,
         filters,
         setFilters,
-        resetFilters,
-        reload: reloadAnalytics,
+        reload,
     } = useAnalytics();
 
-    const stats = useMemo(() => ({ ...metrics }), [metrics]);
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0];
+        setFilters((prev) => ({ ...prev, startDate: today, endDate: today }));
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const handlePeriodChange = useCallback(({ period, startDate, endDate }) => {
+        setSelectedPeriod(period);
+        setFilters((prev) => ({ ...prev, startDate, endDate }));
+    }, [setFilters]);
 
     const handleReload = () => {
-        reloadMetrics();
-        reloadAnalytics();
+        reload();
+        setLastUpdated(new Date());
     };
+
+    const timeStr = lastUpdated.toLocaleTimeString("es-PE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
 
     return (
         <div className="page">
-            <div className="page-header">
-                <div className="page-header-start">
-                    <h1 className="page-title">Analytics</h1>
-                    <p className="page-subtitle">Análisis detallado del sistema</p>
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <PeriodSelector
+                    value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                />
                 <div className="page-actions">
+                    <span className="text-sm text-gray-500">
+                        Última actualización: {timeStr}
+                    </span>
                     <button
                         onClick={handleReload}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -62,51 +69,59 @@ export default function SuperAdminAnalytics() {
                 </div>
             </div>
 
-            <AnalyticsFiltersBar
-                filters={filters}
-                setFilters={setFilters}
-                onReset={resetFilters}
-                role={user?.roleId}
-            />
-
-            {metricsError && (
+            {errorAnalytics && (
                 <div className="mb-6">
-                    <ErrorState error={metricsError} onRetry={reloadMetrics} />
+                    <ErrorState error={errorAnalytics} onRetry={reload} />
                 </div>
             )}
 
-            <StatsCards stats={stats} loading={metricsLoading} />
-
             <div className="mb-6">
-                <RevenueChart
-                    data={revenueSeries}
-                    loading={loadingCharts}
-                    error={errorCharts}
-                    onRetry={reloadAnalytics}
+                <GrowthKPI
+                    summary={summary}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
                 />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <OrdersChart
-                    data={ordersDistribution}
-                    loading={loadingCharts}
-                    error={errorCharts}
-                    onRetry={reloadAnalytics}
+                <RevenueTrendChart
+                    data={trends}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
                 />
-                <TopProductsTable
-                    data={topProducts}
-                    loading={loadingTables}
-                    error={errorTables}
-                    onRetry={reloadAnalytics}
+                <OrdersTrendChart
+                    data={ordersTrend}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
                 />
             </div>
 
-            <TopVendorsTable
-                data={topVendors}
-                loading={loadingTables}
-                error={errorTables}
-                onRetry={reloadAnalytics}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <CategoryChart
+                    data={categories}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
+                />
+                <VendorRanking
+                    data={filters.vendorId && filters.vendorId !== "all" ? [] : topVendors}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
+                />
+            </div>
+
+            <div className="mb-6">
+                <InsightsPanel
+                    insights={insights}
+                    loading={loadingAnalytics}
+                    error={errorAnalytics}
+                    onRetry={reload}
+                />
+            </div>
         </div>
     );
 }

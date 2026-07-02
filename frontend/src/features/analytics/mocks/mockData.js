@@ -143,6 +143,29 @@ export const MOCK_TOP_PRODUCTS_BY_Q = {
     full: MOCK_TOP_PRODUCTS,
 };
 
+export const MOCK_TRENDS_MONTHLY = [
+    { month: "Ene", date: "2026-01", revenue: 125000, completed: 280, pending: 12, cancelled: 18 },
+    { month: "Feb", date: "2026-02", revenue: 142000, completed: 295, pending: 15, cancelled: 14 },
+    { month: "Mar", date: "2026-03", revenue: 158000, completed: 310, pending: 10, cancelled: 22 },
+    { month: "Abr", date: "2026-04", revenue: 162000, completed: 305, pending: 8, cancelled: 16 },
+    { month: "May", date: "2026-05", revenue: 148000, completed: 290, pending: 14, cancelled: 20 },
+    { month: "Jun", date: "2026-06", revenue: 171000, completed: 335, pending: 11, cancelled: 18 },
+    { month: "Jul", date: "2026-07", revenue: 185000, completed: 310, pending: 16, cancelled: 12 },
+    { month: "Ago", date: "2026-08", revenue: 179000, completed: 298, pending: 13, cancelled: 24 },
+    { month: "Sep", date: "2026-09", revenue: 164000, completed: 275, pending: 9, cancelled: 16 },
+    { month: "Oct", date: "2026-10", revenue: 192000, completed: 340, pending: 7, cancelled: 14 },
+    { month: "Nov", date: "2026-11", revenue: 208000, completed: 365, pending: 10, cancelled: 10 },
+    { month: "Dic", date: "2026-12", revenue: 235000, completed: 400, pending: 6, cancelled: 8 },
+];
+
+export const MOCK_CATEGORIES = [
+    { category: "Electr\u00f3nicos", revenue: 131625, percentage: 45 },
+    { category: "Belleza", revenue: 52650, percentage: 18 },
+    { category: "Hogar", revenue: 43875, percentage: 15 },
+    { category: "Deportes", revenue: 35100, percentage: 12 },
+    { category: "Viajes", revenue: 29250, percentage: 10 },
+];
+
 export const MOCK_OPERATIONAL_ALERTS = [
     {
         id: 1,

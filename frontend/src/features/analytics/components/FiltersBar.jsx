@@ -16,38 +16,6 @@ export default function AnalyticsFiltersBar({ filters, setFilters, onReset, role
     const filterConfig = useMemo(() => {
         const config = [
             {
-                key: "startDate",
-                type: "custom",
-                label: "Fecha inicio",
-                render: () => (
-                    <div className="filter-bar-field-narrow">
-                        <label className="filter-bar-label">Fecha inicio</label>
-                        <input
-                            type="date"
-                            value={filters.startDate || ""}
-                            onChange={(e) => setFilters((prev) => ({ ...prev, startDate: e.target.value }))}
-                            className="filter-bar-input"
-                        />
-                    </div>
-                ),
-            },
-            {
-                key: "endDate",
-                type: "custom",
-                label: "Fecha fin",
-                render: () => (
-                    <div className="filter-bar-field-narrow">
-                        <label className="filter-bar-label">Fecha fin</label>
-                        <input
-                            type="date"
-                            value={filters.endDate || ""}
-                            onChange={(e) => setFilters((prev) => ({ ...prev, endDate: e.target.value }))}
-                            className="filter-bar-input"
-                        />
-                    </div>
-                ),
-            },
-            {
                 key: "status",
                 type: "select",
                 label: "Estado",
