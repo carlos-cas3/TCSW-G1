@@ -1,26 +1,28 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { RefreshCw, DollarSign, ShoppingCart, Store, Receipt } from "lucide-react";
 import createStatsCards from "../../../shared/components/createStatsCards";
 import ErrorState from "../../../shared/components/Feedback/ErrorState";
-import { useMockDashboardMetrics as useDashboardMetrics } from "../mocks/useMockDashboardMetrics";
 import { useMockAnalytics as useAnalytics } from "../mocks/useMockAnalytics";
 import PeriodSelector from "../components/PeriodSelector";
 import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
 import TopProductsList from "../components/TopProductsList";
 import OperationalAlerts from "../components/OperationalAlerts";
+
 const StatsCards = createStatsCards([
     { label: "Ingresos Totales", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
-    { label: "Órdenes Totales", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
+    { label: "\u00d3rdenes Totales", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
     { label: "Total Vendedores", valueKey: "totalVendors", icon: Store, color: "purple" },
     { label: "Ticket Promedio", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
 ]);
 
 export default function SuperAdminDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
-    const [selectedPeriod, setSelectedPeriod] = useState("full");
-    const { metrics, loading: metricsLoading, error: metricsError, reload: reloadMetrics } = useDashboardMetrics();
+    const [selectedPeriod, setSelectedPeriod] = useState("hoy");
     const {
+        metrics,
+        loadingMetrics,
+        errorMetrics,
         revenueQuarterly,
         ordersDistribution,
         topProducts,
@@ -29,8 +31,14 @@ export default function SuperAdminDashboard() {
         loadingTables,
         errorCharts,
         setFilters,
-        reload: reloadAnalytics,
+        reload,
     } = useAnalytics();
+
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0];
+        setFilters((prev) => ({ ...prev, startDate: today, endDate: today }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const stats = useMemo(() => ({ ...metrics }), [metrics]);
 
@@ -40,8 +48,7 @@ export default function SuperAdminDashboard() {
     }, [setFilters]);
 
     const handleReload = () => {
-        reloadMetrics();
-        reloadAnalytics();
+        reload();
         setLastUpdated(new Date());
     };
 
@@ -58,7 +65,7 @@ export default function SuperAdminDashboard() {
                     value={selectedPeriod}
                     onChange={handlePeriodChange}
                 />
-                <div className="flex items-center gap-4">
+                <div className="page-actions">
                     <span className="text-sm text-gray-500">
                         Última actualización: {timeStr}
                     </span>
@@ -72,26 +79,26 @@ export default function SuperAdminDashboard() {
                 </div>
             </div>
 
-            {metricsError && (
+            {errorMetrics && (
                 <div className="mb-6">
-                    <ErrorState error={metricsError} onRetry={reloadMetrics} />
+                    <ErrorState error={errorMetrics} onRetry={reload} />
                 </div>
             )}
 
-            <StatsCards stats={stats} loading={metricsLoading} />
+            <StatsCards stats={stats} loading={loadingMetrics} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <QuarterlyRevenueChart
                     data={revenueQuarterly}
                     loading={loadingCharts}
                     error={errorCharts}
-                    onRetry={reloadAnalytics}
+                    onRetry={reload}
                 />
                 <OrdersChart
                     data={ordersDistribution}
                     loading={loadingCharts}
                     error={errorCharts}
-                    onRetry={reloadAnalytics}
+                    onRetry={reload}
                 />
             </div>
 

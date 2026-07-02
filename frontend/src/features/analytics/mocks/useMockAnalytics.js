@@ -5,14 +5,16 @@ import {
     mapOrdersDistribution,
     mapTopProducts,
     mapTopVendors,
+    mapDashboardMetrics,
 } from "../mappers/analytics.mapper";
 import {
     MOCK_REVENUE_SERIES,
     MOCK_REVENUE_MONTHLY,
     MOCK_ORDERS_DISTRIBUTION_BY_Q,
-    MOCK_TOP_PRODUCTS,
+    MOCK_TOP_PRODUCTS_BY_Q,
     MOCK_TOP_VENDORS,
     MOCK_OPERATIONAL_ALERTS,
+    MOCK_DASHBOARD_METRICS_BY_Q,
 } from "./mockData";
 
 const defaultFilters = (role) => ({
@@ -62,12 +64,30 @@ function buildQuarterlyData(monthlyData) {
 }
 
 function getOrdersForPeriod(monthlyData) {
-    if (monthlyData.length === 0) return MOCK_ORDERS_DISTRIBUTION_BY_Q.full;
+    if (monthlyData.length === 0) return { pending: 0, completed: 0, cancelled: 0 };
     const quarters = [...new Set(monthlyData.map((m) => m.quarter))];
     if (quarters.length === 1) {
         return MOCK_ORDERS_DISTRIBUTION_BY_Q[quarters[0]] || MOCK_ORDERS_DISTRIBUTION_BY_Q.full;
     }
     return MOCK_ORDERS_DISTRIBUTION_BY_Q.full;
+}
+
+function getTopProductsForPeriod(monthlyData) {
+    if (monthlyData.length === 0) return [];
+    const quarters = [...new Set(monthlyData.map((m) => m.quarter))];
+    if (quarters.length === 1) {
+        return MOCK_TOP_PRODUCTS_BY_Q[quarters[0]] || MOCK_TOP_PRODUCTS_BY_Q.full;
+    }
+    return MOCK_TOP_PRODUCTS_BY_Q.full;
+}
+
+function getMetricsForPeriod(monthlyData) {
+    if (monthlyData.length === 0) return { totalRevenue: 0, totalOrders: 0, totalVendors: 48, activeVendors: 36, avgOrderValue: 0 };
+    const quarters = [...new Set(monthlyData.map((m) => m.quarter))];
+    if (quarters.length === 1) {
+        return MOCK_DASHBOARD_METRICS_BY_Q[quarters[0]] || MOCK_DASHBOARD_METRICS_BY_Q.full;
+    }
+    return MOCK_DASHBOARD_METRICS_BY_Q.full;
 }
 
 export const useMockAnalytics = () => {
@@ -81,14 +101,19 @@ export const useMockAnalytics = () => {
     const [topProducts, setTopProducts] = useState([]);
     const [topVendors, setTopVendors] = useState([]);
     const [operationalAlerts, setOperationalAlerts] = useState([]);
+    const [metrics, setMetrics] = useState({});
+    const [loadingMetrics, setLoadingMetrics] = useState(true);
+    const [errorMetrics, setErrorMetrics] = useState(null);
     const [loadingCharts, setLoadingCharts] = useState(true);
     const [loadingTables, setLoadingTables] = useState(true);
     const [errorCharts, setErrorCharts] = useState(null);
     const [errorTables, setErrorTables] = useState(null);
 
     const loadAll = useCallback(async () => {
+        setLoadingMetrics(true);
         setLoadingCharts(true);
         setLoadingTables(true);
+        setErrorMetrics(null);
         setErrorCharts(null);
         setErrorTables(null);
 
@@ -96,13 +121,15 @@ export const useMockAnalytics = () => {
 
         const filteredMonthly = filterByDateRange(MOCK_REVENUE_MONTHLY, filters.startDate, filters.endDate);
 
+        setMetrics(mapDashboardMetrics(1, getMetricsForPeriod(filteredMonthly)));
         setRevenueSeries(mapRevenueSeries(MOCK_REVENUE_SERIES));
         setRevenueQuarterly(buildQuarterlyData(filteredMonthly));
         setOrdersDistribution(mapOrdersDistribution(getOrdersForPeriod(filteredMonthly)));
-        setTopProducts(mapTopProducts(MOCK_TOP_PRODUCTS));
+        setTopProducts(mapTopProducts(getTopProductsForPeriod(filteredMonthly)));
         setTopVendors(mapTopVendors(MOCK_TOP_VENDORS));
         setOperationalAlerts(MOCK_OPERATIONAL_ALERTS);
 
+        setLoadingMetrics(false);
         setLoadingCharts(false);
         setLoadingTables(false);
     }, [filters.startDate, filters.endDate]);
@@ -128,6 +155,9 @@ export const useMockAnalytics = () => {
     }, [loadAll]);
 
     return {
+        metrics,
+        loadingMetrics,
+        errorMetrics,
         revenueSeries,
         revenueQuarterly,
         ordersDistribution,

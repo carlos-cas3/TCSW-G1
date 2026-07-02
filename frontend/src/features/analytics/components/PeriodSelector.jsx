@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import { Calendar } from "lucide-react";
 
 const periods = [
@@ -9,12 +10,36 @@ const periods = [
     { value: "custom", label: "Personalizado" },
 ];
 
+function getMonthRange() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    return {
+        start: firstDay.toISOString().split("T")[0],
+        end: lastDay.toISOString().split("T")[0],
+    };
+}
+
+function initCustomDates(value) {
+    if (value === "custom") {
+        return getMonthRange();
+    }
+    return { start: "", end: "" };
+}
+
 export default function PeriodSelector({ value, onChange }) {
     const isCustom = value === "custom";
+    const [customStart, setCustomStart] = useState(() => initCustomDates(value).start);
+    const [customEnd, setCustomEnd] = useState(() => initCustomDates(value).end);
 
-    const handlePeriodChange = (newPeriod) => {
+    const handlePeriodChange = useCallback((newPeriod) => {
         if (newPeriod === "custom") {
-            onChange({ period: "custom", startDate: "", endDate: "" });
+            const range = getMonthRange();
+            setCustomStart(range.start);
+            setCustomEnd(range.end);
+            onChange({ period: "custom", startDate: range.start, endDate: range.end });
             return;
         }
         const now = new Date();
@@ -49,15 +74,19 @@ export default function PeriodSelector({ value, onChange }) {
         }
 
         onChange({ period: newPeriod, startDate, endDate });
-    };
+    }, [onChange]);
 
-    const handleCustomStart = (e) => {
-        onChange({ period: "custom", startDate: e.target.value, endDate: "" });
-    };
+    const handleCustomStart = useCallback((e) => {
+        const val = e.target.value;
+        setCustomStart(val);
+        onChange({ period: "custom", startDate: val, endDate: customEnd });
+    }, [customEnd, onChange]);
 
-    const handleCustomEnd = (e) => {
-        onChange({ period: "custom", startDate: "", endDate: e.target.value });
-    };
+    const handleCustomEnd = useCallback((e) => {
+        const val = e.target.value;
+        setCustomEnd(val);
+        onChange({ period: "custom", startDate: customStart, endDate: val });
+    }, [customStart, onChange]);
 
     return (
         <div className="flex flex-wrap items-center gap-2">
@@ -81,12 +110,14 @@ export default function PeriodSelector({ value, onChange }) {
                 <div className="flex items-center gap-2">
                     <input
                         type="date"
+                        value={customStart}
                         onChange={handleCustomStart}
                         className="px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-500">a</span>
                     <input
                         type="date"
+                        value={customEnd}
                         onChange={handleCustomEnd}
                         className="px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />

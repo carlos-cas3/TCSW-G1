@@ -53,10 +53,12 @@ export default function QuarterlyRevenueChart({ data, loading, error, onRetry })
 
     const [selectedYear, setSelectedYear] = useState(years[0] || "");
 
+    const effectiveYear = years.includes(selectedYear) ? selectedYear : (years[0] || "");
+
     const chartData = useMemo(() => {
-        if (!data || !selectedYear) return [];
-        return data[selectedYear] || [];
-    }, [data, selectedYear]);
+        if (!data || !effectiveYear) return [];
+        return data[effectiveYear] || [];
+    }, [data, effectiveYear]);
 
     const isMonthly = useMemo(() => {
         if (!chartData.length) return false;
@@ -76,9 +78,9 @@ export default function QuarterlyRevenueChart({ data, loading, error, onRetry })
         <div className="bg-white rounded-lg border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-                {years.length > 0 && (
+                {years.length > 1 && (
                     <select
-                        value={selectedYear}
+                        value={effectiveYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
                         className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                     >

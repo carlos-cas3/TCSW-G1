@@ -13,6 +13,14 @@ export const MOCK_DASHBOARD_METRICS_VENDOR = {
     avgOrderValue: 241.87,
 };
 
+export const MOCK_DASHBOARD_METRICS_BY_Q = {
+    Q1: { totalRevenue: 142000, totalOrders: 623, totalVendors: 48, activeVendors: 36, avgOrderValue: 228 },
+    Q2: { totalRevenue: 158000, totalOrders: 687, totalVendors: 48, activeVendors: 38, avgOrderValue: 230 },
+    Q3: { totalRevenue: 135000, totalOrders: 587, totalVendors: 48, activeVendors: 34, avgOrderValue: 230 },
+    Q4: { totalRevenue: 172000, totalOrders: 748, totalVendors: 48, activeVendors: 37, avgOrderValue: 230 },
+    full: MOCK_DASHBOARD_METRICS_ADMIN,
+};
+
 export const MOCK_REVENUE_SERIES = [
     { date: "2026-01-01", total: 12500 },
     { date: "2026-01-02", total: 18200 },
@@ -101,6 +109,38 @@ export const MOCK_REVENUE_QUARTERLY = {
         { quarter: "Q3", revenue: 0 },
         { quarter: "Q4", revenue: 0 },
     ],
+};
+
+export const MOCK_TOP_PRODUCTS_BY_Q = {
+    Q1: [
+        { name: "Laptop Gamer XPS 15", category: "Electr\u00f3nicos", sales: 92, total: 138000 },
+        { name: "Smart TV 55\" 4K", category: "Electr\u00f3nicos", sales: 71, total: 106500 },
+        { name: "Teclado Mec\u00e1nico RGB", category: "Electr\u00f3nicos", sales: 58, total: 11600 },
+        { name: "Aud\u00edfonos Bluetooth Pro", category: "Electr\u00f3nicos", sales: 112, total: 16800 },
+        { name: "Cafetera Autom\u00e1tica", category: "Hogar", sales: 38, total: 19000 },
+    ],
+    Q2: [
+        { name: "Zapatillas Running Ultra", category: "Deportes", sales: 134, total: 40200 },
+        { name: "Set de Sartenes Antiadherentes", category: "Hogar", sales: 87, total: 17400 },
+        { name: "Crema Hidratante Facial", category: "Belleza", sales: 156, total: 7800 },
+        { name: "Mochila Impermeable 40L", category: "Viajes", sales: 72, total: 14400 },
+        { name: "Smart TV 55\" 4K", category: "Electr\u00f3nicos", sales: 63, total: 94500 },
+    ],
+    Q3: [
+        { name: "Mochila Impermeable 40L", category: "Viajes", sales: 89, total: 17800 },
+        { name: "Aud\u00edfonos Bluetooth Pro", category: "Electr\u00f3nicos", sales: 145, total: 21750 },
+        { name: "Zapatillas Running Ultra", category: "Deportes", sales: 102, total: 30600 },
+        { name: "Crema Hidratante Facial", category: "Belleza", sales: 198, total: 9900 },
+        { name: "Laptop Gamer XPS 15", category: "Electr\u00f3nicos", sales: 48, total: 72000 },
+    ],
+    Q4: [
+        { name: "Perfume Importado 100ml", category: "Belleza", sales: 167, total: 41750 },
+        { name: "Laptop Gamer XPS 15", category: "Electr\u00f3nicos", sales: 112, total: 168000 },
+        { name: "Smart TV 55\" 4K", category: "Electr\u00f3nicos", sales: 89, total: 133500 },
+        { name: "Set de Sartenes Antiadherentes", category: "Hogar", sales: 76, total: 15200 },
+        { name: "Teclado Mec\u00e1nico RGB", category: "Electr\u00f3nicos", sales: 98, total: 19600 },
+    ],
+    full: MOCK_TOP_PRODUCTS,
 };
 
 export const MOCK_OPERATIONAL_ALERTS = [
