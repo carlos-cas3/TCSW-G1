@@ -3,7 +3,6 @@ import tailwind from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 
-// https://vite.dev/config/
 export default defineConfig({
     plugins: [
         tailwind(),
@@ -15,4 +14,9 @@ export default defineConfig({
         }),
         react(),
     ],
+    test: {
+        environment: 'jsdom',
+        globals: true,
+        exclude: ['e2e/**', 'node_modules/**'],
+    },
 });
