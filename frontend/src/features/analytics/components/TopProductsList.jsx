@@ -49,7 +49,7 @@ function SortIcon({ active, direction }) {
     );
 }
 
-export default function TopProductsList({ data, loading, error, onRetry, maxRows = 5, title = "Top Productos Más Vendidos" }) {
+export default function TopProductsList({ data, loading, error, onRetry, maxRows = 5, title = "Top Productos Más Vendidos", highlightFirst = false }) {
     const [sortKey, setSortKey] = useState(null);
     const [sortDir, setSortDir] = useState(null);
 
@@ -140,7 +140,14 @@ export default function TopProductsList({ data, loading, error, onRetry, maxRows
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {displayData.map((row, i) => (
-                            <tr key={row.id ?? row.key ?? i} className="hover:bg-gray-50 transition-colors">
+                            <tr
+                                key={row.id ?? row.key ?? i}
+                                className={`transition-colors ${
+                                    highlightFirst && i === 0
+                                        ? "bg-blue-50 border-l-4 border-l-blue-500"
+                                        : "hover:bg-gray-50"
+                                }`}
+                            >
                                 {columns.map((col) => {
                                     const value = col.key === "revenue" ? formatPEN(row.revenue) : row[col.key] ?? "—";
                                     return (

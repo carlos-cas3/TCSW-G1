@@ -366,3 +366,53 @@ export const MOCK_TOP_VENDORS = [
     { vendorName: "Perfumería Chic", total: 28100.00, orders: 98, status: "active" },
     { vendorName: "Gamer Zone", total: 23400.00, orders: 87, status: "suspended" },
 ];
+
+export const MOCK_VENDOR_TRENDS = [
+    { month: "Ene", current: 12500, previous: 10200 },
+    { month: "Feb", current: 14200, previous: 11500 },
+    { month: "Mar", current: 13800, previous: 12100 },
+    { month: "Abr", current: 15100, previous: 12800 },
+    { month: "May", current: 16400, previous: 13400 },
+    { month: "Jun", current: 17200, previous: 14200 },
+];
+
+export const MOCK_VENDOR_CATEGORIES = [
+    { category: "Electr\u00f3nicos", revenue: 32100, percentage: 35 },
+    { category: "Hogar", revenue: 22100, percentage: 24 },
+    { category: "Belleza", revenue: 15800, percentage: 17 },
+    { category: "Deportes", revenue: 12400, percentage: 13 },
+    { category: "Viajes", revenue: 10100, percentage: 11 },
+];
+
+export const MOCK_VENDOR_ALERTS = [
+    {
+        id: 1,
+        type: "critical",
+        title: "Cancelaciones en aumento",
+        description: "Tus cancelaciones subieron +15% respecto al per\u00edodo anterior. Revisa tus procesos de entrega.",
+    },
+    {
+        id: 2,
+        type: "warning",
+        title: "Categor\u00eda Electr\u00f3nicos en declive",
+        description: "Los ingresos en Electr\u00f3nicos cayeron -10% vs el per\u00edodo anterior.",
+    },
+    {
+        id: 3,
+        type: "positive",
+        title: "Producto estrella en crecimiento",
+        description: "Tu producto m\u00e1s vendido creci\u00f3 +22% este per\u00edodo.",
+    },
+    {
+        id: 4,
+        type: "warning",
+        title: "Ticket promedio a la baja",
+        description: "El ticket promedio disminuy\u00f3 -5%. Considera estrategias de upselling.",
+    },
+    {
+        id: 5,
+        type: "positive",
+        title: "Categor\u00eda Viajes en expansi\u00f3n",
+        description: "Viajes creci\u00f3 +18% este per\u00edodo. Aprovecha la tendencia.",
+    },
+];

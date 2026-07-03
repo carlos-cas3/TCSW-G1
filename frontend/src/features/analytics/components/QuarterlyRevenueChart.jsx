@@ -45,7 +45,7 @@ function CustomTooltip({ active, payload, label }) {
     );
 }
 
-export default function QuarterlyRevenueChart({ data, loading, error, onRetry }) {
+export default function QuarterlyRevenueChart({ data, loading, error, onRetry, title: customTitle }) {
     const years = useMemo(() => {
         if (!data) return [];
         return Object.keys(data).sort();
@@ -72,7 +72,7 @@ export default function QuarterlyRevenueChart({ data, loading, error, onRetry })
 
     const hasData = chartData.some((d) => d.revenue > 0);
 
-    const title = isMonthly ? "Ingresos Mensuales" : "Ingresos por Trimestre";
+    const title = customTitle ?? (isMonthly ? "Ingresos Mensuales" : "Ingresos por Trimestre");
 
     return (
         <div className="bg-white rounded-lg border border-gray-200 p-5">

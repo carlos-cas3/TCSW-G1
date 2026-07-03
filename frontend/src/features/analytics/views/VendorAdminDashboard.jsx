@@ -1,47 +1,79 @@
-import { useMemo } from "react";
+import { useState, useCallback } from "react";
 import { RefreshCw, DollarSign, ShoppingCart, Package, Receipt } from "lucide-react";
 import createStatsCards from "../../../shared/components/createStatsCards";
 import ErrorState from "../../../shared/components/Feedback/ErrorState";
-import { useMockDashboardMetrics as useDashboardMetrics } from "../mocks/useMockDashboardMetrics";
-import { useMockAnalytics as useAnalytics } from "../mocks/useMockAnalytics";
-import RevenueChart from "../components/RevenueChart";
+import { useMockVendorDashboard } from "../mocks/useMockVendorDashboard";
+import PeriodSelector from "../components/PeriodSelector";
+import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
-import TopProductsTable from "../components/TopProductsTable";
+import TopProductsList from "../components/TopProductsList";
+import CategoryPerformanceChart from "../components/CategoryPerformanceChart";
+import VendorAlertsPanel from "../components/VendorAlertsPanel";
 
 const StatsCards = createStatsCards([
-    { label: "Mis Ingresos", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
-    { label: "Mis Órdenes", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
+    { label: "Ingresos", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
+    { label: "Pedidos", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
     { label: "Productos Activos", valueKey: "activeProducts", icon: Package, color: "purple" },
-    { label: "Ticket Promedio", valueKey: "avgTicket", icon: Receipt, color: "yellow" },
+    { label: "Ticket Promedio", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
 ]);
 
 export default function VendorAdminDashboard() {
-    const { metrics, loading: metricsLoading, error: metricsError, reload: reloadMetrics } = useDashboardMetrics();
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [selectedPeriod, setSelectedPeriod] = useState("mtd");
+    const [activeCategory, setActiveCategory] = useState(null);
+
     const {
-        revenueSeries,
+        metrics,
+        revenueMonthly,
         ordersDistribution,
         topProducts,
-        loadingCharts,
-        loadingTables,
-        errorCharts,
-        reload: reloadAnalytics,
-    } = useAnalytics();
+        vendorCategories,
+        vendorAlerts,
+        loading,
+        error,
+        setFilters,
+        reload,
+    } = useMockVendorDashboard();
 
-    const stats = useMemo(() => ({ ...metrics }), [metrics]);
+    const handlePeriodChange = useCallback(({ period, current, previous }) => {
+        setSelectedPeriod(period);
+        setFilters({
+            startDate: current.startDate,
+            endDate: current.endDate,
+            previousStartDate: previous.startDate,
+            previousEndDate: previous.endDate,
+        });
+    }, [setFilters]);
+
+    const handleCategoryClick = useCallback((categoryName) => {
+        setActiveCategory((prev) => (prev === categoryName ? null : categoryName));
+    }, []);
 
     const handleReload = () => {
-        reloadMetrics();
-        reloadAnalytics();
+        reload();
+        setLastUpdated(new Date());
     };
+
+    const timeStr = lastUpdated.toLocaleTimeString("es-PE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
+
+    const chartLoading = loading;
+    const chartError = error;
 
     return (
         <div className="page">
-            <div className="page-header">
-                <div className="page-header-start">
-                    <h1 className="page-title">Dashboard</h1>
-                    <p className="page-subtitle">Resumen de mi tienda</p>
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                <PeriodSelector
+                    value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                />
                 <div className="page-actions">
+                    <span className="text-sm text-gray-500">
+                        Última actualización: {timeStr}
+                    </span>
                     <button
                         onClick={handleReload}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -52,33 +84,57 @@ export default function VendorAdminDashboard() {
                 </div>
             </div>
 
-            {metricsError && (
+            {error && (
                 <div className="mb-6">
-                    <ErrorState error={metricsError} onRetry={reloadMetrics} />
+                    <ErrorState error={error} onRetry={reload} />
                 </div>
             )}
 
-            <StatsCards stats={stats} loading={metricsLoading} />
-
             <div className="mb-6">
-                <RevenueChart
-                    data={revenueSeries}
-                    loading={loadingCharts}
-                    error={errorCharts}
-                    onRetry={reloadAnalytics}
+                <StatsCards stats={metrics} loading={loading} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <QuarterlyRevenueChart
+                    data={revenueMonthly}
+                    loading={chartLoading}
+                    error={chartError}
+                    onRetry={reload}
+                    title="Ingresos"
+                />
+                <OrdersChart
+                    data={ordersDistribution}
+                    loading={chartLoading}
+                    error={chartError}
+                    onRetry={reload}
                 />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <OrdersChart
-                    data={ordersDistribution}
-                    loading={loadingCharts}
-                    error={errorCharts}
-                    onRetry={reloadAnalytics}
-                />
-                <TopProductsTable
+                <TopProductsList
                     data={topProducts}
-                    loading={loadingTables}
+                    loading={loading}
+                    error={error}
+                    onRetry={reload}
+                    maxRows={5}
+                    highlightFirst
+                />
+                <CategoryPerformanceChart
+                    data={vendorCategories}
+                    loading={chartLoading}
+                    error={chartError}
+                    onRetry={reload}
+                    onCategoryClick={handleCategoryClick}
+                    activeCategory={activeCategory}
+                />
+            </div>
+
+            <div className="mb-6">
+                <VendorAlertsPanel
+                    alerts={vendorAlerts}
+                    loading={loading}
+                    error={error}
+                    onRetry={reload}
                 />
             </div>
         </div>
