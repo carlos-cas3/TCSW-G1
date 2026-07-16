@@ -7,7 +7,6 @@ import PeriodSelector from "../components/PeriodSelector";
 import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
 import TopProductsList from "../components/TopProductsList";
-import CategoryPerformanceChart from "../components/CategoryPerformanceChart";
 import VendorAlertsPanel from "../components/VendorAlertsPanel";
 
 const StatsCards = createStatsCards([
@@ -20,14 +19,11 @@ const StatsCards = createStatsCards([
 export default function VendorAdminDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [selectedPeriod, setSelectedPeriod] = useState("mtd");
-    const [activeCategory, setActiveCategory] = useState(null);
-
     const {
         metrics,
         revenueMonthly,
         ordersDistribution,
         topProducts,
-        vendorCategories,
         vendorAlerts,
         loading,
         error,
@@ -43,11 +39,7 @@ export default function VendorAdminDashboard() {
             previousStartDate: previous.startDate,
             previousEndDate: previous.endDate,
         });
-    }, [setFilters]);
-
-    const handleCategoryClick = useCallback((categoryName) => {
-        setActiveCategory((prev) => (prev === categoryName ? null : categoryName));
-    }, []);
+            }, [setFilters]);
 
     const handleReload = () => {
         reload();
@@ -110,7 +102,7 @@ export default function VendorAdminDashboard() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 items-start">
                 <TopProductsList
                     data={topProducts}
                     loading={loading}
@@ -118,18 +110,8 @@ export default function VendorAdminDashboard() {
                     onRetry={reload}
                     maxRows={5}
                     highlightFirst
+                    fitHeight
                 />
-                <CategoryPerformanceChart
-                    data={vendorCategories}
-                    loading={chartLoading}
-                    error={chartError}
-                    onRetry={reload}
-                    onCategoryClick={handleCategoryClick}
-                    activeCategory={activeCategory}
-                />
-            </div>
-
-            <div className="mb-6">
                 <VendorAlertsPanel
                     alerts={vendorAlerts}
                     loading={loading}

@@ -49,7 +49,7 @@ function SortIcon({ active, direction }) {
     );
 }
 
-export default function TopProductsList({ data, loading, error, onRetry, maxRows = 5, title = "Top Productos Más Vendidos", highlightFirst = false }) {
+export default function TopProductsList({ data, loading, error, onRetry, maxRows = 5, title = "Top Productos Más Vendidos", highlightFirst = false, fitHeight = false }) {
     const [sortKey, setSortKey] = useState(null);
     const [sortDir, setSortDir] = useState(null);
 
@@ -89,7 +89,7 @@ export default function TopProductsList({ data, loading, error, onRetry, maxRows
     if (error) return <ErrorState error={error} onRetry={onRetry} />;
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className={`bg-white rounded-lg border border-gray-200 ${fitHeight ? "max-h-[420px] overflow-y-auto" : "overflow-hidden"}`}>
             <div className="px-4 py-3 border-b border-gray-200">
                 <h3 className="text-base font-semibold text-gray-900">{title}</h3>
             </div>

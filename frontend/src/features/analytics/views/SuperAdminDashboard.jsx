@@ -126,6 +126,7 @@ export default function SuperAdminDashboard() {
                     data={topProducts}
                     loading={loadingTables}
                     maxRows={5}
+                    fitHeight
                 />
                 <OperationalAlerts
                     alerts={operationalAlerts}

@@ -416,3 +416,39 @@ export const MOCK_VENDOR_ALERTS = [
         description: "Viajes creci\u00f3 +18% este per\u00edodo. Aprovecha la tendencia.",
     },
 ];
+
+export const MOCK_VENDOR_ORDERS_TREND = [
+    { month: "Ene", date: "2026-01-15", completed: 18, pending: 3, cancelled: 2 },
+    { month: "Feb", date: "2026-02-15", completed: 22, pending: 2, cancelled: 1 },
+    { month: "Mar", date: "2026-03-15", completed: 24, pending: 4, cancelled: 3 },
+    { month: "Abr", date: "2026-04-15", completed: 20, pending: 3, cancelled: 2 },
+    { month: "May", date: "2026-05-15", completed: 26, pending: 2, cancelled: 1 },
+    { month: "Jun", date: "2026-06-15", completed: 28, pending: 3, cancelled: 2 },
+];
+
+export const MOCK_VENDOR_ORDERS_PREV = [
+    { month: "Ene", date: "2025-01-15", completed: 14, pending: 4, cancelled: 3 },
+    { month: "Feb", date: "2025-02-15", completed: 17, pending: 3, cancelled: 2 },
+    { month: "Mar", date: "2025-03-15", completed: 19, pending: 5, cancelled: 4 },
+    { month: "Abr", date: "2025-04-15", completed: 15, pending: 4, cancelled: 3 },
+    { month: "May", date: "2025-05-15", completed: 21, pending: 3, cancelled: 2 },
+    { month: "Jun", date: "2025-06-15", completed: 23, pending: 4, cancelled: 3 },
+];
+
+export const MOCK_VENDOR_PRODUCTS = [
+    { productName: "Laptop Gamer XPS 15", revenue: 35100, orders: 234, growth: 22 },
+    { productName: "Smart TV 55\" 4K", revenue: 28350, orders: 189, growth: -5 },
+    { productName: "Zapatillas Running Ultra", revenue: 9360, orders: 312, growth: 15 },
+    { productName: "Set de Sartenes", revenue: 3960, orders: 198, growth: 8 },
+    { productName: "Perfume Importado", revenue: 6675, orders: 267, growth: -12 },
+    { productName: "Mochila Impermeable", revenue: 2900, orders: 145, growth: 3 },
+    { productName: "Teclado Mec\u00e1nico RGB", revenue: 3560, orders: 178, growth: 18 },
+    { productName: "Crema Hidratante", revenue: 2115, orders: 423, growth: 10 },
+];
+
+export const MOCK_DASHBOARD_METRICS_VENDOR_PREV = {
+    totalRevenue: 38500,
+    totalOrders: 155,
+    activeProducts: 20,
+    avgOrderValue: 225,
+};
