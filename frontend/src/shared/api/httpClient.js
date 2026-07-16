@@ -22,5 +22,6 @@ export const fetchWithAuth = async (url, options = {}) => {
         throw new Error(error.message || `HTTP ${response.status}`);
     }
 
-    return response.json();
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
 };

@@ -20,6 +20,9 @@ import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
 import VendorOrdersPortal from "../features/orders/views/VendorOrdersPortal";
 import LogisticaPage from "../features/logistica/views/LogisticaPage";
 import HistorialPage from "../features/historial/views/HistorialPage";
+import NuevoReclamoPage from "../features/reclamos/views/NuevoReclamoPage";
+import EvaluarReclamosPage from "../features/reclamos/views/EvaluarReclamosPage";
+import HistorialReclamosPage from "../features/reclamos/views/HistorialReclamosPage";
 
 const ROLES = {
     SUPER_ADMIN: 1,
@@ -48,6 +51,8 @@ const routes = [
             { path: "analytics", element: <h1>Analytics</h1> },
             { path: "orders", element: <OrderPage /> },
             { path: "vendor-orders", element: <VendorOrdersPortal /> },
+            { path: "reclamos", element: <HistorialReclamosPage /> },
+            { path: "reclamos/nuevo", element: <NuevoReclamoPage /> },
         ],
     },
     // VENDOR_ADMIN
@@ -69,6 +74,7 @@ const routes = [
             { path: "sub-orders", element: <VendorOrdersPage /> },
             { path: "logistica", element: <LogisticaPage /> },
             { path: "historial", element: <HistorialPage /> },
+            { path: "reclamos", element: <EvaluarReclamosPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },

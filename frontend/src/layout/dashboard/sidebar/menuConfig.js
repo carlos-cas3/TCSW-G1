@@ -7,7 +7,7 @@ import SellerIcon from "../../../assets/seller-icon.svg?react";
 
 //routes Grupo 3
 import OrdersIcon from "../../../assets/orders-icon.svg?react";
-import { UserCog } from "lucide-react";
+import { UserCog, FileText } from "lucide-react";
 
 const allMenuItems = [
     { path: "/admin", label: "Dashboard", icon: HomeIcon, roles: [1] },
@@ -63,6 +63,18 @@ const allMenuItems = [
         roles: [1],
     },
     {
+        path: "/admin/reclamos",
+        label: "Reclamos",
+        icon: FileText,
+        roles: [1],
+    },
+    {
+        path: "/admin/reclamos/nuevo",
+        label: "Nuevo Reclamo",
+        icon: FileText,
+        roles: [1],
+    },
+    {
         path: "/user/sub-orders",
         label: "Sub-Órdenes",
         icon: OrdersIcon,
@@ -78,6 +90,12 @@ const allMenuItems = [
         path: "/user/historial",
         label: "Historial de Sub-ordenes",
         icon: OrdersIcon,
+        roles: [2],
+    },
+    {
+        path: "/user/reclamos",
+        label: "Reclamos por Atender",
+        icon: FileText,
         roles: [2],
     }
     
