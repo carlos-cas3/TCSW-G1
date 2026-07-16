@@ -4,9 +4,12 @@ import FilterBar from './components/FilterBar';
 import EmptyState from './components/EmptyState';
 import OrderDetailModal from './components/OrderDetailModal';
 
+const ESTADOS_ORDEN = [1, 2, 3, 4, 5];
+
 export default function OrdenesGlobales({ ordenes }) {
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [filtroFechaOrdenes, setFiltroFechaOrdenes] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('all');
   const [ordenSeleccionada, setOrdenSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
 
@@ -35,7 +38,9 @@ export default function OrdenesGlobales({ ordenes }) {
       cumpleFecha = fechaOrdenStr === filtroFechaOrdenes;
     }
 
-    return cumpleTexto && cumpleFecha;
+    const cumpleEstado = filtroEstado === 'all' || orden.estadoGlobal === parseInt(filtroEstado);
+
+    return cumpleTexto && cumpleFecha && cumpleEstado;
   });
 
   const headerClass = "text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3";
@@ -44,13 +49,26 @@ export default function OrdenesGlobales({ ordenes }) {
   return (
     <>
       <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div className="p-4 pb-0">
+        <div className="p-4 pb-0 flex flex-wrap items-end gap-3">
           <FilterBar
             terminoBusqueda={terminoBusqueda}
             setTerminoBusqueda={setTerminoBusqueda}
             filtroFechaOrdenes={filtroFechaOrdenes}
             setFiltroFechaOrdenes={setFiltroFechaOrdenes}
           />
+          <div className="flex items-center gap-2 pb-[1px]">
+            <label className="text-sm font-medium text-gray-500 whitespace-nowrap">Estado:</label>
+            <select
+              className="text-sm px-3 py-[7px] rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
+              <option value="all">Todos</option>
+              {ESTADOS_ORDEN.map((est) => (
+                <option key={est} value={est}>{renderEstadoOrden(est)}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="p-4 pt-0">
