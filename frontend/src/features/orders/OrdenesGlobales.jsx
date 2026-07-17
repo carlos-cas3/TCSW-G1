@@ -91,7 +91,7 @@ export default function OrdenesGlobales({ ordenes }) {
                     <th className={headerClass}>DNI</th>
                     <th className={headerClass}>Estado Logístico</th>
                     <th className={headerClass}>Monto Total</th>
-                    <th className={`${headerClass} text-right`}> Acciones </th>
+                    <th className={`${headerClass} text-right`}> Detalles </th>
                   </tr>
                 </thead>
                 <tbody>
