@@ -17,6 +17,12 @@ import VendorCatalogPage from "../features/catalog/views/VendorCatalogPage";
 //routes Grupo 3
 import OrderPage from "../features/orders/views/OrderPage";
 import VendorOrdersPage from "../features/orders/views/VendorOrdersPage";
+import VendorOrdersPortal from "../features/orders/views/VendorOrdersPortal";
+import LogisticaPage from "../features/logistica/views/LogisticaPage";
+import HistorialPage from "../features/historial/views/HistorialPage";
+import NuevoReclamoPage from "../features/reclamos/views/NuevoReclamoPage";
+import EvaluarReclamosPage from "../features/reclamos/views/EvaluarReclamosPage";
+import HistorialReclamosPage from "../features/reclamos/views/HistorialReclamosPage";
 
 import SuperAdminDashboard from "../features/analytics/views/SuperAdminDashboard";
 import VendorAdminDashboard from "../features/analytics/views/VendorAdminDashboard";
@@ -58,6 +64,9 @@ const routes = [
             { path: "catalog", element: <AdminCatalogPage /> },
             { path: "analytics", element: <SuperAdminAnalytics /> },
             { path: "orders", element: <OrderPage /> },
+            { path: "vendor-orders", element: <VendorOrdersPortal /> },
+            { path: "reclamos", element: <HistorialReclamosPage /> },
+            { path: "reclamos/nuevo", element: <NuevoReclamoPage /> },
         ],
     },
     // VENDOR_ADMIN
@@ -78,6 +87,9 @@ const routes = [
             //routes Grupo 3
             
             { path: "sub-orders", element: <VendorOrdersPage /> },
+            { path: "logistica", element: <LogisticaPage /> },
+            { path: "historial", element: <HistorialPage /> },
+            { path: "reclamos", element: <EvaluarReclamosPage /> },
         ],
     },
     { path: "/unauthorized", element: <h1>No tienes permiso</h1> },
