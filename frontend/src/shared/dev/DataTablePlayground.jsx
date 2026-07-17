@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import {} from "lucide-react";
 import DataTable from "../table/DataTable";
 import { createTextColumn } from "../table/columns/text.column";
 import { createStatusColumn } from "../table/columns/status.column";

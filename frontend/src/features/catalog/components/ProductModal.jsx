@@ -39,9 +39,23 @@ export default function VendorProductModal({ isOpen, onClose, onSave, editingPro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  const loadProducts = async () => {
+    setLoadingProducts(true);
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch {
+      setProducts([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
   useEffect(() => {
     if (isOpen && products.length === 0) {
-      loadProducts();
+      (async () => {
+        await loadProducts();
+      })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -60,18 +74,6 @@ export default function VendorProductModal({ isOpen, onClose, onSave, editingPro
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
-
-  const loadProducts = async () => {
-    setLoadingProducts(true);
-    try {
-      const data = await getProducts();
-      setProducts(data);
-    } catch {
-      setProducts([]);
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
 
   const selectedProduct = useMemo(
     () => products.find((p) => p.product_id?.toString() === formData.product_id),

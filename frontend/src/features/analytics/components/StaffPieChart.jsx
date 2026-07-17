@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     PieChart,
     Pie,
@@ -78,22 +78,20 @@ export default function StaffPieChart() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const loadStaff = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const res = await getStaff();
-            setStaff(Array.isArray(res) ? res : (res.data ?? []));
-        } catch (err) {
-            setError(err.message || "Error al cargar staff");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
     useEffect(() => {
-        loadStaff();
-    }, [loadStaff]);
+        (async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await getStaff();
+                setStaff(Array.isArray(res) ? res : (res.data ?? []));
+            } catch (err) {
+                setError(err.message || "Error al cargar staff");
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
 
     const chartData = useMemo(() => {
         const sellers = staff.filter((m) => m.role_id === 3).length;
@@ -116,7 +114,7 @@ export default function StaffPieChart() {
     }, [staff]);
 
     if (loading) return <ChartSkeleton />;
-    if (error) return <ErrorState error={error} onRetry={loadStaff} />;
+    if (error) return <ErrorState error={error} />;
     if (!chartData.length) return <ChartEmpty />;
 
     return (

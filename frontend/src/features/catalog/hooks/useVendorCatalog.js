@@ -39,7 +39,9 @@ export function useVendorCatalog() {
   };
 
   useEffect(() => {
-    loadProducts();
+    (async () => {
+      await loadProducts();
+    })();
   }, []);
 
   return {

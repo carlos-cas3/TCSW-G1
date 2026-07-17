@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getUser } from "../../../app/auth";
 import {
-    getVendorBranches,
     getVendorActiveBranches,
     fetchAllBranches,
     changeBranchStatus,

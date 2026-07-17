@@ -45,7 +45,6 @@ export default function VendorsList() {
                         <p className="vendors-page-subtitle">Gestión de Vendedores</p> */}
                     </div>
                     <button
-                        onClick={() => setIsModalOpen(true)}
                         className="vendors-btn-primary"
                     >
                         <Plus className="vendors-btn-icon mr-2" />

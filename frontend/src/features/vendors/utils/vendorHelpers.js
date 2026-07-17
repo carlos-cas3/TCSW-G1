@@ -1,4 +1,4 @@
-import { VENDOR_STATUS, VENDOR_STATUS_COLORS } from '../constants/vendorConstants';
+import { VENDOR_STATUS_COLORS } from '../constants/vendorConstants';
 
 export function getStatusColor(status) {
     return VENDOR_STATUS_COLORS[status] || 'bg-gray-100 text-gray-800';
