@@ -17,8 +17,13 @@ export default function AccountStatusCard({ data, commission, onSaveCommission }
 
     const status = data.account?.status;
     const statusLabel = STATUS_LABELS[status] || "Desconocido";
-    const statusClass =
-        status === "ACTIVE" ? "status-active" : "status-inactive";
+    const statusClassMap = {
+        ACTIVE: "status-active",
+        PENDING: "status-pending",
+        INACTIVE: "status-inactive",
+        SUSPENDED: "status-suspended",
+    };
+    const statusClass = statusClassMap[status] || "status-inactive";
 
     const isEditable = typeof onSaveCommission === "function";
 

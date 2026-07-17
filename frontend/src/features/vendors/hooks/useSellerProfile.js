@@ -15,11 +15,13 @@ import {
     updateVendorPaymentMethods,
 } from "../services/vendor.service";
 
+import { getVendorProducts } from "../../catalog/services/vendorProducts.service";
+
 import { getUser } from "../../../app/auth";
 
 import { extractEditableData } from "../helpers/sellerEditableData";
 
-const mapVendorToProfile = (vendor) => ({
+const mapVendorToProfile = (vendor, totalProducts = 0) => ({
     profile: {
         companyName: vendor.vendor_name,
         companyEmail: vendor.vendor_email,
@@ -32,6 +34,7 @@ const mapVendorToProfile = (vendor) => ({
     account: {
         status: vendor.vendor_status,
         memberSince: vendor.created_at,
+        totalProducts,
     },
 });
 
@@ -103,12 +106,14 @@ export const useSellerProfile = () => {
                 getVendorPaymentMethods(vendorId),
             ]);
 
+            const products = await getVendorProducts(vendorId);
+
             if (vendorError) {
                 throw new Error(vendorError);
             }
 
             const mappedData = {
-                ...mapVendorToProfile(vendorData),
+                ...mapVendorToProfile(vendorData, products?.length ?? 0),
 
                 returnPolicy: {
                     description:
@@ -331,4 +336,4 @@ export const useSellerProfile = () => {
         reload: loadProfile,
         commission
     };
-};
+};
