@@ -77,7 +77,7 @@ export function sortVendors(vendors, sortKey, sortDir) {
                 valA = a.branches?.length ?? 0;
                 valB = b.branches?.length ?? 0;
                 break;
-            case 'createdAt':
+            case 'created_at':
                 valA = a.created_at ?? '';
                 valB = b.created_at ?? '';
                 break;

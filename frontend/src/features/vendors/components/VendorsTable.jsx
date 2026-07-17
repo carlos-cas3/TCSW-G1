@@ -4,7 +4,7 @@ import { createDateColumn } from "../../../shared/table/columns/date.column";
 import { createActionsColumn } from "../../../shared/table/columns/actions.column";
 import { sortVendors } from "../utils/vendorHelpers";
 
-const VENDOR_STATUS_OPTIONS = ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED"];
+const VENDOR_STATUS_OPTIONS = ["PENDING", "ACTIVE", "SUSPENDED"];
 
 const VENDOR_STATUS_LABELS = {
   PENDING: "Pendiente",
@@ -100,7 +100,7 @@ export default function VendorsTable({
         <span className="text-sm text-gray-900">{vendor.branches?.length || 0}</span>
       ),
     },
-    createDateColumn({ key: "createdAt", label: "Fecha Ingreso", sortable: true }),
+    createDateColumn({ key: "created_at", label: "Fecha Ingreso", sortable: true }),
     createActionsColumn({
       actions: ["view"],
       handlers: {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DataTable from "../../../shared/table/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
-import TableStatusBadge from "../../../shared/components/TableStatusBadge";
+import { STATUS_COLORS, STATUS_LABELS } from "../../../shared/utils/statusUtils";
 import TableActions from "../../../shared/components/TableActions";
 import { sortProducts } from "../utils/catalogHelpers";
 
@@ -117,7 +117,14 @@ export default function CatalogTable({
         render: (product) => {
           const info = getInfo(product);
           const status = product.status || info.product_status || "INACTIVE";
-          return <TableStatusBadge status={status} />;
+          const palette = STATUS_COLORS[status] || STATUS_COLORS.INACTIVE;
+          const label = STATUS_LABELS[status] || status;
+          return (
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${palette.bg} ${palette.text} ${palette.border}`}>
+              <span className={`w-2 h-2 rounded-full ${palette.dot}`} />
+              {label}
+            </span>
+          );
         },
       };
     }

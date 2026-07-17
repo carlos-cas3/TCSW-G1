@@ -11,8 +11,8 @@ import createStatsCards from "../../../shared/components/createStatsCards";
 const BranchStatsCards = createStatsCards([
   { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
   { label: "Activas", valueKey: "active", icon: CircleCheck, color: "green" },
-  { label: "Inactivas", valueKey: "inactive", icon: CircleX, color: "red" },
-  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "yellow" },
+  { label: "Inactivas", valueKey: "inactive", icon: CircleX, color: "gray" },
+  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "red" },
 ]);
 import "../styles/layout.css";
 import "../styles/buttons.css";

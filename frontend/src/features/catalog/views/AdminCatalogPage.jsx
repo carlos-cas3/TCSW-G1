@@ -10,10 +10,11 @@ import { Package, CircleCheckBig, CircleX } from "lucide-react";
 const CatalogStatsCards = createStatsCards([
   { label: "Total Productos", valueKey: "total", icon: Package, color: "blue" },
   { label: "Activos", valueKey: "active", icon: CircleCheckBig, color: "green" },
-  { label: "Inactivos", valueKey: "inactive", icon: CircleX, color: "red" },
+  { label: "Inactivos", valueKey: "inactive", icon: CircleX, color: "gray" },
 ]);
 import CatalogFilters from "../components/CatalogFilters";
 import ProductModal from "../components/AdminProductModal";
+import ProductDetailModal from "../components/ProductDetailModal";
 
 import {
   createProduct,
@@ -28,6 +29,7 @@ export default function AdminCatalogPage() {
 
   const [openModal, setOpenModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [viewingProduct, setViewingProduct] = useState(null);
 
   const handleCreate = () => {
     setEditingProduct(null);
@@ -55,18 +57,6 @@ export default function AdminCatalogPage() {
     } catch {
       alert("Error eliminando producto");
     }
-  };
-
-  const handleView = (product) => {
-    alert(`
-PRODUCTO
-
-Nombre: ${product.product_name}
-Marca: ${product.product_brand}
-Categoría: ${product.categories?.category_name}
-Estado: ${product.product_status}
-Descripción: ${product.product_description}
-    `);
   };
 
   return (
@@ -125,7 +115,7 @@ Descripción: ${product.product_description}
           loading={loading}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          onView={handleView}
+          onView={(product) => setViewingProduct(product)}
           mode="admin"
         />
       </div>
@@ -138,6 +128,12 @@ Descripción: ${product.product_description}
         }}
         onSave={handleSave}
         editingProduct={editingProduct}
+      />
+
+      <ProductDetailModal
+        isOpen={!!viewingProduct}
+        product={viewingProduct}
+        onClose={() => setViewingProduct(null)}
       />
     </div>
   );
