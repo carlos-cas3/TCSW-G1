@@ -1,7 +1,7 @@
 export const getHeaders = () => {
     const token =
-        localStorage.getItem("tcsw_token") ||
-        sessionStorage.getItem("tcsw_token");
+        sessionStorage.getItem("tcsw_token") ||
+        localStorage.getItem("tcsw_token");
     if (!token) {
         console.warn("[httpClient] No token found in localStorage/sessionStorage");
     }
