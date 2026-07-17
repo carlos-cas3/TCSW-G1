@@ -84,7 +84,8 @@ export default function useVendorDetail() {
                 : [];
 
             if (!vendor) {
-                throw new Error("No se encontraron datos del vendor");
+                const reason = results[0].reason;
+                throw new Error(reason?.message || "No se encontraron datos del vendor");
             }
 
             setVendorData(mapVendorToData(vendor, products.length));

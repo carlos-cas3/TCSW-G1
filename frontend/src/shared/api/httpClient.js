@@ -2,6 +2,9 @@ export const getHeaders = () => {
     const token =
         localStorage.getItem("tcsw_token") ||
         sessionStorage.getItem("tcsw_token");
+    if (!token) {
+        console.warn("[httpClient] No token found in localStorage/sessionStorage");
+    }
     return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -25,13 +28,14 @@ export const fetchWithAuth = async (url, options = {}) => {
         ) {
             throw new Error("HTML_RESPONSE");
         }
+        let message;
         try {
             const error = JSON.parse(text);
-            throw new Error(error.message || `HTTP ${response.status}`);
-        } catch (parseErr) {
-            if (parseErr.message === "HTML_RESPONSE") throw parseErr;
-            throw new Error(`HTTP ${response.status}`, { cause: parseErr });
+            message = error.message || `HTTP ${response.status}`;
+        } catch {
+            message = `HTTP ${response.status}`;
         }
+        throw new Error(message);
     }
 
     const text = await response.text();
