@@ -17,7 +17,6 @@ import VendorsTable from '../components/VendorsTable';
 
 export default function VendorsList() {
     const [vendors, setVendors] = useState(VENDORS_MOCK);
-    const [, setIsModalOpen] = useState(false);
 
     const {
         filteredVendors,

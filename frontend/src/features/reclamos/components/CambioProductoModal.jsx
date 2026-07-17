@@ -8,15 +8,19 @@ export default function CambioProductoModal({ creditoDisponible, onClose, onSele
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    obtenerCatalogoProductos()
-      .then((data) => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await obtenerCatalogoProductos();
         if (data?.data) setProductos(data.data);
         else if (Array.isArray(data)) setProductos(data);
         else setProductos([]);
-      })
-      .catch(() => setProductos([]))
-      .finally(() => setLoading(false));
+      } catch {
+        setProductos([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const handleBackdropClick = (e) => {
