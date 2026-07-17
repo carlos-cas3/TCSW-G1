@@ -1,12 +1,12 @@
-import { useMemo } from "react";
-import { RefreshCw } from "lucide-react";
+import { useMemo, useState } from "react";
+import { RefreshCw, Store, CircleCheck, CircleX, Settings } from "lucide-react";
 import { useBranches } from "../hooks/useBranches";
 import { useBranchFilters } from "../hooks/useBranchFilters";
 import { extractVendors, extractCities } from "../utils/branchFilters";
 import BranchTable from "../components/BranchTable";
 import BranchFilters from "../components/BranchFilters";
+import BranchDetailModal from "../components/BranchDetailModal";
 import createStatsCards from "../../../shared/components/createStatsCards";
-import { Store, CircleCheck, CircleX, Settings } from "lucide-react";
 
 const BranchStatsCards = createStatsCards([
   { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
@@ -25,8 +25,11 @@ export default function AdminBranchesPage() {
     const vendors = useMemo(() => extractVendors(branches), [branches]);
     const cities = useMemo(() => extractCities(branches), [branches]);
 
+    const [selectedBranch, setSelectedBranch] = useState(null);
+
     const handleView = (branchId) => {
-        console.log("View branch", branchId);
+        const branch = branches.find((b) => b.branch_id === branchId);
+        setSelectedBranch(branch || null);
     };
 
     return (
@@ -81,6 +84,12 @@ export default function AdminBranchesPage() {
                         cities={cities}
                     />
                 }
+            />
+
+            <BranchDetailModal
+                isOpen={!!selectedBranch}
+                branch={selectedBranch}
+                onClose={() => setSelectedBranch(null)}
             />
         </div>
     );

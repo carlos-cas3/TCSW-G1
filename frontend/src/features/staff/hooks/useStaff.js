@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getStaff, createStaff } from "../services/staff.service";
+import { getStaff, createStaff, updateStaff, deleteStaff } from "../services/staff.service";
 
 export const useStaff = () => {
   const [staff, setStaff] = useState([]);
@@ -30,5 +30,17 @@ export const useStaff = () => {
     return res;
   };
 
-  return { staff, loading, error, reload: loadStaff, addStaff };
+  const editStaff = async (staffId, data) => {
+    const res = await updateStaff(staffId, data);
+    await loadStaff();
+    return res;
+  };
+
+  const removeStaff = async (staffId) => {
+    const res = await deleteStaff(staffId);
+    await loadStaff();
+    return res;
+  };
+
+  return { staff, loading, error, reload: loadStaff, addStaff, editStaff, removeStaff };
 };

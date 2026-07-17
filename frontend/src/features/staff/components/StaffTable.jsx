@@ -26,8 +26,34 @@ const sortStaff = (data, sortKey, sortDir) => {
   });
 };
 
-export default function StaffTable({ staff, loading }) {
+export default function StaffTable({ staff, loading, onEdit, onDelete }) {
   const [confirmModal, setConfirmModal] = useState(null);
+
+  const handleDeleteRequest = (member) => {
+    setConfirmModal({
+      member,
+      title: "Confirmar eliminación",
+      message: (
+        <>
+          ¿Estás seguro de que deseas desactivar a{" "}
+          <strong>{member.first_name} {member.last_name}</strong>?
+          <br />
+          <span className="text-sm text-gray-500">
+            El miembro del staff será marcado como inactivo.
+          </span>
+        </>
+      ),
+      variant: "danger",
+      confirmLabel: "Eliminar",
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (confirmModal?.member) {
+      await onDelete(confirmModal.member.staff_id);
+    }
+    setConfirmModal(null);
+  };
 
   const columns = TABLE_HEADERS.map((col) => {
     if (col.key === "role_id") {
@@ -36,12 +62,15 @@ export default function StaffTable({ staff, loading }) {
         render: (item) => {
           const label = ROLE_MAP[item.role_id] ?? "—";
           const isSupervisor = item.role_id === 4;
+          const roleColors = isSupervisor
+            ? "bg-purple-50 text-purple-700 border-purple-200"
+            : "bg-green-50 text-green-700 border-green-200";
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${roleColors}`}>
               {isSupervisor ? (
-                <UserCog className="w-3.5 h-3.5" />
+                <UserCog className="w-4 h-4" />
               ) : (
-                <UserCheck className="w-3.5 h-3.5" />
+                <UserCheck className="w-4 h-4" />
               )}
               {label}
             </span>
@@ -65,10 +94,11 @@ export default function StaffTable({ staff, loading }) {
     if (col.key === "actions") {
       return {
         ...col,
-        render: () => (
+        render: (item) => (
           <TableActions
             show={["edit", "delete"]}
-            disabled
+            onEdit={() => onEdit(item)}
+            onDelete={() => handleDeleteRequest(item)}
           />
         ),
       };
@@ -92,10 +122,7 @@ export default function StaffTable({ staff, loading }) {
         <ConfirmModal
           isOpen={!!confirmModal}
           onClose={() => setConfirmModal(null)}
-          onConfirm={async () => {
-            await confirmModal.onConfirm();
-            setConfirmModal(null);
-          }}
+          onConfirm={handleConfirmDelete}
           title={confirmModal.title}
           message={confirmModal.message}
           variant={confirmModal.variant}

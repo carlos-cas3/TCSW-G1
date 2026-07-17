@@ -14,7 +14,7 @@ import "../styles/buttons.css";
 const BranchStatsCards = createStatsCards([
   { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
   { label: "Activas", valueKey: "active", icon: CircleCheck, color: "green" },
-  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "yellow" },
+  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "red" },
 ]);
 
 export default function UserBranchesPage() {
