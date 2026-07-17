@@ -6,16 +6,12 @@ import AccountStatusCard from "../components/AccountStatusCard";
 import BusinessConfigCard from "../components/BusinessConfigCard";
 import ReturnPolicyCard from "../components/ReturnPolicyCard";
 import VendorCategoriesCard from "../components/VendorCategoriesCard";
-import VendorUserCard from "../components/VendorUserCard";
 import "../styles/shared.css";
 
 export default function AdminVendorDetailPage() {
     const navigate = useNavigate();
     const {
         vendorData,
-        userData,
-        userLoading,
-        userError,
         policyData,
         categories,
         vendorCategories,
@@ -24,9 +20,7 @@ export default function AdminVendorDetailPage() {
         vendorPaymentMethodIds,
         loading,
         error,
-        saveUser,
         saveCommission,
-        loadUser,
         reload,
     } = useVendorDetail();
 
@@ -93,13 +87,6 @@ export default function AdminVendorDetailPage() {
 
             <div className="seller-grid">
                 <div className="seller-col-main">
-                    <VendorUserCard
-                        userData={userData}
-                        userLoading={userLoading}
-                        userError={userError}
-                        onExpand={loadUser}
-                        onSave={saveUser}
-                    />
                     <SellerProfileCard
                         data={mappedVendorData}
                         readOnly
