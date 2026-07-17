@@ -36,28 +36,36 @@ export default function SubOrderCard({ sub, index }) {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">ID Ítem (Registro)</th>
+                <th className="text-left font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">ID Ítem</th>
                 <th className="text-left font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Producto</th>
                 <th className="text-center font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Cant.</th>
-                <th className="text-center font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Estado Ítem</th>
+                <th className="text-center font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Devuelto</th>
+                <th className="text-center font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Neto</th>
+                <th className="text-center font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">Estado</th>
                 <th className="text-right font-medium text-gray-500 pb-2 pr-3 whitespace-nowrap">P. Unitario</th>
-                <th className="text-right font-medium text-gray-500 pb-2 whitespace-nowrap">Total</th>
+                <th className="text-right font-medium text-gray-500 pb-2 whitespace-nowrap">Subtotal</th>
               </tr>
             </thead>
             <tbody>
               {sub.items.map((item, itemIdx) => (
-                <tr key={item.idOItem || itemIdx} className="border-b border-gray-100 last:border-0">
-                  <td className="py-2 pr-3 font-semibold text-gray-500 text-[11px]">{formatIdItem(item.idOItem)}</td>
-                  <td className="py-2 pr-3 font-medium text-gray-900">{item.idProducto}</td>
-                  <td className="py-2 pr-3 text-center bg-gray-50 rounded">{item.cantidad}</td>
-                  <td className="py-2 pr-3 text-center">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${getBadgeItem(item.estadoItem)}`}>
-                      {renderEstadoItem(item.estadoItem)}
-                    </span>
-                  </td>
-                  <td className="py-2 pr-3 text-right text-gray-500">S/ {item.precioUnitario}</td>
-                  <td className="py-2 text-right font-medium text-gray-900">S/ {(item.cantidad * item.precioUnitario).toFixed(2)}</td>
-                </tr>
+                  <tr key={item.idOItem || itemIdx} className="border-b border-gray-100 last:border-0">
+                    <td className="py-2 pr-3 font-semibold text-gray-500 text-[11px]">{formatIdItem(item.idOItem)}</td>
+                    <td className="py-2 pr-3 font-medium text-gray-900">{item.idProducto}</td>
+                    <td className="py-2 pr-3 text-center">{item.cantidad}</td>
+                    <td className="py-2 pr-3 text-center text-red-500 font-medium">{item.cantidadDevuelta || 0}</td>
+                    <td className="py-2 pr-3 text-center font-medium text-gray-900">
+                      {item.estadoItem === 2 ? 0 : (item.cantidad - (item.cantidadDevuelta || 0))}
+                    </td>
+                    <td className="py-2 pr-3 text-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${getBadgeItem(item.estadoItem)}`}>
+                        {renderEstadoItem(item.estadoItem)}
+                      </span>
+                    </td>
+                    <td className="py-2 pr-3 text-right text-gray-500">S/ {item.precioUnitario}</td>
+                    <td className="py-2 text-right font-medium text-gray-900">
+                      S/ {item.estadoItem === 2 ? '0.00' : ((item.cantidad - (item.cantidadDevuelta || 0)) * item.precioUnitario).toFixed(2)}
+                    </td>
+                  </tr>
               ))}
             </tbody>
           </table>

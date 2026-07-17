@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   formatIdSubOrden, 
   formatIdItem, 
@@ -80,12 +79,14 @@ export default function OrderDetailModal({ orden, onClose }) {
               <table className="w-full text-sm text-left">
                 <thead className="bg-gray-50 border-b border-gray-200 text-gray-500">
                   <tr>
-                    <th className="px-4 py-3 font-medium">ID Ítem (Registro)</th>
+                    <th className="px-4 py-3 font-medium">ID Ítem</th>
                     <th className="px-4 py-3 font-medium">Producto</th>
                     <th className="px-4 py-3 font-medium text-center">Cant.</th>
-                    <th className="px-4 py-3 font-medium text-center">Estado Ítem</th>
+                    <th className="px-4 py-3 font-medium text-center">Devuelto</th>
+                    <th className="px-4 py-3 font-medium text-center">Neto</th>
+                    <th className="px-4 py-3 font-medium text-center">Estado</th>
                     <th className="px-4 py-3 font-medium text-right">P. Unitario</th>
-                    <th className="px-4 py-3 font-medium text-right">Total</th>
+                    <th className="px-4 py-3 font-medium text-right">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -96,6 +97,10 @@ export default function OrderDetailModal({ orden, onClose }) {
                       <td className="px-4 py-3 text-center">
                         <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md font-semibold">{item.cantidad}</span>
                       </td>
+                      <td className="px-4 py-3 text-center text-red-500 font-semibold">{item.cantidadDevuelta || 0}</td>
+                      <td className="px-4 py-3 text-center font-semibold text-gray-900">
+                        {item.estadoItem === 2 ? 0 : (item.cantidad - (item.cantidadDevuelta || 0))}
+                      </td>
                       <td className="px-4 py-3 text-center">
                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getBadgeItem(item.estadoItem)}`}>
                            {renderEstadoItem(item.estadoItem)}
@@ -103,7 +108,7 @@ export default function OrderDetailModal({ orden, onClose }) {
                       </td>
                       <td className="px-4 py-3 text-right text-gray-500">S/ {item.precioUnitario}</td>
                       <td className="px-4 py-3 text-right font-medium text-gray-900">
-                        S/ {(item.cantidad * item.precioUnitario).toFixed(2)}
+                        S/ {item.estadoItem === 2 ? '0.00' : ((item.cantidad - (item.cantidadDevuelta || 0)) * item.precioUnitario).toFixed(2)}
                       </td>
                     </tr>
                   ))}
