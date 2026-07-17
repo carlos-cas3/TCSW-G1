@@ -12,9 +12,10 @@ import FilterBar from "../../../shared/components/FilterBar";
 import { ROLE_FILTER_OPTIONS } from "../constants/staffConstants";
 
 export default function UserStaffPage() {
-  const { staff, loading, error, reload, addStaff } = useStaff();
+  const { staff, loading, error, reload, addStaff, editStaff, removeStaff } = useStaff();
   const { filters, filteredStaff, stats, updateFilter, resetFilters } = useStaffFilters(staff);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingStaff, setEditingStaff] = useState(null);
 
   const filterConfig = [
     {
@@ -37,6 +38,23 @@ export default function UserStaffPage() {
 
   const hasFilters = filters.search || filters.role !== "all";
 
+  const handleEdit = (member) => {
+    setEditingStaff(member);
+  };
+
+  const handleUpdate = async (staffId, data) => {
+    await editStaff(staffId, data);
+  };
+
+  const handleDelete = async (staffId) => {
+    await removeStaff(staffId);
+  };
+
+  const handleCloseFormModal = () => {
+    setIsModalOpen(false);
+    setEditingStaff(null);
+  };
+
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -56,7 +74,7 @@ export default function UserStaffPage() {
             Actualizar
           </button>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => { setIsModalOpen(true); setEditingStaff(null); }}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
           >
             <Plus size={18} />
@@ -83,12 +101,19 @@ export default function UserStaffPage() {
 
       <FilterBar filters={filterConfig} onReset={resetFilters} hasFilters={hasFilters} />
 
-      <StaffTable staff={filteredStaff} loading={loading} />
+      <StaffTable
+        staff={filteredStaff}
+        loading={loading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       <StaffFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalOpen || !!editingStaff}
+        onClose={handleCloseFormModal}
         onSubmit={addStaff}
+        onUpdate={handleUpdate}
+        staff={editingStaff}
       />
     </div>
   );

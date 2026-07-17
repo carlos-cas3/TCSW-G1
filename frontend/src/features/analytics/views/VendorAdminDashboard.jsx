@@ -6,7 +6,7 @@ import useVendorAdminDashboard from "../hooks/useVendorAdminDashboard";
 import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
 import TopProductsList from "../components/TopProductsList";
-import VendorAlertsPanel from "../components/VendorAlertsPanel";
+import StaffPieChart from "../components/StaffPieChart";
 
 const StatsCards = createStatsCards([
     { label: "Ingresos", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
@@ -22,7 +22,6 @@ export default function VendorAdminDashboard() {
         revenueMonthly,
         ordersDistribution,
         topProducts,
-        vendorAlerts,
         loading,
         error,
         reload,
@@ -93,12 +92,7 @@ export default function VendorAdminDashboard() {
                     highlightFirst
                     fitHeight
                 />
-                <VendorAlertsPanel
-                    alerts={vendorAlerts}
-                    loading={loading}
-                    error={error}
-                    onRetry={reload}
-                />
+                <StaffPieChart />
             </div>
         </div>
     );

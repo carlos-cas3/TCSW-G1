@@ -2,13 +2,13 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { X, AtSign, Loader2, Check } from "lucide-react";
 import { ROLE_OPTIONS } from "../constants/staffConstants";
 
-const INITIAL_FORM = {
-  first_name: "",
-  last_name: "",
-  email: "",
-  personal_phone: "",
-  role_id: 3,
-};
+const getInitialForm = (staff) => ({
+  first_name: staff?.first_name || "",
+  last_name: staff?.last_name || "",
+  email: staff?.email || "",
+  personal_phone: staff?.personal_phone || "",
+  role_id: staff?.role_id || 3,
+});
 
 const formatPhone = (value) => {
   const d = value.replace(/\D/g, "");
@@ -17,9 +17,10 @@ const formatPhone = (value) => {
   return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)}`;
 };
 
-export default function StaffFormModal({ isOpen, onClose, onSubmit }) {
+export default function StaffFormModal({ isOpen, onClose, onSubmit, onUpdate, staff }) {
+  const isEditMode = !!staff;
   const modalRef = useRef(null);
-  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [formData, setFormData] = useState(getInitialForm(staff));
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -27,11 +28,11 @@ export default function StaffFormModal({ isOpen, onClose, onSubmit }) {
   useEffect(() => {
     if (isOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData(INITIAL_FORM);
+      setFormData(getInitialForm(staff));
       setErrors({});
       setSubmitError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, staff]);
 
   useEffect(() => {
     if (isOpen) {
@@ -73,10 +74,14 @@ export default function StaffFormModal({ isOpen, onClose, onSubmit }) {
         ...formData,
         personal_phone: formData.personal_phone.replace(/\s/g, ""),
       };
-      await onSubmit(payload);
+      if (isEditMode) {
+        await onUpdate(staff.staff_id, payload);
+      } else {
+        await onSubmit(payload);
+      }
       onClose();
     } catch (err) {
-      setSubmitError(err.message || "Error al crear miembro");
+      setSubmitError(err.message || "Error al guardar miembro");
     } finally {
       setSubmitting(false);
     }
@@ -122,7 +127,9 @@ export default function StaffFormModal({ isOpen, onClose, onSubmit }) {
           className="relative bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-modalSlideIn"
         >
           <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Agregar Miembro</h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              {isEditMode ? "Editar Miembro" : "Agregar Miembro"}
+            </h2>
             <button
               onClick={onClose}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -232,7 +239,13 @@ export default function StaffFormModal({ isOpen, onClose, onSubmit }) {
                 ) : (
                   <Check className="w-4 h-4" />
                 )}
-                {submitting ? "Creando..." : "Agregar"}
+                {submitting
+                  ? isEditMode
+                    ? "Guardando..."
+                    : "Creando..."
+                  : isEditMode
+                  ? "Guardar"
+                  : "Agregar"}
               </button>
             </div>
           </form>
