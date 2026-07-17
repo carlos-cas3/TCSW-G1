@@ -24,12 +24,26 @@ import NuevoReclamoPage from "../features/reclamos/views/NuevoReclamoPage";
 import EvaluarReclamosPage from "../features/reclamos/views/EvaluarReclamosPage";
 import HistorialReclamosPage from "../features/reclamos/views/HistorialReclamosPage";
 
+import SuperAdminDashboard from "../features/analytics/views/SuperAdminDashboard";
+import VendorAdminDashboard from "../features/analytics/views/VendorAdminDashboard";
+import SuperAdminAnalytics from "../features/analytics/views/SuperAdminAnalytics";
+import VendorAdminAnalytics from "../features/analytics/views/VendorAdminAnalytics";
+
+import DataTablePlayground from "../shared/dev/DataTablePlayground";
+import StatsCardsPlayground from "../shared/dev/StatsCardsPlayground";
+
 const ROLES = {
     SUPER_ADMIN: 1,
     VENDOR_ADMIN: 2,
 };
 
+const devRoutes = import.meta.env.DEV
+  ? [{ path: "/dev/table", element: <DataTablePlayground /> },
+     { path: "/dev/cards", element: <StatsCardsPlayground /> }]
+  : [];
+
 const routes = [
+  ...devRoutes,
     {
         element: <AuthLayout />,
         children: [{ path: "/login", element: <LoginForm /> }],
@@ -43,12 +57,12 @@ const routes = [
             </ProtectedRoute>
         ),
         children: [
-            { path: "", element: <h1>Admin Dashboard</h1> },
+            { path: "", element: <SuperAdminDashboard /> },
             { path: "vendors", element: <AdminVendorsPage /> },
             { path: "vendors/:vendor_id", element: <AdminVendorDetailPage /> },
             { path: "branches", element: <AdminBranchesPage /> },
             { path: "catalog", element: <AdminCatalogPage /> },
-            { path: "analytics", element: <h1>Analytics</h1> },
+            { path: "analytics", element: <SuperAdminAnalytics /> },
             { path: "orders", element: <OrderPage /> },
             { path: "vendor-orders", element: <VendorOrdersPortal /> },
             { path: "reclamos", element: <HistorialReclamosPage /> },
@@ -64,7 +78,8 @@ const routes = [
             </ProtectedRoute>
         ),
         children: [
-            { path: "", element: <h1>Vendor Dashboard</h1> },
+            { path: "", element: <VendorAdminDashboard /> },
+            { path: "analytics", element: <VendorAdminAnalytics /> },
             { path: "catalog", element: <VendorCatalogPage /> },
             { path: "seller-management", element: <UserVendorPage /> },
             { path: "branches", element: <UserBranchesPage /> },

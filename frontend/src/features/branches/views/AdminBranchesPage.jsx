@@ -5,7 +5,15 @@ import { useBranchFilters } from "../hooks/useBranchFilters";
 import { extractVendors, extractCities } from "../utils/branchFilters";
 import BranchTable from "../components/BranchTable";
 import BranchFilters from "../components/BranchFilters";
-import BranchStatsCards from "../components/BranchStatsCards";
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { Store, CircleCheck, CircleX, Settings } from "lucide-react";
+
+const BranchStatsCards = createStatsCards([
+  { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activas", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "Inactivas", valueKey: "inactive", icon: CircleX, color: "red" },
+  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "yellow" },
+]);
 import "../styles/layout.css";
 import "../styles/buttons.css";
 
@@ -16,6 +24,10 @@ export default function AdminBranchesPage() {
 
     const vendors = useMemo(() => extractVendors(branches), [branches]);
     const cities = useMemo(() => extractCities(branches), [branches]);
+
+    const handleView = (branchId) => {
+        console.log("View branch", branchId);
+    };
 
     return (
         <div className="branches-page">
@@ -52,21 +64,23 @@ export default function AdminBranchesPage() {
 
             <BranchStatsCards stats={stats} />
 
-            <BranchFilters
-                filters={filters}
-                onFilterChange={updateFilter}
-                onReset={resetFilters}
-                showInactive={true}
-                showVendorFilter={true}
-                vendors={vendors}
-                showCityFilter={true}
-                cities={cities}
-            />
-
             <BranchTable
                 mode="admin"
                 branches={filteredBranches}
                 loading={loading}
+                onView={handleView}
+                toolbar={
+                    <BranchFilters
+                        filters={filters}
+                        onFilterChange={updateFilter}
+                        onReset={resetFilters}
+                        showInactive={true}
+                        showVendorFilter={true}
+                        vendors={vendors}
+                        showCityFilter={true}
+                        cities={cities}
+                    />
+                }
             />
         </div>
     );

@@ -2,7 +2,6 @@
 
 @layer components {
   .page {
-    @apply p-6;
   }
 
   .page-header {

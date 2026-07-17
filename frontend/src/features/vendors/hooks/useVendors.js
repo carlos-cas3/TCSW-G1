@@ -5,6 +5,7 @@ import {
     getVendorCategories,
     updateVendorStatus,
 } from "../services/vendor.service";
+import { getVendorProducts } from "../../catalog/services/vendorProducts.service";
 
 const CONCURRENCY_LIMIT = 5;
 
@@ -17,10 +18,11 @@ async function enrichVendors(vendors, limit = CONCURRENCY_LIMIT) {
 
         const chunkResults = await Promise.all(
             chunk.map(async (vendor) => {
-                const [branchesResult, categoriesResult] =
+                const [branchesResult, categoriesResult, productsResult] =
                     await Promise.allSettled([
                         getVendorBranches(vendor.vendor_id),
                         getVendorCategories(vendor.vendor_id),
+                        getVendorProducts(vendor.vendor_id),
                     ]);
 
                 const branches =
@@ -33,7 +35,12 @@ async function enrichVendors(vendors, limit = CONCURRENCY_LIMIT) {
                         ? (categoriesResult.value.data ?? [])
                         : [];
 
-                return { ...vendor, branches, vendor_categories };
+                const products =
+                    productsResult.status === "fulfilled"
+                        ? (productsResult.value ?? [])
+                        : [];
+
+                return { ...vendor, branches, vendor_categories, products };
             }),
         );
 

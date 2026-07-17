@@ -27,6 +27,12 @@ const allMenuItems = [
     },
     { path: "/user", label: "Dashboard", icon: HomeIcon, roles: [2] },
     {
+        path: "/user/analytics",
+        label: "Analytics",
+        icon: AnalyticsIcon,
+        roles: [2],
+    },
+    {
         path: "/user/catalog",
         label: "Catalog",
         icon: CatalogIcon,

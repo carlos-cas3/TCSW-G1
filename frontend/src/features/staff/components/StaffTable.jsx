@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UserCheck, UserCog } from "lucide-react";
-import DataTable from "../../../shared/components/DataTable";
+import DataTable from "../../../shared/table/DataTable";
 import ConfirmModal from "../../../shared/components/ConfirmModal";
 import TableActions from "../../../shared/components/TableActions";
 import { ROLE_MAP } from "../constants/staffConstants";

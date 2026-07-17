@@ -4,7 +4,14 @@ import { Plus, RefreshCw } from "lucide-react";
 import { useCatalog } from "../hooks/useCatalog";
 import { useCatalogFilters } from "../hooks/useCatalogFilters";
 import CatalogTable from "../components/CatalogTable";
-import CatalogStatsCards from "../components/CatalogStatsCards";
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { Package, CircleCheckBig, CircleX } from "lucide-react";
+
+const CatalogStatsCards = createStatsCards([
+  { label: "Total Productos", valueKey: "total", icon: Package, color: "blue" },
+  { label: "Activos", valueKey: "active", icon: CircleCheckBig, color: "green" },
+  { label: "Inactivos", valueKey: "inactive", icon: CircleX, color: "red" },
+]);
 import CatalogFilters from "../components/CatalogFilters";
 import ProductModal from "../components/AdminProductModal";
 

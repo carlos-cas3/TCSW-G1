@@ -6,8 +6,17 @@ import { useVendorFilters } from "../hooks/useVendorFilters";
 import { getAllCategories } from "../services/vendor.service";
 import VendorsTable from "../components/VendorsTable";
 import VendorFilters from "../components/VendorFilters";
-import VendorStatsCards from "../components/VendorStatsCards";
+import createStatsCards from "../../../shared/components/createStatsCards";
+import { Store, CircleCheck, Clock, Ban } from "lucide-react";
+
+const VendorStatsCards = createStatsCards([
+  { label: "Total Vendedores", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activos", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "Pendientes", valueKey: "pending", icon: Clock, color: "yellow" },
+  { label: "Suspendidos", valueKey: "suspended", icon: Ban, color: "red" },
+]);
 import CreateVendorModal from "../components/CreateVendorModal";
+import ConfirmModal from "../../../shared/components/ConfirmModal";
 import { getStats } from "../utils/vendorHelpers";
 
 export default function AdminVendorsPage() {
@@ -16,9 +25,11 @@ export default function AdminVendorsPage() {
     const [rowErrors, setRowErrors] = useState({});
     const [allCategories, setAllCategories] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [pendingStatuses, setPendingStatuses] = useState({});
+    const [modalData, setModalData] = useState(null);
 
     const handleCreateSuccess = (response) => {
-        console.log("🔑 Contraseña temporal del vendedor:", response?.data?.temp_password);
+        console.log("Contraseña temporal del vendedor:", response?.data?.temp_password);
         setIsCreateModalOpen(false);
         reload();
     };
@@ -33,16 +44,40 @@ export default function AdminVendorsPage() {
 
     const stats = getStats(filteredVendors);
 
-    const handleStatusChange = async (vendorId, newStatus) => {
-        setRowErrors((prev) => ({ ...prev, [vendorId]: null }));
+    const handleStatusChange = (vendor, newStatus) => {
+        setPendingStatuses((prev) => ({ ...prev, [vendor.vendor_id]: newStatus }));
+        setModalData({ vendor, newStatus });
+    };
+
+    const handleConfirm = async () => {
+        if (!modalData) return;
+        const { vendor, newStatus } = modalData;
+        setRowErrors((prev) => ({ ...prev, [vendor.vendor_id]: null }));
         try {
-            await changeStatus(vendorId, newStatus);
+            await changeStatus(vendor.vendor_id, newStatus);
+            setPendingStatuses((prev) => {
+                const next = { ...prev };
+                delete next[vendor.vendor_id];
+                return next;
+            });
         } catch (err) {
             setRowErrors((prev) => ({
                 ...prev,
-                [vendorId]: err.message || "Error al actualizar estado",
+                [vendor.vendor_id]: err.message || "Error al actualizar estado",
             }));
         }
+        setModalData(null);
+    };
+
+    const handleCancel = () => {
+        if (modalData) {
+            setPendingStatuses((prev) => {
+                const next = { ...prev };
+                delete next[modalData.vendor.vendor_id];
+                return next;
+            });
+        }
+        setModalData(null);
     };
 
     return (
@@ -89,21 +124,42 @@ export default function AdminVendorsPage() {
 
             <VendorStatsCards stats={stats} />
 
-            <VendorFilters
-                filters={filters}
-                onFilterChange={updateFilter}
-                onReset={resetFilters}
-                allCategories={allCategories}
-            />
-
             <VendorsTable
                 vendors={filteredVendors}
                 loading={loading}
                 changingId={changingId}
-                changeStatus={handleStatusChange}
+                pendingStatuses={pendingStatuses}
+                onStatusChange={handleStatusChange}
                 rowErrors={rowErrors}
                 onView={(id) => navigate(`/admin/vendors/${id}`)}
+                toolbar={
+                    <VendorFilters
+                        filters={filters}
+                        onFilterChange={updateFilter}
+                        onReset={resetFilters}
+                        allCategories={allCategories}
+                    />
+                }
             />
+
+            <ConfirmModal
+                isOpen={!!modalData}
+                onClose={handleCancel}
+                onConfirm={handleConfirm}
+                variant="warning"
+                title="¿Confirmar cambio de estado?"
+                message={
+                    <>
+                        Estás a punto de cambiar el estado de <strong>{modalData?.vendor?.vendor_name}</strong> de{" "}
+                        <strong>{modalData?.vendor?.vendor_status}</strong> a <strong>{modalData?.newStatus}</strong>.
+                        ¿Deseas continuar?
+                    </>
+                }
+                confirmLabel="Confirmar"
+                loadingLabel="Procesando..."
+                isLoading={changingId !== null}
+            />
+
             <CreateVendorModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}

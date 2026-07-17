@@ -1,13 +1,21 @@
 import { useState } from "react";
-import { RefreshCw, Plus } from "lucide-react";
+import { RefreshCw, Plus, Store, CircleCheck, Settings } from "lucide-react";
 import { getUser } from "../../../app/auth";
 import { useBranches } from "../hooks/useBranches";
 import { useBranchFilters } from "../hooks/useBranchFilters";
+import createStatsCards from "../../../shared/components/createStatsCards";
 import BranchTable from "../components/BranchTable";
 import BranchFilters from "../components/BranchFilters";
 import BranchFormModal from "../components/BranchFormModal";
+import ConfirmModal from "../../../shared/components/ConfirmModal";
 import "../styles/layout.css";
 import "../styles/buttons.css";
+
+const BranchStatsCards = createStatsCards([
+  { label: "Total Sucursales", valueKey: "total", icon: Store, color: "blue" },
+  { label: "Activas", valueKey: "active", icon: CircleCheck, color: "green" },
+  { label: "En Mantenimiento", valueKey: "maintaining", icon: Settings, color: "yellow" },
+]);
 
 export default function UserBranchesPage() {
     const vendorId = getUser()?.vendorId;
@@ -22,53 +30,89 @@ export default function UserBranchesPage() {
         deleteBranch,
         changingId,
     } = useBranches({ vendorId, mode: "user" });
-    const { filters, filteredBranches, updateFilter, resetFilters } =
+    const { filters, filteredBranches, stats, updateFilter, resetFilters } =
         useBranchFilters(branches);
     const [rowErrors, setRowErrors] = useState({});
+    const [pendingStatuses, setPendingStatuses] = useState({});
+    const [modalData, setModalData] = useState(null);
 
-    const [modalState, setModalState] = useState({
+    const [formModalState, setFormModalState] = useState({
         isOpen: false,
         mode: "create",
         branch: null,
     });
 
-    const handleStatusChange = async (branchId, newStatus) => {
-        setRowErrors((prev) => ({ ...prev, [branchId]: null }));
-        try {
-            await changeStatus(branchId, newStatus);
-        } catch (err) {
-            setRowErrors((prev) => ({
-                ...prev,
-                [branchId]: err.message || "Error al actualizar estado",
-            }));
+    const handleStatusChange = (branch, newStatus) => {
+        setPendingStatuses(prev => ({ ...prev, [branch.branch_id]: newStatus }));
+        setModalData({ branch, newStatus, mode: "status" });
+    };
+
+    const handleDelete = (branch) => {
+        setModalData({ branch, mode: "delete" });
+    };
+
+    const handleConfirm = async () => {
+        if (!modalData) return;
+        const { branch, newStatus, mode } = modalData;
+        if (mode === "status") {
+            setRowErrors((prev) => ({ ...prev, [branch.branch_id]: null }));
+            try {
+                await changeStatus(branch.branch_id, newStatus);
+                setPendingStatuses(prev => {
+                    const next = { ...prev };
+                    delete next[branch.branch_id];
+                    return next;
+                });
+            } catch (err) {
+                setRowErrors((prev) => ({
+                    ...prev,
+                    [branch.branch_id]: err.message || "Error al actualizar estado",
+                }));
+            }
+        } else {
+            await deleteBranch(branch.branch_id);
         }
+        setModalData(null);
+    };
+
+    const handleCancel = () => {
+        if (modalData) {
+            setPendingStatuses(prev => {
+                const next = { ...prev };
+                delete next[modalData.branch.branch_id];
+                return next;
+            });
+        }
+        setModalData(null);
     };
 
     const handleOpenCreate = () => {
-        setModalState({ isOpen: true, mode: "create", branch: null });
+        setFormModalState({ isOpen: true, mode: "create", branch: null });
     };
 
     const handleOpenEdit = (branch) => {
-        setModalState({ isOpen: true, mode: "edit", branch });
+        setFormModalState({ isOpen: true, mode: "edit", branch });
     };
 
     const handleCloseModal = () => {
-        setModalState({ isOpen: false, mode: "create", branch: null });
+        setFormModalState({ isOpen: false, mode: "create", branch: null });
     };
 
     const handleSubmit = async (branchData) => {
-        if (modalState.mode === "create") {
+        if (formModalState.mode === "create") {
             const result = await createBranch(vendorId, branchData);
             if (!result.success) {
                 throw new Error(result.error);
             }
         } else {
-            const result = await updateBranch(modalState.branch.branch_id, branchData);
+            const result = await updateBranch(formModalState.branch.branch_id, branchData);
             if (!result.success) {
                 throw new Error(result.error);
             }
         }
     };
+
+    const isStatusModal = modalData?.mode === "status";
 
     return (
         <div className="branches-page">
@@ -110,11 +154,7 @@ export default function UserBranchesPage() {
                 </div>
             )}
 
-            <BranchFilters
-                filters={filters}
-                onFilterChange={updateFilter}
-                onReset={resetFilters}
-            />
+            <BranchStatsCards stats={stats} />
 
             <div className="branches-table-container">
                 <BranchTable
@@ -122,18 +162,53 @@ export default function UserBranchesPage() {
                     branches={filteredBranches}
                     loading={loading}
                     changingId={changingId}
+                    pendingStatuses={pendingStatuses}
                     onStatusChange={handleStatusChange}
-                    onDelete={deleteBranch}
+                    onDelete={handleDelete}
                     onEdit={handleOpenEdit}
                     rowErrors={rowErrors}
+                    toolbar={
+                        <BranchFilters
+                            filters={filters}
+                            onFilterChange={updateFilter}
+                            onReset={resetFilters}
+                        />
+                    }
                 />
             </div>
 
             <BranchFormModal
-                isOpen={modalState.isOpen}
+                isOpen={formModalState.isOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmit}
-                branch={modalState.branch}
+                branch={formModalState.branch}
+            />
+
+            <ConfirmModal
+                isOpen={modalData !== null}
+                onClose={handleCancel}
+                onConfirm={handleConfirm}
+                variant={isStatusModal ? "warning" : "danger"}
+                title={isStatusModal ? "Confirmar cambio de estado" : "Confirmar eliminación"}
+                message={
+                    isStatusModal ? (
+                        <>
+                            ¿Cambiar el estado de <strong>{modalData?.branch?.branch_name}</strong> de{" "}
+                            <strong>{modalData?.branch?.branch_status}</strong> a{" "}
+                            <strong>{modalData?.newStatus}</strong>?
+                        </>
+                    ) : (
+                        <>
+                            ¿Estás seguro de que deseas eliminar la sucursal{" "}
+                            <strong>{modalData?.branch?.branch_name}</strong>?
+                            <br />
+                            <span className="text-sm text-gray-500">La sucursal será marcada como inactiva.</span>
+                        </>
+                    )
+                }
+                confirmLabel={isStatusModal ? "Confirmar" : "Eliminar"}
+                loadingLabel="Procesando..."
+                isLoading={changingId !== null}
             />
         </div>
     );
