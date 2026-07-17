@@ -47,3 +47,6 @@ export const listarTodosLosTickets = () =>
 
 export const obtenerHistorial = (idTicket) =>
   fetchWithAuth(`${POSTVENTA_URL}/tickets/${idTicket}/historial`);
+
+export const obtenerCatalogoProductos = () =>
+  fetchWithAuth(`${POSTVENTA_URL}/catalogo-productos`);

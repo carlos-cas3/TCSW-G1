@@ -171,10 +171,14 @@ export default function NuevoReclamoPage() {
       const ticketData = {
         idOMaestraRef: ordenEncontrada.idOMaestra,
         dniCliente: ordenEncontrada.clienteDni,
-        tipoSolicitud,
+        tipoSolicitud: Number(tipoSolicitud),
         motivoReclamo: comentarios,
         nuevaTalla: null,
-        idProductoNuevoRef: null,
+        idProductoNuevoRef: productoSeleccionado ? String(productoSeleccionado.product_id) : null,
+        nuevoIdVendedor: productoSeleccionado ? Number(productoSeleccionado.vendor_id) : null,
+        nuevoProductoNombre: productoSeleccionado ? productoSeleccionado.product_name : null,
+        nuevoProductoPrecio: productoSeleccionado ? Number(productoSeleccionado.price) : null,
+        nuevoProductoId: productoSeleccionado ? Number(productoSeleccionado.vendor_product_id) : null,
         items: Object.entries(productosSeleccionados)
           .filter(([_, v]) => v.seleccionado)
           .map(([idOItem, v]) => {
@@ -678,16 +682,23 @@ export default function NuevoReclamoPage() {
               </select>
             </div>
 
-            {tipoSolicitud === "Cambio por Otro Producto" && (
+            {tipoSolicitud === "3" && (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
                 <h4 className="font-bold text-sm mb-3 flex items-center gap-2">
                   <Package size={16} /> Producto de Reemplazo
                 </h4>
+                {productoSeleccionado && (
+                  <div className="mb-3 p-3 bg-white border border-emerald-200 rounded-lg">
+                    <p className="text-sm font-semibold text-emerald-700">Producto seleccionado:</p>
+                    <p className="text-sm font-bold text-gray-900">{productoSeleccionado.product_name}</p>
+                    <p className="text-xs text-gray-500">S/ {Number(productoSeleccionado.price || 0).toFixed(2)}</p>
+                  </div>
+                )}
                 <button
                   onClick={() => setShowCambioModal(true)}
                   className="w-full py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
                 >
-                  {productoSeleccionado ? `Cambiar a: ${productoSeleccionado.nombre}` : "Abrir Catálogo de Productos"}
+                  {productoSeleccionado ? "Cambiar producto seleccionado" : "Abrir Catálogo de Productos"}
                 </button>
               </div>
             )}
@@ -761,6 +772,12 @@ export default function NuevoReclamoPage() {
             setShowCambioModal(false);
           }}
         />
+      )}
+
+      {productoSeleccionado && tipoSolicitud === "3" && (
+        <div className="fixed bottom-0 left-0 right-0 bg-emerald-600 text-white text-center py-2 text-sm font-medium z-40">
+          Producto seleccionado: {productoSeleccionado.product_name} — S/ {Number(productoSeleccionado.price || 0).toFixed(2)}
+        </div>
       )}
     </div>
   );

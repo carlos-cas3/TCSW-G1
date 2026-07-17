@@ -292,6 +292,23 @@ export default function HistorialReclamosPage() {
                 </div>
               )}
 
+              {selectedTicket.tipoSolicitud === 3 && selectedTicket.nuevoProductoNombre && (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                  <p className="text-xs font-bold text-blue-700 mb-2 flex items-center gap-1">
+                    Producto de reemplazo
+                  </p>
+                  <div className="text-sm text-blue-800 space-y-1">
+                    <p><strong>Producto:</strong> {selectedTicket.nuevoProductoNombre}</p>
+                    {selectedTicket.nuevoProductoPrecio != null && (
+                      <p><strong>Precio:</strong> {formatter(selectedTicket.nuevoProductoPrecio)}</p>
+                    )}
+                    {selectedTicket.nuevoNombreVendedor && (
+                      <p><strong>Vendedor:</strong> {selectedTicket.nuevoNombreVendedor}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <p className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1"><Clock size={12} /> Historial de resoluciones</p>
                 {historialLoading ? (

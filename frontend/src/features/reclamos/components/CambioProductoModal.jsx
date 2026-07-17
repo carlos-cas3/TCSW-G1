@@ -1,26 +1,32 @@
-import { useState } from "react";
-import { X, Search, Package } from "lucide-react";
-
-const CATALOGO_MOCK = [
-  { id: "SKU-001", nombre: "Zapatillas Running Pro", precio: 189.90, talla: "42" },
-  { id: "SKU-002", nombre: "Zapatillas Trail X", precio: 159.90, talla: "41" },
-  { id: "SKU-003", nombre: "Polo Deportivo M", precio: 49.90, talla: "M" },
-  { id: "SKU-004", nombre: "Short Running L", precio: 39.90, talla: "L" },
-  { id: "SKU-005", nombre: "Gorra Deportiva", precio: 29.90, talla: "Única" },
-  { id: "SKU-006", nombre: "Medias Antiampolla", precio: 19.90, talla: "Única" },
-];
+import { useState, useEffect } from "react";
+import { X, Search, Package, Loader2 } from "lucide-react";
+import { obtenerCatalogoProductos } from "../services/reclamos.service";
 
 export default function CambioProductoModal({ creditoDisponible, onClose, onSelect }) {
   const [busqueda, setBusqueda] = useState("");
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    obtenerCatalogoProductos()
+      .then((data) => {
+        if (data?.data) setProductos(data.data);
+        else if (Array.isArray(data)) setProductos(data);
+        else setProductos([]);
+      })
+      .catch(() => setProductos([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const filtrados = CATALOGO_MOCK.filter(
+  const filtrados = productos.filter(
     (p) =>
-      p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      p.id.toLowerCase().includes(busqueda.toLowerCase())
+      (p.product_name || "").toLowerCase().includes(busqueda.toLowerCase()) ||
+      (p.product_brand || "").toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
@@ -47,7 +53,7 @@ export default function CambioProductoModal({ creditoDisponible, onClose, onSele
             <span className="px-3 text-gray-400"><Search size={18} /></span>
             <input
               type="text"
-              placeholder="Buscar producto por nombre o SKU..."
+              placeholder="Buscar producto por nombre o marca..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="flex-1 py-2.5 px-1 outline-none text-sm"
@@ -60,31 +66,53 @@ export default function CambioProductoModal({ creditoDisponible, onClose, onSele
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          {filtrados.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 size={24} className="animate-spin text-gray-400" />
+            </div>
+          ) : filtrados.length === 0 ? (
             <p className="text-center py-8 text-gray-500">No se encontraron productos.</p>
           ) : (
-            filtrados.map((producto) => (
-              <button
-                key={producto.id}
-                onClick={() => onSelect(producto)}
-                className="w-full text-left border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer flex items-center justify-between"
-              >
-                <div className="min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm">{producto.nombre}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    SKU: {producto.id} | Talla: {producto.talla}
-                  </p>
-                </div>
-                <div className="text-right shrink-0 ml-4">
-                  <p className="font-bold text-gray-900">S/ {producto.precio.toFixed(2)}</p>
-                  {producto.precio <= creditoDisponible ? (
-                    <span className="text-xs text-emerald-600 font-medium">Cubre crédito</span>
-                  ) : (
-                    <span className="text-xs text-red-500 font-medium">Excede crédito</span>
-                  )}
-                </div>
-              </button>
-            ))
+            filtrados.map((producto) => {
+              const precio = Number(producto.price) || 0;
+              const puedeSeleccionar = precio <= creditoDisponible;
+              return (
+                <button
+                  key={producto.vendor_product_id}
+                  onClick={() => puedeSeleccionar && onSelect(producto)}
+                  disabled={!puedeSeleccionar}
+                  className={`w-full text-left border rounded-lg p-3 transition-all cursor-pointer flex items-center justify-between ${
+                    puedeSeleccionar
+                      ? "border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+                      : "border-red-200 bg-red-50 opacity-60 cursor-not-allowed"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    {producto.image_url && (
+                      <img
+                        src={producto.image_url}
+                        alt={producto.product_name}
+                        className="w-12 h-12 rounded object-cover shrink-0"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm truncate">{producto.product_name}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {producto.product_brand} | {producto.category_name || "Sin categoría"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-4">
+                    <p className="font-bold text-gray-900">S/ {precio.toFixed(2)}</p>
+                    {puedeSeleccionar ? (
+                      <span className="text-xs text-emerald-600 font-medium">Cubre crédito</span>
+                    ) : (
+                      <span className="text-xs text-red-500 font-medium">Excede crédito</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })
           )}
         </div>
 
