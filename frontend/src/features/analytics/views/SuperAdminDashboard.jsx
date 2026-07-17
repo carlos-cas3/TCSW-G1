@@ -12,7 +12,7 @@ const StatsCards = createStatsCards([
     { label: "Ingresos Totales", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
     { label: "\u00d3rdenes Totales", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
     { label: "Total Vendedores", valueKey: "totalVendors", icon: Store, color: "purple" },
-    { label: "Ticket Promedio", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
+    { label: "Valor Prom. Orden", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
 ]);
 
 export default function SuperAdminDashboard() {
