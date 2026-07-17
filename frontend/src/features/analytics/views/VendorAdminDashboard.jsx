@@ -1,9 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { RefreshCw, DollarSign, ShoppingCart, Package, Receipt } from "lucide-react";
 import createStatsCards from "../../../shared/components/createStatsCards";
 import ErrorState from "../../../shared/components/Feedback/ErrorState";
-import { useMockVendorDashboard } from "../mocks/useMockVendorDashboard";
-import PeriodSelector from "../components/PeriodSelector";
+import useVendorAdminDashboard from "../hooks/useVendorAdminDashboard";
 import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
 import TopProductsList from "../components/TopProductsList";
@@ -18,7 +17,6 @@ const StatsCards = createStatsCards([
 
 export default function VendorAdminDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
-    const [selectedPeriod, setSelectedPeriod] = useState("mtd");
     const {
         metrics,
         revenueMonthly,
@@ -27,19 +25,8 @@ export default function VendorAdminDashboard() {
         vendorAlerts,
         loading,
         error,
-        setFilters,
         reload,
-    } = useMockVendorDashboard();
-
-    const handlePeriodChange = useCallback(({ period, current, previous }) => {
-        setSelectedPeriod(period);
-        setFilters({
-            startDate: current.startDate,
-            endDate: current.endDate,
-            previousStartDate: previous.startDate,
-            previousEndDate: previous.endDate,
-        });
-            }, [setFilters]);
+    } = useVendorAdminDashboard();
 
     const handleReload = () => {
         reload();
@@ -52,17 +39,11 @@ export default function VendorAdminDashboard() {
         second: "2-digit",
     });
 
-    const chartLoading = loading;
-    const chartError = error;
-
     return (
         <div className="page">
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                <PeriodSelector
-                    value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                />
-                <div className="page-actions">
+                <div />
+                <div className="page-actions ml-auto">
                     <span className="text-sm text-gray-500">
                         Última actualización: {timeStr}
                     </span>
@@ -89,15 +70,15 @@ export default function VendorAdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <QuarterlyRevenueChart
                     data={revenueMonthly}
-                    loading={chartLoading}
-                    error={chartError}
+                    loading={loading}
+                    error={error}
                     onRetry={reload}
                     title="Ingresos"
                 />
                 <OrdersChart
                     data={ordersDistribution}
-                    loading={chartLoading}
-                    error={chartError}
+                    loading={loading}
+                    error={error}
                     onRetry={reload}
                 />
             </div>

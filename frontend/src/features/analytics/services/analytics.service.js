@@ -1,7 +1,7 @@
 import { fetchWithAuth } from "../../../shared/api/httpClient";
 import { API } from "../../../config/api";
 
-const BASE = `${API.BASE}/api/v1/analytics`;
+const BASE = `${API.ANALYTICS}/api/v1/analytics`;
 
 const toParams = (filters = {}) => {
     const params = new URLSearchParams();
@@ -27,3 +27,12 @@ export const getTopProducts = (filters = {}) =>
 
 export const getTopVendors = (filters = {}) =>
     fetchWithAuth(`${BASE}/vendors/top?${toParams(filters)}`);
+
+export const getAnalyticsData = (filters = {}) =>
+    fetchWithAuth(`${BASE}/analytics?${toParams(filters)}`);
+
+export const getVendorDashboardMetrics = (filters = {}) =>
+    fetchWithAuth(`${BASE}/vendor/dashboard?${toParams(filters)}`);
+
+export const getVendorAnalyticsData = (filters = {}) =>
+    fetchWithAuth(`${BASE}/vendor/analytics?${toParams(filters)}`);

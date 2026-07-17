@@ -1,9 +1,8 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { RefreshCw, DollarSign, ShoppingCart, Store, Receipt } from "lucide-react";
 import createStatsCards from "../../../shared/components/createStatsCards";
 import ErrorState from "../../../shared/components/Feedback/ErrorState";
-import { useMockAnalytics as useAnalytics } from "../mocks/useMockAnalytics";
-import PeriodSelector from "../components/PeriodSelector";
+import useSuperAdminDashboard from "../hooks/useSuperAdminDashboard";
 import QuarterlyRevenueChart from "../components/QuarterlyRevenueChart";
 import OrdersChart from "../components/OrdersChart";
 import TopProductsList from "../components/TopProductsList";
@@ -18,7 +17,6 @@ const StatsCards = createStatsCards([
 
 export default function SuperAdminDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
-    const [selectedPeriod, setSelectedPeriod] = useState("mtd");
     const {
         metrics,
         loadingMetrics,
@@ -30,41 +28,10 @@ export default function SuperAdminDashboard() {
         loadingCharts,
         loadingTables,
         errorCharts,
-        setFilters,
         reload,
-    } = useAnalytics();
-
-    useEffect(() => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const s = (d) => d.toISOString().split("T")[0];
-        const startDate = s(new Date(year, month, 1));
-        const endDate = s(now);
-        const prevStart = s(new Date(year, month - 1, 1));
-        const prevEnd = s(new Date(year, month - 1, now.getDate()));
-        setFilters((prev) => ({
-            ...prev,
-            startDate,
-            endDate,
-            previousStartDate: prevStart,
-            previousEndDate: prevEnd,
-        }));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    } = useSuperAdminDashboard();
 
     const stats = useMemo(() => ({ ...metrics }), [metrics]);
-
-    const handlePeriodChange = useCallback(({ period, current, previous }) => {
-        setSelectedPeriod(period);
-        setFilters((prev) => ({
-            ...prev,
-            startDate: current.startDate,
-            endDate: current.endDate,
-            previousStartDate: previous.startDate,
-            previousEndDate: previous.endDate,
-        }));
-    }, [setFilters]);
 
     const handleReload = () => {
         reload();
@@ -80,11 +47,7 @@ export default function SuperAdminDashboard() {
     return (
         <div className="page">
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <PeriodSelector
-                    value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                />
-                <div className="page-actions">
+                <div className="page-actions ml-auto">
                     <span className="text-sm text-gray-500">
                         Última actualización: {timeStr}
                     </span>

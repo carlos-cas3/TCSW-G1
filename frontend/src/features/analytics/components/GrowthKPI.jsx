@@ -112,22 +112,24 @@ export default function GrowthKPI({ summary, trendHistory, loading, error, onRet
                             color={item.growth >= 0 ? "#16a34a" : "#dc2626"}
                         />
                     </div>
-                    <div className="flex items-center gap-1.5 mt-2">
-                        <GrowthIcon growth={item.growth} />
-                        <span
-                            className={`text-sm font-medium ${
-                                item.growth > 0
-                                    ? "text-green-600"
-                                    : item.growth < 0
-                                        ? "text-red-600"
-                                        : "text-gray-400"
-                            }`}
-                        >
-                            {item.growth > 0 ? "+" : ""}
-                            {item.growth}%
-                        </span>
-                        <span className="text-xs text-gray-400">{periodLabel || "vs. período anterior"}</span>
-                    </div>
+                    {(periodLabel || item.growth !== 0) && (
+                        <div className="flex items-center gap-1.5 mt-2">
+                            <GrowthIcon growth={item.growth} />
+                            <span
+                                className={`text-sm font-medium ${
+                                    item.growth > 0
+                                        ? "text-green-600"
+                                        : item.growth < 0
+                                            ? "text-red-600"
+                                            : "text-gray-400"
+                                }`}
+                            >
+                                {item.growth > 0 ? "+" : ""}
+                                {item.growth}%
+                            </span>
+                            <span className="text-xs text-gray-400">{periodLabel || "vs. período anterior"}</span>
+                        </div>
+                    )}
                     {tooltipIdx === idx && (
                         <div className="absolute top-12 right-4 z-10">
                             <DetailTooltip item={item} />

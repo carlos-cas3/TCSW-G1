@@ -46,8 +46,8 @@ function EmptyState() {
     return (
         <div className="flex flex-col items-center justify-center py-8 text-gray-400">
             <AlertTriangle size={32} className="mb-2" />
-            <p className="text-sm font-medium">Sin alertas</p>
-            <p className="text-xs mt-1">No hay novedades operativas</p>
+            <p className="text-sm font-medium">Sin tickets</p>
+            <p className="text-xs mt-1">No hay tickets recientes</p>
         </div>
     );
 }
@@ -55,7 +55,7 @@ function EmptyState() {
 export default function OperationalAlerts({ alerts, loading }) {
     if (loading) return (
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-base font-semibold text-gray-900 mb-4">Alertas Operativas</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Últimos Tickets</h3>
             <AlertSkeleton />
         </div>
     );
@@ -64,7 +64,7 @@ export default function OperationalAlerts({ alerts, loading }) {
 
     return (
         <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-base font-semibold text-gray-900 mb-4">Alertas Operativas</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Últimos Tickets</h3>
 
             {alertList.length === 0 ? <EmptyState /> : (
                 <div className="space-y-2">
