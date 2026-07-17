@@ -3,6 +3,7 @@ import StatusDropdown from "../../../shared/table/components/StatusDropdown";
 import { createActionsColumn } from "../../../shared/table/columns/actions.column";
 import { BRANCH_STATUS_OPTIONS } from "../constants/branchConstants";
 import { sortBranches } from "../utils/branchFilters";
+import { STATUS_COLORS } from "../utils/statusColors";
 
 const BRANCH_STATUS_LABELS = {
   ACTIVE: "Activo",
@@ -61,9 +62,16 @@ export default function BranchTable({
     {
       key: "status",
       label: "Estado",
-      render: (branch) => (
-        <StatusDropdown variant="badge" value={branch.branch_status} />
-      ),
+      render: (branch) => {
+        const palette = STATUS_COLORS[branch.branch_status] || STATUS_COLORS.INACTIVE;
+        const label = BRANCH_STATUS_LABELS[branch.branch_status] || branch.branch_status;
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border ${palette.bg} ${palette.text} ${palette.border}`}>
+            <span className={`w-2 h-2 rounded-full ${palette.dot}`} />
+            {label}
+          </span>
+        );
+      },
     },
     {
       key: "createdAt",

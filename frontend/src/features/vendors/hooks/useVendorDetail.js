@@ -14,8 +14,9 @@ import {
     getPaymentMethods,
     getVendorPaymentMethods,
 } from "../services/vendor.service";
+import { getVendorProducts } from "../../catalog/services/vendorProducts.service";
 
-const mapVendorToData = (vendor) => ({
+const mapVendorToData = (vendor, totalProducts = 0) => ({
     profile: {
         companyName: vendor.vendor_name,
         companyEmail: vendor.vendor_email,
@@ -27,6 +28,7 @@ const mapVendorToData = (vendor) => ({
     account: {
         status: vendor.vendor_status,
         memberSince: vendor.created_at,
+        totalProducts,
     },
 });
 
@@ -61,6 +63,7 @@ export default function useVendorDetail() {
                 getVendorCommission(vendorId),
                 getPaymentMethods(),
                 getVendorPaymentMethods(vendorId),
+                getVendorProducts(vendorId),
             ]);
 
             const getData = (result, defaultValue = null) =>
@@ -75,12 +78,16 @@ export default function useVendorDetail() {
             const comm = getData(results[4]);
             const methods = getData(results[5], []);
             const vendorMethods = getData(results[6], []);
+            const productsResult = results[7];
+            const products = productsResult.status === "fulfilled" && Array.isArray(productsResult.value)
+                ? productsResult.value
+                : [];
 
             if (!vendor) {
                 throw new Error("No se encontraron datos del vendor");
             }
 
-            setVendorData(mapVendorToData(vendor));
+            setVendorData(mapVendorToData(vendor, products.length));
             setPolicyData(
                 policy?.return_policy_description ?? policy?.description ?? "",
             );
