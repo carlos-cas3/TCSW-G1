@@ -4,5 +4,4 @@ export const API = {
     CATALOG: import.meta.env.VITE_CATALOG_URL,
     ORDERS: import.meta.env.VITE_ORDERS_URL,
     ANALYTICS: import.meta.env.VITE_ANALYTICS_URL,
-    BASE: import.meta.env.VITE_API_URL,
 };

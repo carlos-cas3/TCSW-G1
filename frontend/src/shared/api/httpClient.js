@@ -34,16 +34,22 @@ export const fetchWithAuth = async (url, options = {}) => {
         }
     }
 
-    const text = await response.text().catch(() => "");
+    const text = await response.text();
+
+    if (!text.trim()) {
+        return null;
+    }
+
     if (
         text.trim().toLowerCase().startsWith("<!doctype") ||
         text.trim().toLowerCase().startsWith("<html")
     ) {
         throw new Error("HTML_RESPONSE");
     }
+
     try {
         return JSON.parse(text);
     } catch {
-        throw new Error("HTML_RESPONSE");
+        throw new Error("INVALID_JSON_RESPONSE");
     }
 };
