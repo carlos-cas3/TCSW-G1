@@ -1,7 +1,19 @@
 import { useMemo, useState } from "react";
-import { TrendingUp, TrendingDown, Minus, Info } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Info, DollarSign, ShoppingCart, Receipt } from "lucide-react";
 import { formatPEN } from "../../../shared/utils/formatCurrency";
 import ErrorState from "../../../shared/components/Feedback/ErrorState";
+
+const avatarColors = [
+    { bg: "bg-blue-100", text: "text-blue-600" },
+    { bg: "bg-emerald-100", text: "text-emerald-600" },
+    { bg: "bg-violet-100", text: "text-violet-600" },
+];
+
+const labelIconMap = {
+    Ingresos: DollarSign,
+    Pedidos: ShoppingCart,
+    "Ticket Promedio": Receipt,
+};
 
 function Sparkline({ data, color }) {
     if (!data || data.length < 2) return null;
@@ -40,7 +52,10 @@ function KPISkeleton() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
                 <div key={i} className="animate-pulse bg-white rounded-lg border border-gray-200 p-5">
-                    <div className="h-3 bg-gray-200 rounded w-1/2 mb-3" />
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-9 h-9 bg-gray-200 rounded-lg" />
+                        <div className="h-3 bg-gray-200 rounded w-1/3" />
+                    </div>
                     <div className="h-6 bg-gray-200 rounded w-3/4 mb-2" />
                     <div className="h-3 bg-gray-200 rounded w-1/3" />
                 </div>
@@ -97,11 +112,25 @@ export default function GrowthKPI({ summary, trendHistory, loading, error, onRet
                     onMouseEnter={() => setTooltipIdx(idx)}
                     onMouseLeave={() => setTooltipIdx(null)}
                 >
-                    <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                            {item.label}
-                        </p>
-                        <Info size={14} className="text-gray-300 cursor-help" />
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${avatarColors[idx % 3].bg}`}>
+                            {(() => {
+                                const Icon = labelIconMap[item.label];
+                                return Icon ? (
+                                    <Icon size={16} className={avatarColors[idx % 3].text} />
+                                ) : (
+                                    <span className={`text-sm font-bold ${avatarColors[idx % 3].text}`}>
+                                        {item.label[0]}
+                                    </span>
+                                );
+                            })()}
+                        </div>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide truncate">
+                                {item.label}
+                            </p>
+                            <Info size={12} className="text-gray-300 shrink-0 cursor-help" />
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <p className="text-2xl font-bold text-gray-900">
