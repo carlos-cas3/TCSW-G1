@@ -1,4 +1,4 @@
-import { X, MapPin } from 'lucide-react';
+import { X } from 'lucide-react';
 import { formatIdSubOrden, formatIdOrden, formatIdItem, getBadgeEstado, renderEstadoVendedor, getBadgeItem, renderEstadoItem } from '../../orders/utils/formatters';
 
 export default function HistorialModal({ subOrden, onClose }) {

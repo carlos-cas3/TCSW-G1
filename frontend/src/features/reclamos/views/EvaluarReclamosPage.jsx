@@ -75,28 +75,37 @@ export default function EvaluarReclamosPage() {
   };
 
   useEffect(() => {
-    loadTickets();
+    (async () => {
+      await loadTickets();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vendorId]);
 
   useEffect(() => {
-    if (!selectedTicket) {
-      setDetalleItems(null);
-      return;
-    }
-    if (selectedTicket.items?.length > 0) {
-      setDetalleItems(null);
-      return;
-    }
-    const ids = selectedTicket.itemsAAnular;
-    if (!ids || ids.length === 0) {
-      setDetalleItems(null);
-      return;
-    }
-    setDetalleLoading(true);
-    obtenerDetalleItems(ids)
-      .then((data) => setDetalleItems(data || []))
-      .catch(() => setDetalleItems([]))
-      .finally(() => setDetalleLoading(false));
+    (async () => {
+      if (!selectedTicket) {
+        setDetalleItems(null);
+        return;
+      }
+      if (selectedTicket.items?.length > 0) {
+        setDetalleItems(null);
+        return;
+      }
+      const ids = selectedTicket.itemsAAnular;
+      if (!ids || ids.length === 0) {
+        setDetalleItems(null);
+        return;
+      }
+      setDetalleLoading(true);
+      try {
+        const data = await obtenerDetalleItems(ids);
+        setDetalleItems(data || []);
+      } catch {
+        setDetalleItems([]);
+      } finally {
+        setDetalleLoading(false);
+      }
+    })();
   }, [selectedTicket]);
 
   const calcularTotalTicket = (ticket) => {

@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { Search, FileText, ArrowLeft, User, Phone, Mail, Package, Loader2, AlertCircle } from "lucide-react";
 import { buscarOrdenesPorDni, crearTicket } from "../services/reclamos.service";
-import { formatIdOrden, formatIdSubOrden, formatIdItem, getBadgeEstado, renderEstadoOrden, renderEstadoVendedor, getBadgeItem, renderEstadoItem } from "../../orders/utils/formatters";
+import { formatIdOrden, formatIdSubOrden, getBadgeEstado, renderEstadoOrden, renderEstadoVendedor } from "../../orders/utils/formatters";
 import CambioProductoModal from "../components/CambioProductoModal";
-
-const estadosGlobal = {
-  1: "Pendiente",
-  2: "En Preparación",
-  3: "Parcialmente Despachado",
-  4: "Parcialmente Entregado",
-  5: "Entregado",
-};
 
 const tipoSolicitudLabels = {
   1: "Devolución de Dinero",
@@ -31,7 +23,6 @@ export default function NuevoReclamoPage() {
   const [subOrdenesAnuladas, setSubOrdenesAnuladas] = useState({});
   const [itemsAnulados, setItemsAnulados] = useState({});
   const [tipoSolicitud, setTipoSolicitud] = useState("");
-  const [motivo, setMotivo] = useState("");
   const [comentarios, setComentarios] = useState("");
   const [showCambioModal, setShowCambioModal] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -180,7 +171,7 @@ export default function NuevoReclamoPage() {
         nuevoProductoPrecio: productoSeleccionado ? Number(productoSeleccionado.price) : null,
         nuevoProductoId: productoSeleccionado ? Number(productoSeleccionado.vendor_product_id) : null,
         items: Object.entries(productosSeleccionados)
-          .filter(([_, v]) => v.seleccionado)
+          .filter(([, v]) => v.seleccionado)
           .map(([idOItem, v]) => {
             const prod = encontrarProductoPorId(Number(idOItem));
             return {

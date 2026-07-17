@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatIdOrden, formatIdSubOrden, getBadgeEstado, renderEstadoVendedor, getBadgeItem, renderEstadoItem } from '../../orders/utils/formatters';
+import { formatIdOrden, formatIdSubOrden, getBadgeEstado, renderEstadoVendedor, getBadgeItem } from '../../orders/utils/formatters';
 import FilterBar from '../../orders/components/FilterBar';
 import EmptyState from '../../orders/components/EmptyState';
 import HistorialModal from './HistorialModal';
