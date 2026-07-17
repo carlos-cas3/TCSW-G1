@@ -12,7 +12,7 @@ const StatsCards = createStatsCards([
     { label: "Ingresos", valueKey: "totalRevenue", icon: DollarSign, color: "green" },
     { label: "Pedidos", valueKey: "totalOrders", icon: ShoppingCart, color: "blue" },
     { label: "Productos Activos", valueKey: "activeProducts", icon: Package, color: "purple" },
-    { label: "Ticket Promedio", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
+    { label: "Valor. Prom. Orden", valueKey: "avgOrderValue", icon: Receipt, color: "yellow" },
 ]);
 
 export default function VendorAdminDashboard() {
