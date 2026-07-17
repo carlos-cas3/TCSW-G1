@@ -32,7 +32,9 @@ export function useCatalog() {
   };
 
   useEffect(() => {
-    loadProducts();
+    (async () => {
+      await loadProducts();
+    })();
   }, []);
 
   return {

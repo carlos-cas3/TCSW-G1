@@ -41,9 +41,23 @@ export default function AdminProductModal({ isOpen, onClose, onSave, editingProd
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  const loadCategories = async () => {
+    setLoadingCategories(true);
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch {
+      setCategories([]);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+
   useEffect(() => {
     if (isOpen && categories.length === 0) {
-      loadCategories();
+      (async () => {
+        await loadCategories();
+      })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -62,18 +76,6 @@ export default function AdminProductModal({ isOpen, onClose, onSave, editingProd
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
-
-  const loadCategories = async () => {
-    setLoadingCategories(true);
-    try {
-      const data = await getCategories();
-      setCategories(data);
-    } catch {
-      setCategories([]);
-    } finally {
-      setLoadingCategories(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
