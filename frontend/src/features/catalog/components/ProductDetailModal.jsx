@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { X, Package, Building2, Tags, FileText, Calendar, Clock } from "lucide-react";
+import { X, Package, Building2, Tags, FileText, Calendar, Clock, DollarSign, Package2 } from "lucide-react";
 import { STATUS_COLORS, STATUS_LABELS } from "../../../shared/utils/statusUtils";
 import "../styles/modal.css";
 
-export default function ProductDetailModal({ isOpen, product, onClose }) {
+export default function ProductDetailModal({ isOpen, product, onClose, showDates = true }) {
     useEffect(() => {
         const handleKey = (e) => {
             if (e.key === "Escape" && isOpen) onClose();
@@ -16,8 +16,9 @@ export default function ProductDetailModal({ isOpen, product, onClose }) {
 
     const info = product.products || product;
 
-    const palette = STATUS_COLORS[info.product_status] || STATUS_COLORS.INACTIVE;
-    const statusLabel = STATUS_LABELS[info.product_status] || info.product_status;
+    const status = product.status || info.product_status || "INACTIVE";
+    const palette = STATUS_COLORS[status] || STATUS_COLORS.INACTIVE;
+    const statusLabel = STATUS_LABELS[status] || status;
 
     const formatDate = (dateStr) => {
         if (!dateStr) return "—";
@@ -101,6 +102,32 @@ export default function ProductDetailModal({ isOpen, product, onClose }) {
                             </div>
                         </div>
 
+                        {(product.price != null || product.stock != null) && (
+                            <div className={sectionClass}>
+                                <p className={sectionTitleClass}>Precio y Stock</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {product.price != null && (
+                                        <div className="flex items-start gap-3">
+                                            <DollarSign className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                                            <div>
+                                                <p className={labelClass}>Precio</p>
+                                                <p className={valueClass}>S/ {product.price}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {product.stock != null && (
+                                        <div className="flex items-start gap-3">
+                                            <Package2 className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                                            <div>
+                                                <p className={labelClass}>Stock</p>
+                                                <p className={valueClass}>{product.stock} unidades</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <div className={sectionClass}>
                             <p className={sectionTitleClass}>Estado</p>
                             <div className="flex items-start gap-3">
@@ -121,25 +148,27 @@ export default function ProductDetailModal({ isOpen, product, onClose }) {
                             </div>
                         )}
 
-                        <div className={sectionClass}>
-                            <p className={sectionTitleClass}>Registro</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="flex items-start gap-3">
-                                    <Calendar className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
-                                    <div>
-                                        <p className={labelClass}>Fecha de Creación</p>
-                                        <p className={valueClass}>{formatDate(info.created_at)}</p>
+                        {showDates && (
+                            <div className={sectionClass}>
+                                <p className={sectionTitleClass}>Registro</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="flex items-start gap-3">
+                                        <Calendar className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                                        <div>
+                                            <p className={labelClass}>Fecha de Creación</p>
+                                            <p className={valueClass}>{formatDate(info.created_at)}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <Clock className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
-                                    <div>
-                                        <p className={labelClass}>Última Actualización</p>
-                                        <p className={valueClass}>{formatDateTime(info.updated_at)}</p>
+                                    <div className="flex items-start gap-3">
+                                        <Clock className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                                        <div>
+                                            <p className={labelClass}>Última Actualización</p>
+                                            <p className={valueClass}>{formatDateTime(info.updated_at)}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-stone-100 flex justify-end">

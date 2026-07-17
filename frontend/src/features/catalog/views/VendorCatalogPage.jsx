@@ -10,10 +10,11 @@ import { Package, CircleCheckBig, CircleX } from "lucide-react";
 const CatalogStatsCards = createStatsCards([
   { label: "Total Productos", valueKey: "total", icon: Package, color: "blue" },
   { label: "Activos", valueKey: "active", icon: CircleCheckBig, color: "green" },
-  { label: "Inactivos", valueKey: "inactive", icon: CircleX, color: "red" },
+  { label: "Inactivos", valueKey: "inactive", icon: CircleX, color: "gray" },
 ]);
 import CatalogFilters from "../components/CatalogFilters";
 import ProductModal from "../components/ProductModal";
+import ProductDetailModal from "../components/ProductDetailModal";
 
 import {
   createVendorProduct,
@@ -28,6 +29,7 @@ export default function VendorCatalogPage() {
 
   const [openModal, setOpenModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [viewingProduct, setViewingProduct] = useState(null);
 
   const user = JSON.parse(
     localStorage.getItem("tcsw_user") ||
@@ -85,15 +87,7 @@ export default function VendorCatalogPage() {
   };
 
   const handleView = (product) => {
-    alert(`
-PRODUCTO
-
-Nombre: ${product.products?.product_name}
-Marca: ${product.products?.product_brand}
-Precio: ${product.price}
-Stock: ${product.stock}
-Estado: ${product.status}
-    `);
+    setViewingProduct(product);
   };
 
   return (
@@ -165,6 +159,13 @@ Estado: ${product.status}
         }}
         onSave={handleSave}
         editingProduct={editingProduct}
+      />
+
+      <ProductDetailModal
+        isOpen={!!viewingProduct}
+        product={viewingProduct}
+        onClose={() => setViewingProduct(null)}
+        showDates={false}
       />
     </div>
   );
