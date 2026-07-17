@@ -57,7 +57,9 @@ export default function HistorialReclamosPage() {
   };
 
   useEffect(() => {
-    loadTickets();
+    (async () => {
+      await loadTickets();
+    })();
   }, []);
 
   const openHistorial = async (ticket) => {
